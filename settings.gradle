@@ -1,0 +1,2 @@
+rootProject.name='TTY-Community'
+include ':app'
