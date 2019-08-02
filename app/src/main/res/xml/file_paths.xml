@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<external-path xmlns:tools="http://schemas.android.com/tools"
+    name="camera_photos"
+    path="."
+    tools:ignore="MissingDefaultResource" />
