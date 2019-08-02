@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="tty.community.MainActivity">
+    <item android:icon="@color/colorAccent" android:id="@+id/home"
+        android:title="HOME" />
+</menu>

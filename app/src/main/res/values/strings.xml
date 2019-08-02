@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">TTY-Community</string>
+    <string name="app_name">Community</string>
+    <string name="action_settings">Settings</string>
 </resources>
