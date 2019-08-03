@@ -6,12 +6,18 @@ object Models {
 
 }
 
-class Login(
-    private val id: String?,
-    private val nickname: String?,
-    private val token: String?,
-    private val email: String?
-) {
+open class User(
+    open val id: String?,
+    open val nickname: String?,
+    open val token: String?,
+    open val email: String?)
+
+class Login (
+    override val id: String?,
+    override val nickname: String?,
+    override val token: String?,
+    override val email: String?
+): User(id, nickname, token, email) {
 //    private val personalSignature: String? = null
 //    val follower = arrayOf<String>()
 //    val following = arrayOf<String>()
@@ -34,12 +40,12 @@ class Login(
 
 }
 
-enum class Shortcut(name: String) {
-    AE("AE"), FE("FE"), UR("UR"), OK("OK"),
-    UNE("UNE"), UPE("UPE"),
-    TE("TE"),
-    BNE("BNE"),
-    OTHER("OTHER");
+enum class Shortcut {
+    AE, FE, UR, OK,
+    UNE, UPE,
+    TE,
+    BNE,
+    OTHER;
 
     companion object {
         fun phrase(name: String): Shortcut {

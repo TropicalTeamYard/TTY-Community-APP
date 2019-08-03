@@ -19,7 +19,7 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            return response.body()!!.string()
+            return response.body!!.string()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -27,12 +27,30 @@ object NetUtils {
         return Values.errorJson
     }
 
+    fun postStream(url: String, params: HashMap<String, String>): InputStream? {
+        val client = OkHttpClient()
+        val builder = FormBody.Builder()
+        for (item in params) {
+            builder.add(item.key, item.value)
+        }
+        val body = builder.build()
+        val request = Request.Builder().url(url).post(body).build()
+        try {
+            val response = client.newCall(request).execute()
+            return response.body!!.byteStream()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return null
+    }
+
     fun get(url: String): String {
         val client = OkHttpClient()
         val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
-            return response.body()!!.string()
+            return response.body!!.string()
         } catch (e: Exception) {
             e.printStackTrace()
         }

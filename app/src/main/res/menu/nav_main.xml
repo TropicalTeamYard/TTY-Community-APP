@@ -1,20 +1,19 @@
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:ignore="MissingDefaultResource">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:icon="@drawable/ic_home_black_24dp"
-        android:id="@+id/home"
+        android:id="@+id/nav_home"
         android:title="HOME"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:icon="@drawable/chat"
-        android:id="@+id/square"
+        android:id="@+id/nav_square"
         android:title="SQUARE"
         app:showAsAction="always"/>
     <item
         android:icon="@drawable/user"
-        android:id="@+id/me"
+        android:id="@+id/nav_me"
         android:title="ME"
         app:showAsAction="always"/>
 </menu>

@@ -1,4 +1,4 @@
-package tty.community.pages
+package tty.community.pages.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

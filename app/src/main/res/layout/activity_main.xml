@@ -4,14 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tty.community.pages.MainActivity"
-    tools:ignore="MissingDefaultResource">
+    tools:context="tty.community.pages.activity.MainActivity">
+
+    <tty.community.widget.MainViewPager
+        android:id="@+id/main_viewPager"
+        android:layout_above="@id/main_nav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+        android:id="@+id/main_nav"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:layout_height="48dp"
         app:menu="@menu/nav_main" />
 

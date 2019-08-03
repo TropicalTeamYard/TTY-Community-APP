@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".pages.LoginActivity"
-    tools:ignore="MissingDefaultResource">
+    tools:context=".pages.activity.LoginActivity">
 
     <ImageView
         android:id="@+id/icon_imageview"

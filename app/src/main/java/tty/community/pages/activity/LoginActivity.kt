@@ -1,4 +1,4 @@
-package tty.community.pages
+package tty.community.pages.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -52,11 +52,10 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-
     private fun login() {
         AsyncTaskUtil.AsyncNetUtils.post("${Values.api["user"]}/login", map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
-                Log.d(MainDBHelper.TAG, response)
+                Log.d(TAG, response)
                 val result  = JSONObject(response)
                 val msg = result.optString("msg", "unknown error")
                 when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
@@ -68,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                         val token = data.optString("token")
                         val values = Login(id, nickname, token, email).getValues()
                         if(values != null) {
-                            MainDBHelper(this@LoginActivity).login(this@LoginActivity, values)
+                            MainDBHelper(this@LoginActivity).login(values)
                             Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
@@ -82,5 +81,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    companion object {
+        const val TAG = "LoginActivity"
     }
 }
