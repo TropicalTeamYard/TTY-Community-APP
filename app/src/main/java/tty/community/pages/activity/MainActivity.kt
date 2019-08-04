@@ -17,6 +17,7 @@ import tty.community.data.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Values
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
@@ -54,13 +55,14 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setAdapter()
 
     }
 
     override fun onResume() {
         super.onResume()
         autoLogin()
-        setAdapter()
+
     }
 
     private fun autoLogin() {
@@ -98,23 +100,14 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     }
 
     private fun setAdapter() {
-        if (adapter == null) {
-            adapter = MainFragmentAdapter(supportFragmentManager)
-        }
+        val adapter = MainFragmentAdapter(supportFragmentManager)
         main_viewPager.adapter = adapter
         main_viewPager.addOnPageChangeListener(this)
         main_nav.setOnNavigationItemSelectedListener(this)
-        main_viewPager.currentItem = when (main_nav.selectedItemId) {
-            R.id.nav_home -> 0
-            R.id.nav_square -> 1
-            R.id.nav_me -> 2
-            else -> return
-        }
     }
 
     companion object {
         const val TAG = "MainActivity"
-        private var adapter: MainFragmentAdapter? = null
     }
 
 

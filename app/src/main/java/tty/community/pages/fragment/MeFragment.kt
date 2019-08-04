@@ -3,9 +3,6 @@ package tty.community.pages.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +12,7 @@ import kotlinx.android.synthetic.main.fragment_me.*
 import tty.community.R
 import tty.community.data.MainDBHelper
 import tty.community.model.User
-import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.LoginActivity
-import tty.community.values.Values
-import java.io.InputStream
 
 class MeFragment : Fragment() {
 
@@ -42,8 +36,14 @@ class MeFragment : Fragment() {
             me_id.text = "ID: ${user?.id}"
             me_nickname.text = user?.nickname
 
-//            val map = HashMap<String, String>()
-//            map["target"] = user?.id?:"null"
+            val map = HashMap<String, String>()
+            map["target"] = user?.id?:"null"
+//            AsyncTaskUtil.AsyncNetUtils.postStream("${Values.api["public_user"]}/portrait", map, object : AsyncTaskUtil.AsyncNetUtils.Callback1{
+//                override fun onResponse(response: InputStream) {
+//                    me_portrait.setImageBitmap(BitmapFactory.decodeStream(response))
+//                }
+//
+//            })
         }
 
     }

@@ -3,6 +3,7 @@ package tty.community.adapter;
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import tty.community.pages.fragment.HomeFragment
 import tty.community.pages.fragment.MeFragment
 import tty.community.pages.fragment.SquareFragment

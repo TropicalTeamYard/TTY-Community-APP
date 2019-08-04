@@ -18,12 +18,6 @@ class Login (
     override val token: String?,
     override val email: String?
 ): User(id, nickname, token, email) {
-//    private val personalSignature: String? = null
-//    val follower = arrayOf<String>()
-//    val following = arrayOf<String>()
-//    val accountStatus: String? = null
-//    val userGroup: String? = null
-//    val exp = 0
 
     fun getValues(): ContentValues? {
         val values = ContentValues()
