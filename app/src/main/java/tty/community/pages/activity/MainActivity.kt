@@ -68,11 +68,12 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
+            val url = "${Values.api["user"]}/auto_login"
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token
             map["platform"] = "mobile"
-            AsyncTaskUtil.AsyncNetUtils.post("${Values.api["user"]}/auto_login", map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
+            AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
                     Log.d(TAG, response)
                     val result = JSONObject(response)

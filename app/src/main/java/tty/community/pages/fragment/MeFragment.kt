@@ -31,7 +31,7 @@ class MeFragment : Fragment() {
             startActivity(Intent(this.context, LoginActivity::class.java))
         }
 
-        me_detail.setOnClickListener {
+        me_more.setOnClickListener {
             startActivity(Intent(this.context, UserDetailActivity::class.java))
         }
 
@@ -45,9 +45,10 @@ class MeFragment : Fragment() {
             me_id.text = "ID: ${user?.id}"
             me_nickname.text = user?.nickname
 
+            val url = "${Values.api["public_user"]}/portrait"
             val map = HashMap<String, String>()
             map["target"] = user?.id?:"null"
-            AsyncTaskUtil.AsyncNetUtils.postBitmap("${Values.api["public_user"]}/portrait", map, object : AsyncTaskUtil.AsyncNetUtils.CallbackBitmap{
+            AsyncTaskUtil.AsyncNetUtils.postBitmap(url, map, object : AsyncTaskUtil.AsyncNetUtils.CallbackBitmap{
                 override fun onResponse(bitmap: Bitmap) {
                     me_portrait.setImageBitmap(bitmap)
                 }

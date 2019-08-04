@@ -53,7 +53,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        AsyncTaskUtil.AsyncNetUtils.post("${Values.api["user"]}/login", map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
+        val url = "${Values.api["user"]}/login"
+        AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
                 val result  = JSONObject(response)

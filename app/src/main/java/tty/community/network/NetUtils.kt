@@ -10,6 +10,8 @@ import tty.community.values.Values
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 object NetUtils {
     fun post(url: String, params: HashMap<String, String>): String {
@@ -54,8 +56,9 @@ object NetUtils {
     }
 
     fun get(url: String): String {
+        val urlE = toURLEncoded(url)
         val client = OkHttpClient()
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder().url(urlE).build()
         try {
             val response = client.newCall(request).execute()
             val string = response.body!!.string()
@@ -66,6 +69,22 @@ object NetUtils {
         }
 
         return Values.errorJson
+    }
+
+
+    private fun toURLEncoded(paramString: String): String {
+        var str = paramString
+        if (paramString.isEmpty()) {
+            return ""
+        }
+        try {
+            str = URLEncoder.encode(str, "UTF-8")
+            return str
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+
+        return ""
     }
 
     @Throws(IOException::class)

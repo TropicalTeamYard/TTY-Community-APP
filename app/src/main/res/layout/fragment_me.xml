@@ -25,8 +25,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:scaleType="fitXY"
-            app:roundHeight="12dp"
-            app:roundWidth="12dp"
+            app:roundHeight="8dp"
+            app:roundWidth="8dp"
             app:srcCompat="@drawable/ic_launcher_background"
             android:contentDescription="@null"/>
 
@@ -65,8 +65,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
@@ -74,8 +73,6 @@
                 android:id="@+id/me_more"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="24dp"
                 android:background="@drawable/ic_more" />
         </LinearLayout>
 
