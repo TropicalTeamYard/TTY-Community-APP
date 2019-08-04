@@ -7,21 +7,21 @@ object Models {
 }
 
 open class User(
-    open val id: String?,
-    open val nickname: String?,
-    open val token: String?,
-    open val email: String?)
+    open val id: String,
+    open val nickname: String,
+    open val token: String,
+    open val email: String)
 
 class Login (
-    override val id: String?,
-    override val nickname: String?,
-    override val token: String?,
-    override val email: String?
+    override val id: String,
+    override val nickname: String,
+    override val token: String,
+    override val email: String
 ): User(id, nickname, token, email) {
 
     fun getValues(): ContentValues? {
         val values = ContentValues()
-        if (id.isNullOrEmpty() || nickname.isNullOrEmpty() || token.isNullOrEmpty() || email.isNullOrEmpty()) {
+        if (id.isEmpty() || nickname.isEmpty() || token.isEmpty() || email.isEmpty()) {
             return null
         }
         values.put("id", id)

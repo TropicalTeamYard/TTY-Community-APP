@@ -1,8 +1,11 @@
 package tty.community.network
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.internal.closeQuietly
 import tty.community.values.Values
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -19,7 +22,9 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            return response.body!!.string()
+            val string = response.body!!.string()
+            response.closeQuietly()
+            return string
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -27,7 +32,7 @@ object NetUtils {
         return Values.errorJson
     }
 
-    fun postStream(url: String, params: HashMap<String, String>): InputStream? {
+    fun postBitmap(url: String, params: HashMap<String, String>): Bitmap? {
         val client = OkHttpClient()
         val builder = FormBody.Builder()
         for (item in params) {
@@ -37,7 +42,10 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            return response.body!!.byteStream()
+            val `is` = response.body!!.byteStream()
+            val bitmap = BitmapFactory.decodeStream(`is`)
+            response.closeQuietly()
+            return bitmap
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -50,7 +58,9 @@ object NetUtils {
         val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
-            return response.body!!.string()
+            val string = response.body!!.string()
+            response.closeQuietly()
+            return string
         } catch (e: Exception) {
             e.printStackTrace()
         }

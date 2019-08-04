@@ -1,7 +1,7 @@
 package tty.community.network
 
+import android.graphics.Bitmap
 import android.os.Handler
-import java.io.InputStream
 
 class AsyncTaskUtil {
 
@@ -22,10 +22,10 @@ class AsyncTaskUtil {
             }).start()
         }
 
-        fun postStream(url: String, content: HashMap<String, String>, callback: Callback1) {
+        fun postBitmap(url: String, content: HashMap<String, String>, callback: CallbackBitmap) {
             val handler = Handler()
             Thread(Runnable {
-                val response = NetUtils.postStream(url, content)
+                val response = NetUtils.postBitmap(url, content)
                 handler.post { callback.onResponse(response!!) }
             }).start()
         }
@@ -34,8 +34,8 @@ class AsyncTaskUtil {
             fun onResponse(response: String)
         }
 
-        interface Callback1 {
-            fun onResponse(response: InputStream)
+        interface CallbackBitmap {
+            fun onResponse(bitmap: Bitmap)
         }
     }
 }

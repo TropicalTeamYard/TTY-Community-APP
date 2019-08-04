@@ -1,7 +1,6 @@
 package tty.community.pages.activity
 
 import android.content.ContentValues
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -17,7 +16,6 @@ import tty.community.data.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Values
-import java.io.InputStream
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
@@ -69,11 +67,10 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         val user = MainDBHelper(this).findUser()
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
-//            startActivity(Intent(this, LoginActivity::class.java))
         } else {
             val map = HashMap<String, String>()
-            map["id"] = user.id!!
-            map["token"] = user.token!!
+            map["id"] = user.id
+            map["token"] = user.token
             map["platform"] = "mobile"
             AsyncTaskUtil.AsyncNetUtils.post("${Values.api["user"]}/auto_login", map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
@@ -83,15 +80,13 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
                     when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.OK -> {
                             val data = result.getJSONObject("data")
-//                            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                             val values = ContentValues()
                             values.put("email", data.getString("email"))
-                            MainDBHelper(this@MainActivity).updateUser(user.id!!, values)
+                            MainDBHelper(this@MainActivity).updateUser(user.id, values)
                         }
 
                         else -> {
                             Toast.makeText(this@MainActivity, "error: ${shortcut.name}, $msg", Toast.LENGTH_SHORT).show()
-//                            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                         }
                     }
                 }
