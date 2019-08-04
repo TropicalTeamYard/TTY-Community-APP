@@ -2,6 +2,7 @@ package tty.community.network
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -25,9 +26,11 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            val string = response.body!!.string()
-            response.closeQuietly()
-            return string
+            if (response.isSuccessful) {
+                val string = response.body!!.string()
+                response.closeQuietly()
+                return string
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -35,7 +38,7 @@ object NetUtils {
         return Values.errorJson
     }
 
-    fun postBitmap(url: String, params: HashMap<String, String>): Bitmap? {
+    fun postBitmap(url: String, params: HashMap<String, String>): Bitmap {
         val client = OkHttpClient()
         val builder = FormBody.Builder()
         for (item in params) {
@@ -45,15 +48,19 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            val `is` = response.body!!.byteStream()
-            val bitmap = BitmapFactory.decodeStream(`is`)
-            response.closeQuietly()
-            return bitmap
+            if(response.isSuccessful) {
+                val `is` = response.body!!.byteStream()
+                val bitmap = BitmapFactory.decodeStream(`is`)
+                response.closeQuietly()
+                return bitmap
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        return null
+        val bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(Color.GRAY)
+        return bitmap
     }
 
     fun get(url: String): String {
@@ -62,9 +69,11 @@ object NetUtils {
         val request = Request.Builder().url(urlE).build()
         try {
             val response = client.newCall(request).execute()
-            val string = response.body!!.string()
-            response.closeQuietly()
-            return string
+            if(response.isSuccessful) {
+                val string = response.body!!.string()
+                response.closeQuietly()
+                return string
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

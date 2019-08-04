@@ -26,7 +26,7 @@ class AsyncTaskUtil {
             val handler = Handler()
             Thread(Runnable {
                 val response = NetUtils.postBitmap(url, content)
-                handler.post { callback.onResponse(response!!) }
+                handler.post { callback.onResponse(response) }
             }).start()
         }
 
