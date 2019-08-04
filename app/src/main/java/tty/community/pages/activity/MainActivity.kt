@@ -17,8 +17,7 @@ import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Values
 
-class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
-    BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.nav_home -> {
@@ -83,6 +82,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
                             val data = result.getJSONObject("data")
                             val values = ContentValues()
                             values.put("email", data.getString("email"))
+                            values.put("nickname", data.getString("nickname"))
                             MainDBHelper(this@MainActivity).updateUser(user.id, values)
                         }
 

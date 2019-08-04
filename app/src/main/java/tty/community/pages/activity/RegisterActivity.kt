@@ -1,22 +1,20 @@
 package tty.community.pages.activity
 
-import android.content.ContentValues
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONObject
 import tty.community.R
-import tty.community.data.MainDBHelper
 import tty.community.model.Register
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Values
-import java.util.regex.Matcher
+import tty.community.widget.AlertDialogUtil
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
@@ -55,11 +53,26 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = Values.api["user"] + "/check_name"
+            val url = Values.api["user"] + "/register"
             val map = Register(nickname, email, password).getMap()
             AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
+                    Log.d(MainActivity.TAG, response)
+                    val result = JSONObject(response)
+                    val msg = result.optString("msg")
+                    when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                        Shortcut.UR -> {
+                            Toast.makeText(this@RegisterActivity, "昵称 `$nickname` 已经被注册了", Toast.LENGTH_SHORT).show()
+                        }
 
+                        Shortcut.OK -> {
+                            AlertDialogUtil.registerResultDialog(this@RegisterActivity, nickname)
+                        }
+
+                        else -> {
+                            Toast.makeText(this@RegisterActivity, "uknown error, $msg", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             })
 
