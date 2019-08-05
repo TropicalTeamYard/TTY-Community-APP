@@ -51,7 +51,7 @@ class MeFragment : Fragment() {
             map["target"] = user?.id?:"null"
             AsyncTaskUtil.AsyncNetUtils.postBitmap(url, map, object : AsyncTaskUtil.AsyncNetUtils.CallbackBitmap{
                 override fun onResponse(bitmap: Bitmap) {
-                    me_portrait.setImageBitmap(bitmap)
+                    me_portrait?.setImageBitmap(bitmap)
                 }
             })
         }
