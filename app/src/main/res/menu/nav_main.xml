@@ -10,10 +10,10 @@
         android:icon="@drawable/chat"
         android:id="@+id/nav_square"
         android:title="SQUARE"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:icon="@drawable/user"
         android:id="@+id/nav_me"
         android:title="ME"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>

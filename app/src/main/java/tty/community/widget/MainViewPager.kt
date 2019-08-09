@@ -16,8 +16,7 @@ class MainViewPager: ViewPager {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-//        return this.isScroll && super.onTouchEvent(event)
-        return  super.onTouchEvent(event)
+        return this.isScroll && super.onTouchEvent(event)
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {

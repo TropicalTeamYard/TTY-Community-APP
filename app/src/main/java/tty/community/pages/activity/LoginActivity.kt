@@ -12,6 +12,7 @@ import tty.community.data.MainDBHelper
 import tty.community.model.Login
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
+import tty.community.values.Utils.getMD5
 import tty.community.values.Values
 
 class LoginActivity : AppCompatActivity() {
@@ -31,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
             }
             map["login_type"] = loginType
             map[loginType] = account
-            map["password"] = password
+            map["password"] = getMD5(password)
             map["platform"] = "mobile"
             login()
         }

@@ -2,6 +2,8 @@ package tty.community.network
 
 import android.graphics.Bitmap
 import android.os.Handler
+import okhttp3.Callback
+import java.io.File
 
 class AsyncTaskUtil {
 
@@ -26,6 +28,14 @@ class AsyncTaskUtil {
             val handler = Handler()
             Thread(Runnable {
                 val response = NetUtils.postBitmap(url, content)
+                handler.post { callback.onResponse(response) }
+            }).start()
+        }
+
+        fun postMultipleForm(url: String, map: Map<String, String>, files: Array<File>, callback: Callback) {
+            val handler = Handler()
+            Thread(Runnable {
+                val response = NetUtils.MultipleForm.post(url, map, files)
                 handler.post { callback.onResponse(response) }
             }).start()
         }

@@ -3,16 +3,15 @@ package tty.community.network
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import android.os.Handler
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.internal.closeQuietly
 import tty.community.values.Values
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.io.UnsupportedEncodingException
+import java.io.*
 import java.net.URLEncoder
+import java.util.concurrent.TimeUnit
 
 object NetUtils {
     fun post(url: String, params: HashMap<String, String>): String {
@@ -95,6 +94,40 @@ object NetUtils {
         }
 
         return ""
+    }
+
+    object MultipleForm {
+        fun post(url: String, map: Map<String, String>, files: Array<File>): String {
+            try {
+
+                val client = OkHttpClient.Builder().writeTimeout(30, TimeUnit.SECONDS).build()
+                val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+                val id = "${map["id"]}"
+
+                for (i in 0 until files.size) {
+                    val file = files[i]
+                    val body = file.asRequestBody("image/*".toMediaTypeOrNull())
+                    val fileName = "${id}_$i"
+                    requestBody.addFormDataPart("file_$i", fileName, body)
+                }
+
+                for (item in map) {
+                    requestBody.addFormDataPart(item.key, item.value)
+                }
+
+                val request = Request.Builder().url(url).post(requestBody.build()).build()
+                val response = client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).execute()
+                if (response.isSuccessful) {
+                    val string = response.body!!.string()
+                    response.closeQuietly()
+                    return string
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            return Values.errorJson
+        }
     }
 
     @Throws(IOException::class)

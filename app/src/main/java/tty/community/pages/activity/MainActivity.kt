@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         val adapter = MainFragmentAdapter(supportFragmentManager)
         main_viewPager.adapter = adapter
         main_viewPager.addOnPageChangeListener(this)
+        main_viewPager.setScroll(true)
         main_nav.setOnNavigationItemSelectedListener(this)
     }
 

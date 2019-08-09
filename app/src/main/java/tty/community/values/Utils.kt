@@ -53,7 +53,7 @@ object Utils {
 
     }
 
-    fun getMd5(input: String): String? {
+    fun getMD5(input: String): String {
         return try {
             //拿到一个MD5转换器（如果想要SHA1加密参数换成"SHA1"）
             val messageDigest = MessageDigest.getInstance("MD5")
@@ -67,7 +67,7 @@ object Utils {
             byteArrayToHex(resultByteArray)
 
         } catch (e: NoSuchAlgorithmException) {
-            null
+            "null"
         }
 
     }
