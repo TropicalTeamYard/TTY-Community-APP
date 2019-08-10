@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".pages.fragment.CreateBlogShortFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.fragment.CreateBlogShortFragment">
 
-    <TextView
+    <EditText
+        android:id="@+id/create_blog_short_content"
+        android:background="@drawable/border"
+        android:layout_margin="8dp"
+        android:inputType="textMultiLine"
+        android:hint="在这里输入..."
+        android:gravity="top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Short Mode"/>
+        android:layout_above="@id/create_blog_short_images"/>
 
-</FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/create_blog_short_images"
+        android:layout_width="match_parent"
+        android:layout_height="96dp" />
+
+</RelativeLayout>

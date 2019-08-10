@@ -1,5 +1,6 @@
 package tty.community.values
 
+import android.graphics.Bitmap
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
