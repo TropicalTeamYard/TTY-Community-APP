@@ -17,9 +17,18 @@
         android:layout_above="@id/create_blog_short_images"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_alignParentBottom="true"
         android:id="@+id/create_blog_short_images"
         android:layout_width="match_parent"
+        android:layout_above="@id/create_blog_short_submit"
         android:layout_height="96dp" />
+
+    <Button
+        android:id="@+id/create_blog_short_submit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/border"
+        android:layout_margin="8dp"
+        android:text="Submit"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

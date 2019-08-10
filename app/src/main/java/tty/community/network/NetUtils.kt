@@ -7,6 +7,7 @@ import android.os.Handler
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.closeQuietly
 import tty.community.values.Values
 import java.io.*
@@ -63,9 +64,8 @@ object NetUtils {
     }
 
     fun get(url: String): String {
-        val urlE = toURLEncoded(url)
         val client = OkHttpClient()
-        val request = Request.Builder().url(urlE).build()
+        val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
             if(response.isSuccessful) {
@@ -97,22 +97,21 @@ object NetUtils {
     }
 
     object MultipleForm {
-        fun post(url: String, map: Map<String, String>, files: Array<File>): String {
+        fun post(url: String, map: Map<String, String>, files: ArrayList<File>): String {
             try {
 
                 val client = OkHttpClient.Builder().writeTimeout(30, TimeUnit.SECONDS).build()
                 val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-                val id = "${map["id"]}"
 
                 for (i in 0 until files.size) {
                     val file = files[i]
                     val body = file.asRequestBody("image/*".toMediaTypeOrNull())
-                    val fileName = "${id}_$i"
-                    requestBody.addFormDataPart("file_$i", fileName, body)
+                    requestBody.addFormDataPart("file_$i", file.name, body)
                 }
 
                 for (item in map) {
-                    requestBody.addFormDataPart(item.key, item.value)
+                    val body = item.value.toRequestBody("multipart/form-data; charset=utf-8".toMediaTypeOrNull())
+                    requestBody.setType(MultipartBody.FORM).addFormDataPart(item.key, null, body)
                 }
 
                 val request = Request.Builder().url(url).post(requestBody.build()).build()

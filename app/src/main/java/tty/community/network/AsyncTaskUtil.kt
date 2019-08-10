@@ -32,7 +32,7 @@ class AsyncTaskUtil {
             }).start()
         }
 
-        fun postMultipleForm(url: String, map: Map<String, String>, files: Array<File>, callback: Callback) {
+        fun postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, callback: Callback) {
             val handler = Handler()
             Thread(Runnable {
                 val response = NetUtils.MultipleForm.post(url, map, files)

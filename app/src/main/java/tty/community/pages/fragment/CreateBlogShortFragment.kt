@@ -15,8 +15,10 @@ import kotlinx.android.synthetic.main.fragment_create_blog_short.*
 import tty.community.R
 import tty.community.adapter.ImageListAdapter
 import tty.community.data.MainDBHelper
+import tty.community.file.IO
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Values
+import java.io.File
 
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener {
     override fun onClick(p0: View?) {
@@ -47,6 +49,10 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         super.onViewCreated(view, savedInstanceState)
         setAdapter()
 
+        create_blog_short_submit.setOnClickListener {
+            submit()
+        }
+
     }
 
     private fun getToken() {
@@ -68,7 +74,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         imagesAdapter.setOnItemClickListener(this)
     }
 
-    fun submit() {
+    private fun submit() {
         getToken()
 
         val map = HashMap<String, String>()
@@ -76,13 +82,29 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["token"] = token
         map["title"] = TITLE
         map["type"] = TYPE
-        map["content"] = create_blog_short_content.text.toString()
-        map["introduction"] = "${map["content"]?.substring(0, 15)}"
+        var content = create_blog_short_content.text.toString() + "\n\n"
+
         map["tag"] = "#default#"
-        map["file_count"] = "${imagesAdapter.itemCount - 1}"
+        map["file_count"] = "${imagesAdapter.images.size}"
+        val files = ArrayList<File>()
 
+        for (bitmap in imagesAdapter.images) {
+            val file = IO.saveBitmapFile(this.context!!, bitmap)
+            files.add(file)
+            content = content.plus("![${file.name}](./picture?id=####blog_id####&key=${file.name})\n\n")
 
-        AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Values.api["blog"]}/create", mapOf(), arrayOf(), object : AsyncTaskUtil.AsyncNetUtils.Callback {
+        }
+
+        map["introduction"] =  try {
+            content.substring(0, 10) + "..."
+        } catch (e: StringIndexOutOfBoundsException) {
+            content
+        }
+
+        content = content.replace("\n", "<br>")
+        map["content"] = content
+
+        AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Values.api["blog"]}/create", map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
             }
@@ -93,7 +115,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     companion object {
         const val TAG = "CreateBlogShortFragment"
         const val TYPE = "SHORT"
-        const val TITLE = "DEFAULT"
+        const val TITLE = "####nickname#### 的日志"
     }
 
 }

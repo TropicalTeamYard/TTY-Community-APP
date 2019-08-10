@@ -12,7 +12,7 @@ import tty.community.R
 
 class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
-    private var images = ArrayList<Bitmap>()
+    var images = ArrayList<Bitmap>()
     private var mClickListener: OnItemClickListener ?= null
     private lateinit var context: Context
 
@@ -23,7 +23,7 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return images.count() + 1
+        return images.size + 1
     }
 
 
@@ -41,14 +41,14 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
     }
 
     fun delete(pos: Int) {
-        if (pos in 0 until images.count()) {
+        if (pos in 0 until images.size) {
             images.removeAt(pos)
             notifyDataSetChanged()
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (position in 0 until images.count()) {
+        if (position in 0 until images.size) {
             holder.picture.setImageBitmap(images[position])
         } else {
             holder.picture.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_grey, null))
