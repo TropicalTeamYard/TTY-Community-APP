@@ -3,13 +3,12 @@ package tty.community.network
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Handler
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.closeQuietly
-import tty.community.values.Values
+import tty.community.values.Const
 import java.io.*
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
@@ -35,7 +34,7 @@ object NetUtils {
             e.printStackTrace()
         }
 
-        return Values.errorJson
+        return Const.errorJson
     }
 
     fun postBitmap(url: String, params: HashMap<String, String>): Bitmap {
@@ -77,7 +76,7 @@ object NetUtils {
             e.printStackTrace()
         }
 
-        return Values.errorJson
+        return Const.errorJson
     }
 
 
@@ -103,10 +102,9 @@ object NetUtils {
                 val client = OkHttpClient.Builder().writeTimeout(30, TimeUnit.SECONDS).build()
                 val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
 
-                for (i in 0 until files.size) {
-                    val file = files[i]
+                for (file in files) {
                     val body = file.asRequestBody("image/*".toMediaTypeOrNull())
-                    requestBody.addFormDataPart("file_$i", file.name, body)
+                    requestBody.addFormDataPart("files", file.name, body)
                 }
 
                 for (item in map) {
@@ -125,7 +123,7 @@ object NetUtils {
                 e.printStackTrace()
             }
 
-            return Values.errorJson
+            return Const.errorJson
         }
     }
 

@@ -1,4 +1,4 @@
-package tty.community.data
+package tty.community.database
 
 import android.content.ContentValues
 import android.content.Context

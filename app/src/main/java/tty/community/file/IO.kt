@@ -2,6 +2,7 @@ package tty.community.file
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
 
 import java.io.BufferedOutputStream
 import java.io.File
@@ -17,7 +18,7 @@ object IO {
         val pic = File(file, randomString(Date()))
         pic.createNewFile()
         val bos = BufferedOutputStream(FileOutputStream(pic))
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, bos)
         bos.flush()
         bos.close()
 

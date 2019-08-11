@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.experimental.and
 
 
-object Utils {
+object Util {
 
     val time: String
         get() {

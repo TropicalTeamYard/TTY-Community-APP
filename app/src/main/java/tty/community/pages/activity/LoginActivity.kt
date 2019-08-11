@@ -8,12 +8,12 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import tty.community.R
-import tty.community.data.MainDBHelper
+import tty.community.database.MainDBHelper
 import tty.community.model.Login
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Utils.getMD5
-import tty.community.values.Values
+import tty.community.values.Util.getMD5
+import tty.community.values.Const
 
 class LoginActivity : AppCompatActivity() {
 
@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val url = "${Values.api["user"]}/login"
+        val url = "${Const.api["user"]}/login"
         AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
                 Log.d(TAG, response)

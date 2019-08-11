@@ -49,7 +49,18 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position in 0 until images.size) {
-            holder.picture.setImageBitmap(images[position])
+            val bitmap = images[position]
+            val width = bitmap.width
+            val height = bitmap.height
+            val bm = if (width > height) {
+               Bitmap.createBitmap(bitmap, (width - height) / 2, 0, height, height)
+            } else {
+                Bitmap.createBitmap(bitmap, 0, (height - width) / 2, width, width)
+            }
+
+
+
+            holder.picture.setImageBitmap(bm)
         } else {
             holder.picture.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_grey, null))
         }

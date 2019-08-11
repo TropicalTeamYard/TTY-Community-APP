@@ -12,10 +12,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
-import tty.community.data.MainDBHelper
+import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Values
+import tty.community.values.Const
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
-            val url = "${Values.api["user"]}/auto_login"
+            val url = "${Const.api["user"]}/auto_login"
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token

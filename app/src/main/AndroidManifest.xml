@@ -3,6 +3,9 @@
           package="tty.community">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pages.activity.CreateBlogActivity" android:theme="@style/AppTheme.NoActionBar" android:launchMode="singleInstance"/>
+        <activity android:name=".pages.activity.CreateBlogActivity" android:theme="@style/AppTheme.NoActionBar" android:launchMode="standard"/>
         <activity
             android:name=".pages.activity.UserDetailActivity"
             android:label="详细信息"
