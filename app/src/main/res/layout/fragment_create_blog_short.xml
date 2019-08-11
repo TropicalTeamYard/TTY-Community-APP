@@ -6,8 +6,22 @@
     tools:context=".pages.fragment.CreateBlogShortFragment">
 
     <EditText
+        android:id="@+id/create_blog_short_tag"
+        android:layout_width="match_parent"
+        android:hint="TAG, separated by `|`"
+        android:background="@drawable/border"
+        android:padding="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginTop="8dp"
+        android:layout_height="36dp"/>
+
+    <EditText
         android:id="@+id/create_blog_short_content"
         android:background="@drawable/border"
+        android:layout_below="@id/create_blog_short_tag"
         android:layout_margin="8dp"
         android:inputType="textMultiLine"
         android:hint="在这里输入..."
