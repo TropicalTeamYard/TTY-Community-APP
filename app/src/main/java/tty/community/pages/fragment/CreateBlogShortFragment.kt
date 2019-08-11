@@ -131,18 +131,11 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["token"] = token
         map["title"] = TITLE
         map["type"] = TYPE
-        var content = create_blog_short_content.text.toString() + "\n\n"
+        var content = create_blog_short_content.text.toString() + "\n"
 
         map["tag"] = "#default#"
         map["file_count"] = "${imagesAdapter.images.size}"
         val files = ArrayList<File>()
-
-        for (bitmap in imagesAdapter.images) {
-            val file = IO.saveBitmapFile(this.context!!, bitmap)
-            files.add(file)
-            content = content.plus("![${file.name}](./picture?id=####blog_id####&key=${file.name})\n")
-
-        }
 
         map["introduction"] =  try {
             (content.substring(0, 10) + "...").replace("\n", " ")
@@ -150,7 +143,14 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
             content.replace("\n", " ")
         }
 
-        content = content.replace("\n", "\n\n")
+        content = "<pre>\n$content\n</pre>\n\n"
+
+        for (bitmap in imagesAdapter.images) {
+            val file = IO.saveBitmapFile(this.context!!, bitmap)
+            files.add(file)
+            content = content.plus("![${file.name}](./picture?id=####blog_id####&key=${file.name})<br><br>")
+        }
+
         map["content"] = content
 
         AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Const.api["blog"]}/create", map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
