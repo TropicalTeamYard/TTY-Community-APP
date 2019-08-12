@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.BitmapFactory
 import androidx.exifinterface.media.ExifInterface
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import tty.community.R
 import java.io.IOException
 
 
@@ -58,5 +61,7 @@ object BitmapUtil {
         }
     }
 
+    fun optionsNoCache() = RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+    fun optionsMemoryCache() = RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE)
 
 }

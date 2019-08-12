@@ -15,7 +15,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import kotlinx.android.synthetic.main.fragment_square.*
 import org.json.JSONObject
 import tty.community.R
-import tty.community.adapter.SimpleBlogListAdapter
+import tty.community.adapter.BlogListAdapter
 import tty.community.model.Shortcut
 import tty.community.model.blog.Outline
 import tty.community.network.AsyncTaskUtil
@@ -24,14 +24,14 @@ import tty.community.values.Const
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SquareFragment : Fragment(), SimpleBlogListAdapter.OnItemClickListener, OnRefreshListener,
+class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener,
     OnLoadMoreListener {
     override fun onLoadMore(refreshLayout: RefreshLayout) {
-        loadMore()
+        loadMore(blogTag)
     }
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        refresh()
+        refresh(blogTag)
     }
 
     override fun onItemClick(v: View?, position: Int) {
@@ -43,7 +43,7 @@ class SquareFragment : Fragment(), SimpleBlogListAdapter.OnItemClickListener, On
     }
 
     private var blogTag = ""
-    private lateinit var blogListAdapter: SimpleBlogListAdapter
+    private lateinit var blogListAdapter: BlogListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_square, container, false)
@@ -155,7 +155,7 @@ class SquareFragment : Fragment(), SimpleBlogListAdapter.OnItemClickListener, On
                 val msg = result.optString("msg", "unknown error")
                 when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
-                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
                         val list = result.optJSONArray("data")
                         if (list != null) {
                             val blogs = ArrayList<Outline>()
@@ -188,7 +188,7 @@ class SquareFragment : Fragment(), SimpleBlogListAdapter.OnItemClickListener, On
     }
 
     private fun setAdapter() {
-        blogListAdapter = SimpleBlogListAdapter()
+        blogListAdapter = BlogListAdapter()
         val layoutManager= LinearLayoutManager(this.context)
         layoutManager.orientation= LinearLayoutManager.VERTICAL
         square_blog_list.adapter = blogListAdapter
