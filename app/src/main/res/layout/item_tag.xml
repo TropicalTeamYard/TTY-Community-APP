@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <TextView
-        android:id="@+id/tag"
+        android:id="@+id/blog_tag"
         android:background="@drawable/border"
         android:padding="4dp"
         android:text="ALL"

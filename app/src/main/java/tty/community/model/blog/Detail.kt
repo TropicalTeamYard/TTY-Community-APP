@@ -1,5 +1,7 @@
 package tty.community.model.blog
 
-class Detail() :Outline() {
+import java.util.*
+
+class Detail() :Outline("", "", "", "", "", "", Date(), "") {
 
 }
