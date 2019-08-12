@@ -20,6 +20,15 @@ class SquareFragment : Fragment() {
         fab_add_blog.setOnClickListener {
             startActivity(Intent(this.context, CreateBlogActivity::class.java))
         }
+        square_refreshLayout.setOnRefreshListener {
+            square_refreshLayout.finishRefresh(2000);//传入false表示刷新失败
+        }
+
+        square_refreshLayout.setOnLoadMoreListener {
+            square_refreshLayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+        }
+
+
     }
 
 }

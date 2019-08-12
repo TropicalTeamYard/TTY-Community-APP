@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import tty.community.model.User
+import tty.community.model.user.User
 
 class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
@@ -32,7 +32,12 @@ class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
         var user: User? = null
 
         if (cursor.moveToFirst() && cursor.count > 0) {
-            user = User(cursor.getString(cursor.getColumnIndex("id")), cursor.getString(cursor.getColumnIndex("nickname")), cursor.getString(cursor.getColumnIndex("token")), cursor.getString(cursor.getColumnIndex("email")))
+            user = User(
+                cursor.getString(cursor.getColumnIndex("id")),
+                cursor.getString(cursor.getColumnIndex("nickname")),
+                cursor.getString(cursor.getColumnIndex("token")),
+                cursor.getString(cursor.getColumnIndex("email"))
+            )
         }
 
         cursor.close()

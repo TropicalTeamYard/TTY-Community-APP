@@ -1,4 +1,4 @@
-package tty.community.model
+package tty.community.model.user
 
 
 class Register(private val nickname: String, private val email: String, private val password: String) {

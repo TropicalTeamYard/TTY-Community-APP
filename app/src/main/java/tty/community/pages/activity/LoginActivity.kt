@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import tty.community.R
 import tty.community.database.MainDBHelper
-import tty.community.model.Login
+import tty.community.model.user.Login
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5

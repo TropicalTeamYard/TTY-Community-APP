@@ -41,4 +41,6 @@ dependencies {
     implementation 'pub.devrel:easypermissions:1.0.1'
     implementation "androidx.exifinterface:exifinterface:1.1.0-beta01"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02"
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-16'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-16'
 }

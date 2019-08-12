@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONObject
 import tty.community.R
-import tty.community.model.Register
+import tty.community.model.user.Register
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5

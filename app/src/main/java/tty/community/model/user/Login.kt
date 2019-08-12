@@ -1,4 +1,4 @@
-package tty.community.model
+package tty.community.model.user
 
 import android.content.ContentValues
 

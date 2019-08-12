@@ -133,7 +133,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["type"] = TYPE
         var content = create_blog_short_content.text.toString() + "\n"
         val tag = create_blog_short_tag.text.trim().toString()
-        map["tag"] = if (tag.isNotEmpty()) {tag} else {"all"}
+        map["tag"] = if (tag.isNotEmpty()) {tag} else {"ALL"}
         map["file_count"] = "${imagesAdapter.images.size}"
         val files = ArrayList<File>()
 

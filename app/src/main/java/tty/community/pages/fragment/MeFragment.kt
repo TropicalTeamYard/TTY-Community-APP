@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_me.*
 import tty.community.R
 import tty.community.database.MainDBHelper
-import tty.community.model.User
+import tty.community.model.user.User
 import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.LoginActivity
 import tty.community.pages.activity.UserDetailActivity
