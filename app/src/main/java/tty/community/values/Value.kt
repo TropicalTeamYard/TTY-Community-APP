@@ -2,7 +2,7 @@ package tty.community.values
 
 import org.json.JSONObject
 
-object Const{
+object Value{
 //    private const val URL = "http://10.0.2.2:8080/community/api/"
 //    private const val URL = "http://192.168.123.182:8080/community/api/"
 //    private const val URL = "http://192.168.123.2:8080/community/api/"

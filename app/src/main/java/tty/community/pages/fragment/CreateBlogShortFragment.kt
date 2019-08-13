@@ -24,7 +24,7 @@ import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Const
+import tty.community.values.Value
 import java.io.File
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -153,7 +153,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         map["content"] = content
 
-        AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Const.api["blog"]}/create", map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
+        AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Value.api["blog"]}/create", map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
                 val result = JSONObject(response)

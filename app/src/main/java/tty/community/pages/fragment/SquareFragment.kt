@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
@@ -21,7 +20,7 @@ import tty.community.model.Shortcut
 import tty.community.model.blog.Outline
 import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.CreateBlogActivity
-import tty.community.values.Const
+import tty.community.values.Value
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -86,7 +85,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime"))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Const.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }
@@ -128,7 +127,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Const.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }
@@ -170,7 +169,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime"))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Const.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }

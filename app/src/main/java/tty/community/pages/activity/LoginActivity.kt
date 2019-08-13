@@ -13,7 +13,7 @@ import tty.community.model.user.Login
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5
-import tty.community.values.Const
+import tty.community.values.Value
 
 class LoginActivity : AppCompatActivity() {
 
@@ -54,13 +54,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val url = "${Const.api["user"]}/login"
+        val url = "${Value.api["user"]}/login"
         AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
                 val result  = JSONObject(response)
                 val msg = result.optString("msg", "unknown error")
-                when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
                         val data = result.getJSONObject("data")
                         val id = data.optString("id")
@@ -73,12 +73,12 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
-                            Toast.makeText(this@LoginActivity, "error code: IR, invalid response", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LoginActivity, "invalid response", Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     else -> {
-                        Toast.makeText(this@LoginActivity, "error code: ${shortcut.name}, $msg", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

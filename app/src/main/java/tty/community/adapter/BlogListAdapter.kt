@@ -8,14 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.fragment_me.*
 import kotlinx.android.synthetic.main.item_blog_outline.view.*
 import tty.community.R
 import tty.community.image.BitmapUtil
 import tty.community.model.blog.Outline
-import tty.community.values.Const
 import tty.community.values.Util
 
 class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
@@ -63,9 +59,6 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.nickname.text = blogs[position].nickname
         holder.introduction.text = blogs[position].introduction
         holder.tag.text = blogs[position].tag
-
-//        val url = "${Const.api["public_user"]}/portrait?target=$author"
-
         val url = blogs[position].portrait
         Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
     }

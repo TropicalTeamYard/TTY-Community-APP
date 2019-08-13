@@ -14,7 +14,7 @@ import tty.community.model.user.Register
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5
-import tty.community.values.Const
+import tty.community.values.Value
 import tty.community.widget.AlertDialogUtil
 import java.util.regex.Pattern
 
@@ -54,7 +54,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = Const.api["user"] + "/register"
+            val url = Value.api["user"] + "/register"
             val map = Register(nickname, email, getMD5(password)).getMap()
             AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
@@ -71,7 +71,7 @@ class RegisterActivity : AppCompatActivity() {
                         }
 
                         else -> {
-                            Toast.makeText(this@RegisterActivity, "uknown error, $msg", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -88,7 +88,7 @@ class RegisterActivity : AppCompatActivity() {
                     register_nickname_info.setTextColor(Color.RED)
                     return
                 }
-                val url = "${Const.api["user"]}/check_name"
+                val url = "${Value.api["user"]}/check_name"
                 val map = hashMapOf(Pair("nickname", nickname))
                 AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                     override fun onResponse(response: String) {

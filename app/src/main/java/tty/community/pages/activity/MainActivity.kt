@@ -15,7 +15,7 @@ import tty.community.adapter.MainFragmentAdapter
 import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Const
+import tty.community.values.Value
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
-            val url = "${Const.api["user"]}/auto_login"
+            val url = "${Value.api["user"]}/auto_login"
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
                         }
 
                         else -> {
-                            Toast.makeText(this@MainActivity, "error: ${shortcut.name}, $msg", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

@@ -4,11 +4,9 @@ package tty.community.pages.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -20,20 +18,16 @@ import tty.community.image.BitmapUtil
 import tty.community.model.user.User
 import tty.community.pages.activity.LoginActivity
 import tty.community.pages.activity.UserDetailActivity
-import tty.community.values.Const
+import tty.community.values.Value
 
 class MeFragment : Fragment(), OnRefreshListener {
-    @SuppressLint("SetTextI18n")
+
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        if(user != null) {
-            me_id.text = "ID: ${user!!.id}"
-            me_nickname.text = user!!.nickname
-            val url = "${Const.api["public_user"]}/portrait?target=${user!!.id}"
-            Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).into(me_portrait)
-            me_fragment_refresh.finishRefresh(500)
-        } else {
+        user?.let { refresh(it) }
+
+        if (user == null) {
             Toast.makeText(this@MeFragment.context, "请先登录", Toast.LENGTH_SHORT).show()
-            me_fragment_refresh.finishRefresh(false)
+            me_fragment_refresh.finishRefresh(100)
         }
     }
 
@@ -58,12 +52,21 @@ class MeFragment : Fragment(), OnRefreshListener {
     }
 
     @SuppressLint("SetTextI18n")
+    fun refresh(user: User) {
+        user.let {
+            me_id.text = "ID: ${it.id}"
+            me_nickname.text = it.nickname
+            val url = "${Value.api["public_user"]}/portrait?target=${it.id}"
+            Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).into(me_portrait)
+            me_fragment_refresh.finishRefresh(500)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         user = MainDBHelper(this.context!!).findUser()
-
         onRefresh(me_fragment_refresh)
-
     }
 
     companion object {
