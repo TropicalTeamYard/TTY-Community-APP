@@ -11,7 +11,7 @@ import kotlin.collections.HashMap
 open class Outline(
     var blogId: String,
     var title: String,
-    var id: String,
+    var author: String,
     var nickname: String,
     var portrait: String, // url
     var introduction: String,

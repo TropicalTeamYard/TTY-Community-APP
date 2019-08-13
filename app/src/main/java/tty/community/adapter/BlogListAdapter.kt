@@ -56,7 +56,7 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val author = blogs[position].id
+        val author = blogs[position].author
         holder.blogId.text = blogs[position].blogId
         holder.time.text = Util.getTime(blogs[position].lastActiveTime)
         holder.title.text = blogs[position].title
@@ -64,8 +64,9 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.introduction.text = blogs[position].introduction
         holder.tag.text = blogs[position].tag
 
-        val url = "${Const.api["public_user"]}/portrait?target=$author"
+//        val url = "${Const.api["public_user"]}/portrait?target=$author"
 
+        val url = blogs[position].portrait
         Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
     }
 

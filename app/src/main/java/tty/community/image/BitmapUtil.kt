@@ -26,7 +26,7 @@ object BitmapUtil {
         } else {
             var bm = load(path)
             var digree = 0
-            var exif: ExifInterface? = null
+            var exif: ExifInterface?
             try {
                 exif = ExifInterface(path)
             } catch (e: IOException) {

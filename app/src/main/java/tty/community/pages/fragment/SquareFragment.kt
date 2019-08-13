@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
@@ -125,7 +126,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val title = item.optString("title", "null")
                                 val introduction = item.optString("introduction", "null")
                                 val allTag = item.optString("tag", "null")
-                                val lastActiveTime = Date(item.optLong("lastActiveTime"))
+                                val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
                                 val portrait = Const.api["public_user"] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)

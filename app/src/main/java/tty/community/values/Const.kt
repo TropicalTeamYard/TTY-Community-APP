@@ -5,7 +5,8 @@ import org.json.JSONObject
 object Const{
 //    private const val URL = "http://10.0.2.2:8080/community/api/"
 //    private const val URL = "http://192.168.123.182:8080/community/api/"
-    private const val URL = "http://192.168.31.97:8080/community/api/"
+//    private const val URL = "http://192.168.123.2:8080/community/api/"
+    private const val URL = "http://47.102.200.155:8080/community/api/"
 
     val api = HashMap<String, String>()
     const val errorJson = "{\"shortcut\":\"IE\", \"\":\"Network Error\"}"
