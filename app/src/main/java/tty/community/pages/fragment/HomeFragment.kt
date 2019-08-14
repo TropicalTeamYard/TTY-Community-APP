@@ -21,11 +21,11 @@ import tty.community.model.blog.Outline
 import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.CreateBlogActivity
 import tty.community.values.Const
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener, OnLoadMoreListener {
+class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener,
+    OnLoadMoreListener {
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         loadMore(blogTag)
     }
@@ -66,7 +66,11 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     private var blogTag = ""
     private lateinit var blogListAdapter: BlogListAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -90,7 +94,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                 try {
                     Log.d(TAG, response)
                     val result = JSONObject(response)
-                    when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                    when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.OK -> {
                             Log.d(TAG, "刷新成功")
                             square_refreshLayout.finishRefresh()
@@ -106,8 +110,18 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                                     val introduction = item.optString("introduction", "null")
                                     val allTag = item.optString("tag", "null")
                                     val lastActiveTime = Date(item.optLong("lastActiveTime"))
-                                    val portrait = Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
-                                    val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
+                                    val portrait =
+                                        Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
+                                    val blog = Outline(
+                                        blogId,
+                                        title,
+                                        author,
+                                        nickname,
+                                        portrait,
+                                        introduction,
+                                        lastActiveTime,
+                                        allTag
+                                    )
                                     blogs.add(blog)
                                 }
                                 blogListAdapter.initData(blogs)
@@ -117,7 +131,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
                         else -> {
                             Log.d(TAG, "刷新失败")
-                            Toast.makeText(this@HomeFragment.context, "刷新失败", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@HomeFragment.context, "刷新失败", Toast.LENGTH_SHORT)
+                                .show()
                             square_refreshLayout.finishRefresh(false)
                         }
                     }
@@ -140,7 +155,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                     try {
                         Log.d(TAG, response)
                         val result = JSONObject(response)
-                        when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                        when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                             Shortcut.OK -> {
                                 Log.d(TAG, "加载成功")
                                 square_refreshLayout.finishLoadMore()
@@ -155,10 +170,21 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                                         val title = item.optString("title", "null")
                                         val introduction = item.optString("introduction", "null")
                                         val allTag = item.optString("tag", "null")
-                                        val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
+                                        val lastActiveTime =
+                                            Date(item.optLong("lastActiveTime", 0L))
                                         // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                        val portrait = Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
-                                        val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
+                                        val portrait =
+                                            Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
+                                        val blog = Outline(
+                                            blogId,
+                                            title,
+                                            author,
+                                            nickname,
+                                            portrait,
+                                            introduction,
+                                            lastActiveTime,
+                                            allTag
+                                        )
                                         blogs.add(blog)
                                     }
                                     blogListAdapter.add(blogs)
@@ -168,7 +194,11 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
                             else -> {
                                 Log.d(TAG, "加载失败1")
-                                Toast.makeText(this@HomeFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this@HomeFragment.context,
+                                    "加载失败",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 square_refreshLayout.finishLoadMore(false)
                             }
                         }
@@ -190,8 +220,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
     private fun setAdapter() {
         blogListAdapter = BlogListAdapter()
-        val layoutManager= LinearLayoutManager(this.context)
-        layoutManager.orientation= LinearLayoutManager.VERTICAL
+        val layoutManager = LinearLayoutManager(this.context)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
         square_blog_list.adapter = blogListAdapter
         square_blog_list.layoutManager = layoutManager
         blogListAdapter.setOnItemClickListener(this)

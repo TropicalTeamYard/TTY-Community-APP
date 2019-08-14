@@ -26,15 +26,14 @@ import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Const
 import java.io.File
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
-class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks {
+class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener,
+    EasyPermissions.PermissionCallbacks {
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
         Toast.makeText(this.context, "获取权限失败，将无法选择图片", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) { }
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {}
 
 
     override fun onClick(p0: View?) {
@@ -57,7 +56,11 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     private lateinit var imagesAdapter: ImageListAdapter
     private var _bitmap: Bitmap? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_create_blog_short, container, false)
     }
 
@@ -83,12 +86,18 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
-            when(requestCode) {
+            when (requestCode) {
                 RESULT_LOAD_IMAGE -> {
                     val selectedImage = data.data!!
                     val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-                    val cursor = this@CreateBlogShortFragment.activity?.contentResolver?.query(selectedImage, filePathColumn, null, null, null)
-                    if (cursor != null && cursor.moveToFirst() && cursor.count> 0) {
+                    val cursor = this@CreateBlogShortFragment.activity?.contentResolver?.query(
+                        selectedImage,
+                        filePathColumn,
+                        null,
+                        null,
+                        null
+                    )
+                    if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
                         val path = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
                         _bitmap = BitmapUtil.load(path, true)
                         _bitmap?.let { imagesAdapter.add(it) }
@@ -117,8 +126,8 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
     private fun setAdapter() {
         imagesAdapter = ImageListAdapter()
-        val layoutManager= LinearLayoutManager(this.context)
-        layoutManager.orientation= LinearLayoutManager.HORIZONTAL
+        val layoutManager = LinearLayoutManager(this.context)
+        layoutManager.orientation = LinearLayoutManager.HORIZONTAL
         create_blog_short_images.adapter = imagesAdapter
         create_blog_short_images.layoutManager = layoutManager
         imagesAdapter.setOnItemClickListener(this)
@@ -133,14 +142,18 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["type"] = TYPE
         var content = create_blog_short_content.text.toString() + "\n"
         val tag = create_blog_short_tag.text.trim().toString()
-        map["tag"] = if (tag.isNotEmpty()) {tag} else {"ALL"}
+        map["tag"] = if (tag.isNotEmpty()) {
+            tag
+        } else {
+            "ALL"
+        }
         map["file_count"] = "${imagesAdapter.images.size}"
         val files = ArrayList<File>()
 
-        map["introduction"] =  try {
-            (content.substring(0, 10) + "...").replace("\n", " ")
+        map["introduction"] = try {
+            (content.substring(0, 120) + "...")
         } catch (e: StringIndexOutOfBoundsException) {
-            content.replace("\n", " ")
+            content
         }
 
         content = "<pre>\n$content\n</pre>\n\n"
@@ -148,39 +161,56 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         for (bitmap in imagesAdapter.images) {
             val file = IO.saveBitmapFile(this.context!!, bitmap)
             files.add(file)
-            content = content.plus("![${file.name}](./picture?id=####blog_id####&key=${file.name})<br><br>")
+            content =
+                content.plus("![${file.name}](./picture?id=####blog_id####&key=${file.name})<br><br>")
         }
 
         map["content"] = content
 
         val url = Const.api[Const.Route.Blog] + "/create"
 
-        AsyncTaskUtil.AsyncNetUtils.postMultipleForm(url, map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-            override fun onResponse(response: String) {
-                Log.d(TAG, response)
-                val result = JSONObject(response)
-                val msg = result.optString("msg", "unknown error")
-                when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                    Shortcut.OK -> {
-                        Toast.makeText(this@CreateBlogShortFragment.context, msg, Toast.LENGTH_SHORT).show()
-                        this@CreateBlogShortFragment.activity?.finish()
-                    }
+        AsyncTaskUtil.AsyncNetUtils.postMultipleForm(
+            url,
+            map,
+            files,
+            object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                override fun onResponse(response: String) {
+                    Log.d(TAG, response)
+                    val result = JSONObject(response)
+                    val msg = result.optString("msg", "unknown error")
+                    when (val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                        Shortcut.OK -> {
+                            Toast.makeText(
+                                this@CreateBlogShortFragment.context,
+                                msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            this@CreateBlogShortFragment.activity?.finish()
+                        }
 
-                    Shortcut.TE -> {
-                        //TODO 备份编辑项目
-                        Toast.makeText(this@CreateBlogShortFragment.context, "账号信息已过期，请重新登陆", Toast.LENGTH_SHORT).show()
-                        submitEnabled = true
-                    }
+                        Shortcut.TE -> {
+                            //TODO 备份编辑项目
+                            Toast.makeText(
+                                this@CreateBlogShortFragment.context,
+                                "账号信息已过期，请重新登陆",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            submitEnabled = true
+                        }
 
-                    else -> {
-                        //TODO 备份编辑项目
-                        Toast.makeText(this@CreateBlogShortFragment.context, "shortcut: ${shortcut.name}, error: $msg", Toast.LENGTH_SHORT).show()
-                        submitEnabled = true
+                        else -> {
+                            //TODO 备份编辑项目
+                            Toast.makeText(
+                                this@CreateBlogShortFragment.context,
+                                "shortcut: ${shortcut.name}, error: $msg",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            submitEnabled = true
+                        }
                     }
                 }
-            }
 
-        })
+            })
     }
 
     companion object {

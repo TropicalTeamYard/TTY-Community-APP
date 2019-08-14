@@ -10,16 +10,22 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_pic.view.*
 import tty.community.R
 
-class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
+class ImageListAdapter : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
     var images = ArrayList<Bitmap>()
-    private var mClickListener: OnItemClickListener ?= null
+    private var mClickListener: OnItemClickListener? = null
     private lateinit var context: Context
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_pic, parent, false), mClickListener)
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_pic,
+                parent,
+                false
+            ), mClickListener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -27,11 +33,11 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
     }
 
 
-    interface OnItemClickListener:View.OnClickListener{
-        fun onItemClick(v:View?, position:Int)
+    interface OnItemClickListener : View.OnClickListener {
+        fun onItemClick(v: View?, position: Int)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener){
+    fun setOnItemClickListener(listener: OnItemClickListener) {
         this.mClickListener = listener
     }
 
@@ -53,7 +59,7 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
             val width = bitmap.width
             val height = bitmap.height
             val bm = if (width > height) {
-               Bitmap.createBitmap(bitmap, (width - height) / 2, 0, height, height)
+                Bitmap.createBitmap(bitmap, (width - height) / 2, 0, height, height)
             } else {
                 Bitmap.createBitmap(bitmap, 0, (height - width) / 2, width, width)
             }
@@ -62,11 +68,17 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
             holder.picture.setImageBitmap(bm)
         } else {
-            holder.picture.setImageDrawable(context.resources.getDrawable(R.drawable.ic_add_grey, null))
+            holder.picture.setImageDrawable(
+                context.resources.getDrawable(
+                    R.drawable.ic_add_grey,
+                    null
+                )
+            )
         }
     }
 
-    inner class ViewHolder(v: View, private var listener: OnItemClickListener?):RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolder(v: View, private var listener: OnItemClickListener?) :
+        RecyclerView.ViewHolder(v), View.OnClickListener {
         private var mListener: OnItemClickListener
         val picture: ImageView = v.item_img
 
@@ -76,7 +88,7 @@ class ImageListAdapter: RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
 
         init {
             v.setOnClickListener(this)
-            mListener= this.listener!!
+            mListener = this.listener!!
         }
     }
 

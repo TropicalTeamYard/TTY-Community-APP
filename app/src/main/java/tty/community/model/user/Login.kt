@@ -2,12 +2,12 @@ package tty.community.model.user
 
 import android.content.ContentValues
 
-class Login (
+class Login(
     override val id: String,
     override val nickname: String,
     override val token: String,
     override val email: String
-): User(id, nickname, token, email) {
+) : User(id, nickname, token, email) {
 
     fun getValues(): ContentValues? {
         val values = ContentValues()

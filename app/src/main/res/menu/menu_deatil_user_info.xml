@@ -4,8 +4,8 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/change_info"
+        android:icon="@drawable/ic_edit"
         android:orderInCategory="100"
         android:title="更改信息"
-        android:icon="@drawable/ic_edit"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

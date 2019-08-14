@@ -5,10 +5,10 @@
 
     <ImageView
         android:id="@+id/item_img"
-        android:src="@drawable/ic_add_grey"
         android:layout_width="80dp"
-        android:background="@drawable/border"
+        android:layout_height="80dp"
         android:layout_margin="8dp"
-        android:layout_height="80dp"/>
+        android:background="@drawable/border"
+        android:src="@drawable/ic_add_grey" />
 
 </LinearLayout>

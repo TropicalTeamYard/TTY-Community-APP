@@ -1,18 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/ic_home_grey_64dp"
         android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_grey_64dp"
         android:title="主页"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/nav_chat"
-        android:title="私信"
         android:icon="@drawable/ic_chat_grey_64dp"
-        app:showAsAction="ifRoom"/>
+        android:title="私信"
+        app:showAsAction="ifRoom" />
     <item
-        android:icon="@drawable/ic_user_grey_64dp"
         android:id="@+id/nav_me"
+        android:icon="@drawable/ic_user_grey_64dp"
         android:title="我的"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

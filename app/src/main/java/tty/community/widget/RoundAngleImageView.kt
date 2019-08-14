@@ -14,7 +14,11 @@ class RoundAngleImageView : AppCompatImageView {
     private var roundHeight = 5
     private var paint2: Paint? = null
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         init(context, attrs)
     }
 
@@ -30,8 +34,10 @@ class RoundAngleImageView : AppCompatImageView {
 
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.RoundAngleImageView)
-            roundWidth = a.getDimensionPixelSize(R.styleable.RoundAngleImageView_roundWidth, roundWidth)
-            roundHeight = a.getDimensionPixelSize(R.styleable.RoundAngleImageView_roundHeight, roundHeight)
+            roundWidth =
+                a.getDimensionPixelSize(R.styleable.RoundAngleImageView_roundWidth, roundWidth)
+            roundHeight =
+                a.getDimensionPixelSize(R.styleable.RoundAngleImageView_roundHeight, roundHeight)
             a.recycle()
         } else {
             val density = context.resources.displayMetrics.density
@@ -65,7 +71,11 @@ class RoundAngleImageView : AppCompatImageView {
         path.moveTo(0f, roundHeight.toFloat())
         path.lineTo(0f, 0f)
         path.lineTo(roundWidth.toFloat(), 0f)
-        path.arcTo(RectF(0f, 0f, (roundWidth * 2).toFloat(), (roundHeight * 2).toFloat()), -90f, -90f)
+        path.arcTo(
+            RectF(0f, 0f, (roundWidth * 2).toFloat(), (roundHeight * 2).toFloat()),
+            -90f,
+            -90f
+        )
         path.close()
         canvas.drawPath(path, paint!!)
     }
@@ -76,7 +86,12 @@ class RoundAngleImageView : AppCompatImageView {
         path.lineTo(0f, height.toFloat())
         path.lineTo(roundWidth.toFloat(), height.toFloat())
         path.arcTo(
-            RectF(0f, (height - roundHeight * 2).toFloat(), (roundWidth * 2).toFloat(), height.toFloat()),
+            RectF(
+                0f,
+                (height - roundHeight * 2).toFloat(),
+                (roundWidth * 2).toFloat(),
+                height.toFloat()
+            ),
             90f,
             90f
         )
@@ -107,7 +122,12 @@ class RoundAngleImageView : AppCompatImageView {
         path.lineTo(width.toFloat(), 0f)
         path.lineTo((width - roundWidth).toFloat(), 0f)
         path.arcTo(
-            RectF((width - roundWidth * 2).toFloat(), 0f, width.toFloat(), (roundHeight * 2).toFloat()),
+            RectF(
+                (width - roundWidth * 2).toFloat(),
+                0f,
+                width.toFloat(),
+                (roundHeight * 2).toFloat()
+            ),
             -90f,
             90f
         )

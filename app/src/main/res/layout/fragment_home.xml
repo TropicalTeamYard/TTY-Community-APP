@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".pages.fragment.HomeFragment">
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/square_refreshLayout"
-        app:srlEnablePreviewInEditMode="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:srlEnablePreviewInEditMode="false">
+
         <com.scwang.smartrefresh.header.PhoenixHeader
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/square_tag_tab"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:id="@+id/square_tag_tab"/>
+                android:elevation="1dp" />
+
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/square_blog_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/square_blog_list"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
         <com.scwang.smartrefresh.layout.footer.BallPulseFooter
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_blog"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add" />
 
 
 </RelativeLayout>

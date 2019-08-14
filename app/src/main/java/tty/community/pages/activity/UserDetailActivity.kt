@@ -1,13 +1,13 @@
 package tty.community.pages.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
@@ -39,7 +39,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         }
     }
 
-    val url = Const.api[Const.Route.User]+ "/info"
+    val url = Const.api[Const.Route.User] + "/info"
     private val map = HashMap<String, String>()
 
     private var user: User? = null
@@ -60,32 +60,38 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         user.let {
             map["id"] = it.id
             map["token"] = it.token
-            AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                override fun onResponse(response: String) {
-                    Log.d(TAG, response)
-                    val result = JSONObject(response)
-                    val msg = result.optString("msg", "unknown error")
-                    when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                        Shortcut.OK -> {
-                            val data = result.optJSONObject("data")
-                            val url = Const.api[Const.Route.PublicUser] + "/portrait?target=${it.id}"
-                            user_detail_id.text = data?.optString("id") ?: ""
-                            user_detail_nickname.text = data?.optString("nickname") ?: ""
-                            user_detail_email.text = data?.optString("email") ?: ""
-                            user_detail_signature.text = data?.optString("signature") ?: ""
-                            user_detail_exp.text = data?.optString("exp") ?: ""
-                            user_detail_user_group.text = data?.optString("userGroup") ?: ""
-                            Glide.with(this@UserDetailActivity).load(url).apply(BitmapUtil.optionsNoCache()).into(user_detail_portrait)
-                            user_detail_refresh.finishRefresh(true)
-                        }
+            AsyncTaskUtil.AsyncNetUtils.post(
+                url,
+                map,
+                object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                    override fun onResponse(response: String) {
+                        Log.d(TAG, response)
+                        val result = JSONObject(response)
+                        val msg = result.optString("msg", "unknown error")
+                        when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                            Shortcut.OK -> {
+                                val data = result.optJSONObject("data")
+                                val url =
+                                    Const.api[Const.Route.PublicUser] + "/portrait?target=${it.id}"
+                                user_detail_id.text = data?.optString("id") ?: ""
+                                user_detail_nickname.text = data?.optString("nickname") ?: ""
+                                user_detail_email.text = data?.optString("email") ?: ""
+                                user_detail_signature.text = data?.optString("signature") ?: ""
+                                user_detail_exp.text = data?.optString("exp") ?: ""
+                                user_detail_user_group.text = data?.optString("userGroup") ?: ""
+                                Glide.with(this@UserDetailActivity).load(url)
+                                    .apply(BitmapUtil.optionsNoCache()).into(user_detail_portrait)
+                                user_detail_refresh.finishRefresh(true)
+                            }
 
-                        else -> {
-                            Toast.makeText(this@UserDetailActivity, msg, Toast.LENGTH_SHORT).show()
-                            user_detail_refresh.finishRefresh(false)
+                            else -> {
+                                Toast.makeText(this@UserDetailActivity, msg, Toast.LENGTH_SHORT)
+                                    .show()
+                                user_detail_refresh.finishRefresh(false)
+                            }
                         }
                     }
-                }
-            })
+                })
         }
     }
 

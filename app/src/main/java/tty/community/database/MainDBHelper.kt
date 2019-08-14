@@ -12,7 +12,7 @@ class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
         p0?.execSQL(CREATE_TABLE_USER)
     }
 
-    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) { }
+    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
 
     fun login(values: ContentValues) {
         // status = 0 > need to re-login
@@ -56,7 +56,8 @@ class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
         const val TAG = "MainDBHelper"
         const val DB_NAME = "data.db"
         const val DB_VERSION = 1
-        const val CREATE_TABLE_USER = "create table user(_id integer primary key autoincrement, id varchar(32) not null unique, nickname varchar(32) not null unique, token text not null, email text not null, status integer not null, personal_signature text, exp integer, user_group text);"
+        const val CREATE_TABLE_USER =
+            "create table user(_id integer primary key autoincrement, id varchar(32) not null unique, nickname varchar(32) not null unique, token text not null, email text not null, status integer not null, personal_signature text, exp integer, user_group text);"
 
     }
 }

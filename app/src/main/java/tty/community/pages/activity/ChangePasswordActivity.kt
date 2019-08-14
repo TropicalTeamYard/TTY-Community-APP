@@ -2,19 +2,19 @@ package tty.community.pages.activity
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_change_password.*
 import org.json.JSONObject
 import tty.community.R
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Util
 import tty.community.values.Const
+import tty.community.values.Util
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -38,9 +38,9 @@ class ChangePasswordActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
 
@@ -61,9 +61,9 @@ class ChangePasswordActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
 
@@ -96,35 +96,59 @@ class ChangePasswordActivity : AppCompatActivity() {
             map["old"] = Util.getMD5(oldPassword)
             map["new"] = Util.getMD5(newPassword)
             val url = Const.api[Const.Route.User] + "/change_password"
-            AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                override fun onResponse(response: String) {
-                    Log.d(TAG, response)
-                    val result = JSONObject(response)
-                    when (Shortcut.phrase(result.optString("shortcut"))) {
-                        Shortcut.OK -> {
-                            Toast.makeText(this@ChangePasswordActivity, "更改密码成功，请重新登录", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@ChangePasswordActivity, LoginActivity::class.java))
-                            finish()
+            AsyncTaskUtil.AsyncNetUtils.post(
+                url,
+                map,
+                object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                    override fun onResponse(response: String) {
+                        Log.d(TAG, response)
+                        val result = JSONObject(response)
+                        when (Shortcut.phrase(result.optString("shortcut"))) {
+                            Shortcut.OK -> {
+                                Toast.makeText(
+                                    this@ChangePasswordActivity,
+                                    "更改密码成功，请重新登录",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                startActivity(
+                                    Intent(
+                                        this@ChangePasswordActivity,
+                                        LoginActivity::class.java
+                                    )
+                                )
+                                finish()
+                            }
+
+                            Shortcut.UPE -> {
+                                Toast.makeText(
+                                    this@ChangePasswordActivity,
+                                    "原密码错误",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                change_password_old_password.requestFocus()
+                            }
+
+                            Shortcut.UNE -> {
+                                Toast.makeText(
+                                    this@ChangePasswordActivity,
+                                    "当前账户未被注册",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                change_password_id.requestFocus()
+                            }
+
+                            else -> {
+                                Toast.makeText(
+                                    this@ChangePasswordActivity,
+                                    "未知错误",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
 
-                        Shortcut.UPE -> {
-                            Toast.makeText(this@ChangePasswordActivity, "原密码错误", Toast.LENGTH_SHORT).show()
-                            change_password_old_password.requestFocus()
-                        }
-
-                        Shortcut.UNE -> {
-                            Toast.makeText(this@ChangePasswordActivity, "当前账户未被注册", Toast.LENGTH_SHORT).show()
-                            change_password_id.requestFocus()
-                        }
-
-                        else -> {
-                            Toast.makeText(this@ChangePasswordActivity, "未知错误", Toast.LENGTH_SHORT).show()
-                        }
                     }
 
-                }
-
-            })
+                })
         }
     }
 

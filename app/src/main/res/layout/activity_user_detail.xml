@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:srlEnablePreviewInEditMode="false"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_detail_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/user_detail_refresh"
+    app:srlEnablePreviewInEditMode="false"
     tools:context=".pages.activity.UserDetailActivity">
 
     <com.scwang.smartrefresh.header.PhoenixHeader
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
@@ -259,9 +260,9 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="64dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/border"
             android:text="修改密码"
-            android:layout_marginBottom="16dp"
             android:textSize="18sp" />
     </LinearLayout>
 

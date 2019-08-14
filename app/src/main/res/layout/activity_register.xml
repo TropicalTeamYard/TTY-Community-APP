@@ -10,8 +10,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="48sp"
-        android:text="TTY Community\nJoin Us!"/>
+        android:text="TTY Community\nJoin Us!"
+        android:textSize="48sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +53,10 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/register_nickname_info"/>
+    <TextView
+        android:id="@+id/register_nickname_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,8 +87,8 @@
             android:layout_margin="2dp"
             android:layout_marginStart="16dp"
             android:background="#00ffffff"
-            android:inputType="textEmailAddress"
             android:hint="输入有效的邮箱"
+            android:inputType="textEmailAddress"
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:paddingTop="4dp"
@@ -94,7 +97,10 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/register_email_info"/>
+    <TextView
+        android:id="@+id/register_email_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -174,7 +180,10 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/register_password_info"/>
+    <TextView
+        android:id="@+id/register_password_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="match_parent"

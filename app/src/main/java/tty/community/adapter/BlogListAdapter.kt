@@ -17,16 +17,22 @@ import tty.community.values.Time
 import tty.community.values.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
 
-class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
+class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     private var blogs = ArrayList<Outline>()
 
-    private var mItemClickListener: OnItemClickListener ?= null
+    private var mItemClickListener: OnItemClickListener? = null
 
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_blog_outline, parent, false), mItemClickListener)
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_blog_outline,
+                parent,
+                false
+            ), mItemClickListener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -34,8 +40,8 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
 
-    interface OnItemClickListener: View.OnClickListener{
-        fun onItemClick(v:View?, position:Int, blog: Outline)
+    interface OnItemClickListener : View.OnClickListener {
+        fun onItemClick(v: View?, position: Int, blog: Outline)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -70,7 +76,8 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
     }
 
-    inner class ViewHolder(v: View, private var listener: OnItemClickListener?):RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolder(v: View, private var listener: OnItemClickListener?) :
+        RecyclerView.ViewHolder(v), View.OnClickListener {
         private var mListener: OnItemClickListener
         private val card: CardView = v.blog_outline_card
         val time: TextView = v.blog_time

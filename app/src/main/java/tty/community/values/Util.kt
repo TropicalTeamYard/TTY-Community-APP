@@ -1,6 +1,5 @@
 package tty.community.values
 
-import android.graphics.Bitmap
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -8,9 +7,6 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.sql.Blob
 import java.sql.SQLException
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.experimental.and
 
 
@@ -21,7 +17,8 @@ object Util {
         val reString: String
         val `is` = blob.binaryStream
         val byteArrayInputStream = `is` as ByteArrayInputStream
-        val byteData = ByteArray(byteArrayInputStream.available()) //byteArrayInputStream.available()返回此输入流的字节数
+        val byteData =
+            ByteArray(byteArrayInputStream.available()) //byteArrayInputStream.available()返回此输入流的字节数
         byteArrayInputStream.read(byteData, 0, byteData.size) //将输入流中的内容读到指定的数组
         reString = String(byteData, StandardCharsets.UTF_8) //再转为String，并使用指定的编码方式
         `is`.close()
@@ -49,14 +46,31 @@ object Util {
 
     private fun byteArrayToHex(byteArray: ByteArray): String {
         //首先初始化一个字符数组，用来存放每个16进制字符
-        val hexDigits = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+        val hexDigits = charArrayOf(
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            'A',
+            'B',
+            'C',
+            'D',
+            'E',
+            'F'
+        )
         //new一个字符数组，这个就是用来组成结果字符串的（解释一下：一个byte是八位二进制，也就是2位十六进制字符）
         val resultCharArray = CharArray(byteArray.size * 2)
         //遍历字节数组，通过位运算（位运算效率高），转换成字符放到字符数组中去
         var index = 0
         for (b in byteArray) {
             resultCharArray[index++] = hexDigits[b.toInt().ushr(4) and 0xf]
-            resultCharArray[index++] = hexDigits[(b and 0xf).toInt() ]
+            resultCharArray[index++] = hexDigits[(b and 0xf).toInt()]
         }
 
         //字符数组组合成字符串返回

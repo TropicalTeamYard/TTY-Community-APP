@@ -14,7 +14,7 @@ object Time {
         return try {
             val sdf = SimpleDateFormat("yyyy/MM/dd-HH:mm:ss", Locale.CHINA)
             sdf.parse(s)
-        } catch (e: ParseException){
+        } catch (e: ParseException) {
             null
         }
 

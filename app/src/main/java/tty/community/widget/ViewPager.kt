@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.viewpager.widget.ViewPager
 
-class ViewPager: ViewPager {
-    constructor(context: Context):super(context)
-    constructor(context: Context, attributeSet: AttributeSet):super(context, attributeSet)
+class ViewPager : ViewPager {
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
 
     private var isScroll: Boolean = false
 

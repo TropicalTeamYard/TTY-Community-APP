@@ -3,8 +3,11 @@ package tty.community.network
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import okhttp3.*
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.closeQuietly
@@ -15,7 +18,8 @@ import java.util.concurrent.TimeUnit
 
 object NetUtils {
     fun post(url: String, params: HashMap<String, String>): String {
-        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS).build()
         val builder = FormBody.Builder()
         for (item in params) {
             builder.add(item.key, item.value)
@@ -40,7 +44,8 @@ object NetUtils {
     }
 
     fun postBitmap(url: String, params: HashMap<String, String>): Bitmap {
-        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS).build()
         val builder = FormBody.Builder()
         for (item in params) {
             builder.add(item.key, item.value)
@@ -49,7 +54,7 @@ object NetUtils {
         val request = Request.Builder().url(url).post(body).build()
         try {
             val response = client.newCall(request).execute()
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 val `is` = response.body!!.byteStream()
                 val bitmap = BitmapFactory.decodeStream(`is`)
                 response.closeQuietly()
@@ -65,11 +70,12 @@ object NetUtils {
     }
 
     fun get(url: String): String {
-        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS).build()
         val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 val string = response.body!!.string()
                 response.closeQuietly()
                 return string
@@ -103,7 +109,8 @@ object NetUtils {
         fun post(url: String, map: Map<String, String>, files: ArrayList<File>): String {
             try {
 
-                val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
+                val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS).build()
                 val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
 
                 for (file in files) {
@@ -112,12 +119,15 @@ object NetUtils {
                 }
 
                 for (item in map) {
-                    val body = item.value.toRequestBody("multipart/form-data; charset=utf-8".toMediaTypeOrNull())
+                    val body =
+                        item.value.toRequestBody("multipart/form-data; charset=utf-8".toMediaTypeOrNull())
                     requestBody.setType(MultipartBody.FORM).addFormDataPart(item.key, null, body)
                 }
 
                 val request = Request.Builder().url(url).post(requestBody.build()).build()
-                val response = client.newBuilder().readTimeout(5, TimeUnit.SECONDS).build().newCall(request).execute()
+                val response =
+                    client.newBuilder().readTimeout(5, TimeUnit.SECONDS).build().newCall(request)
+                        .execute()
                 if (response.isSuccessful) {
                     val string = response.body!!.string()
                     response.closeQuietly()

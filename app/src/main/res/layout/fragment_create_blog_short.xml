@@ -8,42 +8,42 @@
     <EditText
         android:id="@+id/create_blog_short_tag"
         android:layout_width="match_parent"
-        android:hint="TAG, separated by `|`"
-        android:background="@drawable/border"
-        android:padding="4dp"
+        android:layout_height="36dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/border"
+        android:hint="TAG, separated by `|`"
         android:inputType="text"
         android:maxLines="1"
-        android:layout_marginTop="8dp"
-        android:layout_height="36dp"/>
+        android:padding="4dp" />
 
     <EditText
         android:id="@+id/create_blog_short_content"
-        android:background="@drawable/border"
-        android:layout_below="@id/create_blog_short_tag"
-        android:layout_margin="8dp"
-        android:inputType="textMultiLine"
-        android:hint="在这里输入..."
-        android:padding="8dp"
-        android:gravity="top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/create_blog_short_images"/>
+        android:layout_above="@id/create_blog_short_images"
+        android:layout_below="@id/create_blog_short_tag"
+        android:layout_margin="8dp"
+        android:background="@drawable/border"
+        android:gravity="top"
+        android:hint="在这里输入..."
+        android:inputType="textMultiLine"
+        android:padding="8dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/create_blog_short_images"
         android:layout_width="match_parent"
-        android:layout_above="@id/create_blog_short_submit"
-        android:layout_height="96dp" />
+        android:layout_height="96dp"
+        android:layout_above="@id/create_blog_short_submit" />
 
     <Button
         android:id="@+id/create_blog_short_submit"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@drawable/border"
+        android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
-        android:text="Submit"
-        android:layout_alignParentBottom="true"/>
+        android:background="@drawable/border"
+        android:text="Submit" />
 
 </RelativeLayout>

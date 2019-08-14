@@ -26,7 +26,10 @@ object Storage {
         }
 
         if (!appCacheDir.exists() && !appCacheDir.mkdirs()) {
-            Log.e("getCacheDirectory", "getCacheDirectory fail ,the reason is make directory fail !")
+            Log.e(
+                "getCacheDirectory",
+                "getCacheDirectory fail ,the reason is make directory fail !"
+            )
         }
         return appCacheDir
     }
@@ -93,7 +96,10 @@ object Storage {
         }
 
         if (!appCacheDir!!.exists() && !appCacheDir.mkdirs()) {
-            Log.e("getInternalDirectory", "getInternalDirectory fail ,the reason is make directory fail !")
+            Log.e(
+                "getInternalDirectory",
+                "getInternalDirectory fail ,the reason is make directory fail !"
+            )
         }
         return appCacheDir
     }

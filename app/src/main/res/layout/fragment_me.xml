@@ -9,8 +9,8 @@
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/me_fragment_refresh"
         android:layout_width="match_parent"
-        app:srlEnablePreviewInEditMode="false"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:srlEnablePreviewInEditMode="false">
 
         <com.scwang.smartrefresh.header.PhoenixHeader
             android:layout_width="match_parent"

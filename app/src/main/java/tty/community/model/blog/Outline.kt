@@ -3,8 +3,8 @@ package tty.community.model.blog
 import android.os.Handler
 import tty.community.network.AsyncTaskUtil
 import tty.community.network.NetUtils
-import tty.community.values.Time
 import tty.community.values.Const
+import tty.community.values.Time
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -20,7 +20,12 @@ open class Outline(
 ) {
 
     companion object {
-        fun initBlogList(time: Date, count: Int, tag: String, callback: AsyncTaskUtil.AsyncNetUtils.Callback) {
+        fun initBlogList(
+            time: Date,
+            count: Int,
+            tag: String,
+            callback: AsyncTaskUtil.AsyncNetUtils.Callback
+        ) {
             // http://localhost:8080/community/api/blog/list?type=time&date=2019/8/25-03:24:52&count=2&tag=ALL # date 及之前日期的 count 条记录
             val url = Const.api[Const.Route.Blog] + "/list"
 
@@ -28,7 +33,11 @@ open class Outline(
             params["type"] = "time"
             params["date"] = Time.getTime(time)
             params["tag"] = tag
-            params["count"] = if (count > 0) {"$count"} else {"10"}
+            params["count"] = if (count > 0) {
+                "$count"
+            } else {
+                "10"
+            }
 
             val handler = Handler()
             Thread(Runnable {
@@ -37,7 +46,12 @@ open class Outline(
             }).start()
         }
 
-        fun loadMore(blogId: String, count: Int, tag: String, callback: AsyncTaskUtil.AsyncNetUtils.Callback) {
+        fun loadMore(
+            blogId: String,
+            count: Int,
+            tag: String,
+            callback: AsyncTaskUtil.AsyncNetUtils.Callback
+        ) {
             // http://localhost:8080/community/api/blog/list?type=id&to=1293637237&count=8&tag=ALL # `to` 之前日期的 count 条记录
             val url = Const.api[Const.Route.Blog] + "/list"
 
@@ -45,7 +59,11 @@ open class Outline(
             params["type"] = "id"
             params["to"] = blogId
             params["tag"] = tag
-            params["count"] = if (count > 0) {"$count"} else {"10"}
+            params["count"] = if (count > 0) {
+                "$count"
+            } else {
+                "10"
+            }
 
             val handler = Handler()
             Thread(Runnable {

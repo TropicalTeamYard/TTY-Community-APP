@@ -33,7 +33,11 @@ class MeFragment : Fragment(), OnRefreshListener {
     }
 
     private var user: User? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(tty.community.R.layout.fragment_me, container, false)
     }
 

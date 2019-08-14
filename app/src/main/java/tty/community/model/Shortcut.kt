@@ -10,7 +10,7 @@ enum class Shortcut {
 
     companion object {
         fun phrase(name: String): Shortcut {
-            return when(name) {
+            return when (name) {
                 "AE" -> AE
                 "FE" -> FE
                 "UR" -> UR

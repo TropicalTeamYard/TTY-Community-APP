@@ -13,8 +13,8 @@ import tty.community.R
 import tty.community.model.Shortcut
 import tty.community.model.user.Register
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Util.getMD5
 import tty.community.values.Const
+import tty.community.values.Util.getMD5
 import tty.community.widget.AlertDialogUtil
 import java.util.regex.Pattern
 

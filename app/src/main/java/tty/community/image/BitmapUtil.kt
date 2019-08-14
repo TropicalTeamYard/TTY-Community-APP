@@ -1,8 +1,8 @@
 package tty.community.image
 
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -61,7 +61,12 @@ object BitmapUtil {
         }
     }
 
-    fun optionsNoCache() = RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
-    fun optionsMemoryCache() = RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE)
+    fun optionsNoCache() =
+        RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(
+            true
+        )
+
+    fun optionsMemoryCache() =
+        RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE)
 
 }

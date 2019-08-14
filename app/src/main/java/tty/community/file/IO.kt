@@ -2,13 +2,10 @@ package tty.community.file
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
-
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.NullPointerException
 import java.util.*
 
 object IO {
@@ -25,5 +22,6 @@ object IO {
         return pic
     }
 
-    private fun randomString(time: Date) = ("${time.time}${(100000..999999).random()}".hashCode() and Integer.MAX_VALUE).toString()
+    private fun randomString(time: Date) =
+        ("${time.time}${(100000..999999).random()}".hashCode() and Integer.MAX_VALUE).toString()
 }
