@@ -15,7 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pages.activity.TopicListActivity"></activity>
+        <activity
+            android:name=".pages.activity.UserInfoActivity"
+            android:label="@string/title_activity_user_info"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".pages.activity.TopicListActivity" />
         <activity android:name=".pages.activity.PublicUserActivity" />
         <activity
             android:name=".pages.activity.ChangePasswordActivity"

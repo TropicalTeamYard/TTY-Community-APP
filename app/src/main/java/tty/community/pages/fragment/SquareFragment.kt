@@ -21,6 +21,7 @@ import tty.community.model.blog.Outline
 import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.CreateBlogActivity
 import tty.community.values.Value
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -56,7 +57,8 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
         }
 
         setAdapter()
-        prepareBlog()
+
+        square_refreshLayout.autoRefresh()
 
         square_refreshLayout.setOnRefreshListener(this)
         square_refreshLayout.setOnLoadMoreListener(this)
@@ -65,124 +67,105 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
     private fun refresh(tag: String = "") {
         Outline.initBlogList(Date(), 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {
-                Log.d(TAG, response)
-                val result = JSONObject(response)
-                val msg = result.optString("msg", "unknown error")
-                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                    Shortcut.OK -> {
-//                        Toast.makeText(this@SquareFragment.context, "刷新成功", Toast.LENGTH_SHORT).show()
-                        square_refreshLayout.finishRefresh(true)
-                        val list = result.optJSONArray("data")
-                        if (list != null) {
-                            val blogs = ArrayList<Outline>()
-                            for (i in 0 until list.length()) {
-                                val item = list.getJSONObject(i)
-                                val author = item.optString("author", "null")
-                                val nickname = item.optString("nickname", "null")
-                                val blogId = item.optString("blogId", "null")
-                                val title = item.optString("title", "null")
-                                val introduction = item.optString("introduction", "null")
-                                val allTag = item.optString("tag", "null")
-                                val lastActiveTime = Date(item.optLong("lastActiveTime"))
-                                // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
-                                val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
-                                blogs.add(blog)
-                            }
-                            blogListAdapter.initData(blogs)
+                try {
+                    Log.d(TAG, response)
+                    val result = JSONObject(response)
+                    when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                        Shortcut.OK -> {
+                            Log.d(TAG, "刷新成功")
+                            square_refreshLayout.finishRefresh()
+                            val list = result.optJSONArray("data")
+                            if (list != null) {
+                                val blogs = ArrayList<Outline>()
+                                for (i in 0 until list.length()) {
+                                    val item = list.getJSONObject(i)
+                                    val author = item.optString("author", "null")
+                                    val nickname = item.optString("nickname", "null")
+                                    val blogId = item.optString("blogId", "null")
+                                    val title = item.optString("title", "null")
+                                    val introduction = item.optString("introduction", "null")
+                                    val allTag = item.optString("tag", "null")
+                                    val lastActiveTime = Date(item.optLong("lastActiveTime"))
+                                    val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
+                                    val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
+                                    blogs.add(blog)
+                                }
+                                blogListAdapter.initData(blogs)
 
+                            }
+                        }
+
+                        else -> {
+                            Log.d(TAG, "刷新失败")
+                            Toast.makeText(this@SquareFragment.context, "刷新失败", Toast.LENGTH_SHORT).show()
+                            square_refreshLayout.finishRefresh(false)
                         }
                     }
-
-                    else -> {
-                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
-                        square_refreshLayout.finishLoadMore(false)
-                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.d(TAG, "刷新失败")
+                    Toast.makeText(this@SquareFragment.context, "未知错误", Toast.LENGTH_SHORT).show()
+                    square_refreshLayout.finishRefresh(false)
                 }
+
             }
 
         })
     }
 
     private fun loadMore(tag: String = "") {
-        Outline.loadMore(blogListAdapter.getLastBlogId(), 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-            override fun onResponse(response: String) {
-                Log.d(TAG, response)
-                val result = JSONObject(response)
-                val msg = result.optString("msg", "unknown error")
-                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                    Shortcut.OK -> {
-//                        Toast.makeText(this@SquareFragment.context, "加载成功", Toast.LENGTH_SHORT).show()
-                        square_refreshLayout.finishLoadMore(true)
-                        val list = result.optJSONArray("data")
-                        if (list != null) {
-                            val blogs = ArrayList<Outline>()
-                            for (i in 0 until list.length()) {
-                                val item = list.getJSONObject(i)
-                                val author = item.optString("author", "null")
-                                val nickname = item.optString("nickname", "null")
-                                val blogId = item.optString("blogId", "null")
-                                val title = item.optString("title", "null")
-                                val introduction = item.optString("introduction", "null")
-                                val allTag = item.optString("tag", "null")
-                                val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
-                                // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
-                                val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
-                                blogs.add(blog)
+        blogListAdapter.getLastBlogId()?.let {
+            Outline.loadMore(it, 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                override fun onResponse(response: String) {
+                    try {
+                        Log.d(TAG, response)
+                        val result = JSONObject(response)
+                        when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                            Shortcut.OK -> {
+                                Log.d(TAG, "加载成功")
+                                square_refreshLayout.finishLoadMore()
+                                val list = result.optJSONArray("data")
+                                if (list != null) {
+                                    val blogs = ArrayList<Outline>()
+                                    for (i in 0 until list.length()) {
+                                        val item = list.getJSONObject(i)
+                                        val author = item.optString("author", "null")
+                                        val nickname = item.optString("nickname", "null")
+                                        val blogId = item.optString("blogId", "null")
+                                        val title = item.optString("title", "null")
+                                        val introduction = item.optString("introduction", "null")
+                                        val allTag = item.optString("tag", "null")
+                                        val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
+                                        // http://localhost:8080/community/api/public/user/portrait?target=2008153477
+                                        val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
+                                        val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
+                                        blogs.add(blog)
+                                    }
+                                    blogListAdapter.add(blogs)
+
+                                }
                             }
-                            blogListAdapter.add(blogs)
 
+                            else -> {
+                                Log.d(TAG, "加载失败1")
+                                Toast.makeText(this@SquareFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
+                                square_refreshLayout.finishLoadMore(false)
+                            }
                         }
-                    }
-
-                    else -> {
-                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
-                        square_refreshLayout.finishLoadMore(false)
+                    } catch (e: Exception) {
+                        square_refreshLayout.finishLoadMore()
+                        Log.d(TAG, "加载失败2")
+                        Toast.makeText(this@SquareFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
                     }
                 }
-            }
+            })
 
-        })
-    }
-
-    private fun prepareBlog(tag: String = "") {
-        Outline.initBlogList(Date(), 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-            override fun onResponse(response: String) {
-                Log.d(TAG, response)
-                val result = JSONObject(response)
-                val msg = result.optString("msg", "unknown error")
-                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                    Shortcut.OK -> {
-                        val list = result.optJSONArray("data")
-                        if (list != null) {
-                            val blogs = ArrayList<Outline>()
-                            for (i in 0 until list.length()) {
-                                val item = list.getJSONObject(i)
-                                val author = item.optString("author", "null")
-                                val nickname = item.optString("nickname", "null")
-                                val blogId = item.optString("blogId", "null")
-                                val title = item.optString("title", "null")
-                                val introduction = item.optString("introduction", "null")
-                                val allTag = item.optString("tag", "null")
-                                val lastActiveTime = Date(item.optLong("lastActiveTime"))
-                                // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
-                                val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
-                                blogs.add(blog)
-                            }
-                            blogListAdapter.initData(blogs)
-
-                        }
-                    }
-
-                    else -> {
-                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-
-        })
+            return
+        }
+        Log.d(TAG, "加载失败3")
+        Toast.makeText(this@SquareFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
+        square_refreshLayout.finishLoadMore(500)
     }
 
     private fun setAdapter() {

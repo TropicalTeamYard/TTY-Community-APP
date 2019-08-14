@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 object NetUtils {
     fun post(url: String, params: HashMap<String, String>): String {
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
         val builder = FormBody.Builder()
         for (item in params) {
             builder.add(item.key, item.value)
@@ -29,6 +29,8 @@ object NetUtils {
                 val string = response.body!!.string()
                 response.closeQuietly()
                 return string
+            } else {
+                return Value.errorJson
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -38,7 +40,7 @@ object NetUtils {
     }
 
     fun postBitmap(url: String, params: HashMap<String, String>): Bitmap {
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
         val builder = FormBody.Builder()
         for (item in params) {
             builder.add(item.key, item.value)
@@ -63,7 +65,7 @@ object NetUtils {
     }
 
     fun get(url: String): String {
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
         val request = Request.Builder().url(url).build()
         try {
             val response = client.newCall(request).execute()
@@ -71,6 +73,8 @@ object NetUtils {
                 val string = response.body!!.string()
                 response.closeQuietly()
                 return string
+            } else {
+                return Value.errorJson
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -99,7 +103,7 @@ object NetUtils {
         fun post(url: String, map: Map<String, String>, files: ArrayList<File>): String {
             try {
 
-                val client = OkHttpClient.Builder().writeTimeout(30, TimeUnit.SECONDS).build()
+                val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
                 val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
 
                 for (file in files) {
@@ -113,11 +117,13 @@ object NetUtils {
                 }
 
                 val request = Request.Builder().url(url).post(requestBody.build()).build()
-                val response = client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).execute()
+                val response = client.newBuilder().readTimeout(5, TimeUnit.SECONDS).build().newCall(request).execute()
                 if (response.isSuccessful) {
                     val string = response.body!!.string()
                     response.closeQuietly()
                     return string
+                } else {
+                    return Value.errorJson
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

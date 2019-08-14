@@ -47,7 +47,10 @@ class BlogListAdapter: RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun getLastBlogId(): String {
+    fun getLastBlogId(): String? {
+        if (blogs.isEmpty()) {
+            return null
+        }
         return blogs[blogs.size - 1].blogId
     }
 

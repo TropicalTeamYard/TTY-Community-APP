@@ -37,7 +37,6 @@ class MeFragment : Fragment(), OnRefreshListener {
         return inflater.inflate(tty.community.R.layout.fragment_me, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         me_login.setOnClickListener {
@@ -49,9 +48,9 @@ class MeFragment : Fragment(), OnRefreshListener {
         }
 
         me_fragment_refresh.setOnRefreshListener(this)
-
     }
 
+    @SuppressLint("SetTextI18n")
     private fun refresh(user: User) {
         user.let {
             me_id.text = "ID: ${it.id}"

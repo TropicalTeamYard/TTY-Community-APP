@@ -62,37 +62,52 @@ class RegisterActivity : AppCompatActivity() {
 
             val url = Value.api[Value.Route.User] + "/register"
             val map = Register(nickname, email, getMD5(password)).getMap()
-            AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                override fun onResponse(response: String) {
-                    Log.d(MainActivity.TAG, response)
-                    val result = JSONObject(response)
-                    val msg = result.optString("msg")
-                    when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                        Shortcut.UR -> {
-                            Toast.makeText(this@RegisterActivity, "昵称 `$nickname` 已经被注册了", Toast.LENGTH_SHORT).show()
-                        }
+            AsyncTaskUtil.AsyncNetUtils.post(
+                url,
+                map,
+                object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                    override fun onResponse(response: String) {
+                        Log.d(MainActivity.TAG, response)
+                        val result = JSONObject(response)
+                        val msg = result.optString("msg")
+                        when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                            Shortcut.UR -> {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "昵称 `$nickname` 已经被注册了",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
-                        Shortcut.AIF ->{
-                            Toast.makeText(this@RegisterActivity, "昵称或邮箱格式不符合要求", Toast.LENGTH_SHORT).show()
-                        }
+                            Shortcut.AIF -> {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "昵称或邮箱格式不符合要求",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
-                        Shortcut.OK -> {
-                            AlertDialogUtil.registerResultDialog(this@RegisterActivity, nickname)
-                        }
+                            Shortcut.OK -> {
+                                AlertDialogUtil.registerResultDialog(
+                                    this@RegisterActivity,
+                                    nickname
+                                )
+                            }
 
-                        else -> {
-                            Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_SHORT).show()
+                            else -> {
+                                Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
                     }
-                }
-            })
+                })
 
         }
 
-        register_nickname.addTextChangedListener(object : TextWatcher{
+        register_nickname.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val nickname = p0.toString()
-                if(!(2..15).contains(nickname.length)) {
+                if (!(2..15).contains(nickname.length)) {
                     register_nickname_info.text = "昵称 `$nickname` 长度不符合要求"
                     register_nickname_info.setTextColor(Color.RED)
                     return
@@ -106,37 +121,40 @@ class RegisterActivity : AppCompatActivity() {
 
                 val url = Value.api[Value.Route.User] + "/check_name"
                 val map = hashMapOf(Pair("nickname", nickname))
-                AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                    override fun onResponse(response: String) {
-                        Log.d(MainActivity.TAG, response)
-                        val result = JSONObject(response)
-                        when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                            Shortcut.OK -> {
-                                register_nickname_info.text = "昵称 `$nickname` 可以使用"
-                                register_nickname_info.setTextColor(Color.GREEN)
-                            }
+                AsyncTaskUtil.AsyncNetUtils.post(
+                    url,
+                    map,
+                    object : AsyncTaskUtil.AsyncNetUtils.Callback {
+                        override fun onResponse(response: String) {
+                            Log.d(MainActivity.TAG, response)
+                            val result = JSONObject(response)
+                            when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                                Shortcut.OK -> {
+                                    register_nickname_info.text = "昵称 `$nickname` 可以使用"
+                                    register_nickname_info.setTextColor(Color.GREEN)
+                                }
 
-                            Shortcut.UR -> {
-                                register_nickname_info.text = "昵称 `$nickname` 已经被注册了"
-                                register_nickname_info.setTextColor(Color.RED)
-                            }
+                                Shortcut.UR -> {
+                                    register_nickname_info.text = "昵称 `$nickname` 已经被注册了"
+                                    register_nickname_info.setTextColor(Color.RED)
+                                }
 
-                            else -> {
-                                register_nickname_info.text = "检查失败，未知异常"
-                                register_nickname_info.setTextColor(Color.YELLOW)
+                                else -> {
+                                    register_nickname_info.text = "检查失败，未知异常"
+                                    register_nickname_info.setTextColor(Color.YELLOW)
+                                }
                             }
                         }
-                    }
-                })
+                    })
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
 
-        register_email.addTextChangedListener(object : TextWatcher{
+        register_email.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val email = register_email.text.toString()
                 if (!email.checkEmail()) {
@@ -148,14 +166,14 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
 
 
-        register_password.addTextChangedListener(object : TextWatcher{
+        register_password.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val password = register_password.text.trim().toString()
                 val confirmPassword = register_confirm_password.text.toString()
@@ -171,13 +189,13 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
 
-        register_confirm_password.addTextChangedListener(object : TextWatcher{
+        register_confirm_password.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val password = register_password.text.toString()
                 val confirmPassword = register_confirm_password.text.toString()
@@ -194,20 +212,23 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
     }
 
     companion object {
-        private fun String.checkNickname(): Boolean{
+        private fun String.checkNickname(): Boolean {
             return Pattern.matches("^[a-zA-Z0-9\\u4e00-\\u9fa5]+$", this)
         }
 
         private fun String.checkEmail(): Boolean {
-           return Pattern.matches("^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$", this)
+            return Pattern.matches(
+                "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$",
+                this
+            )
         }
     }
 }

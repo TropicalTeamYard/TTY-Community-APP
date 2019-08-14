@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".pages.fragment.MeFragment">
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/me_fragment_refresh"
         android:layout_width="match_parent"
+        app:srlEnablePreviewInEditMode="false"
         android:layout_height="match_parent">
+
         <com.scwang.smartrefresh.header.PhoenixHeader
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,8 +102,8 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <LinearLayout
                     android:layout_width="match_parent"

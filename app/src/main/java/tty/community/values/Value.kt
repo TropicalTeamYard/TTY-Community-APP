@@ -19,5 +19,5 @@ object Value{
         User, Blog, PublicUser
     }
 
-    const val errorJson = "{\"shortcut\":\"IE\", \"\":\"Network Error\"}"
+    const val errorJson = "{\"shortcut\":\"IE\", \"msg\":\"Network Error\"}"
 }
