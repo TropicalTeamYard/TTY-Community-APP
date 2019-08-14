@@ -14,7 +14,7 @@
         android:id="@+id/create_blog_nav"
         app:menu="@menu/nav_add_blog"/>
 
-    <tty.community.widget.MainViewPager
+    <tty.community.widget.ViewPager
         android:id="@+id/create_blog_viewPager"
         android:layout_width="match_parent"
         android:layout_below="@id/create_blog_nav"

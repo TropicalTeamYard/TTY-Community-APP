@@ -23,7 +23,7 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <tty.community.widget.MainViewPager
+    <tty.community.widget.ViewPager
         android:id="@+id/main_viewPager"
         android:layout_below="@id/main_app_bar"
         android:layout_above="@id/main_nav"
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         app:menu="@menu/nav_main" />
 
 </RelativeLayout>

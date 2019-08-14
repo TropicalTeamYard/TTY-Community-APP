@@ -24,7 +24,7 @@ import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Value
+import tty.community.values.Const
 import java.io.File
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -153,7 +153,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         map["content"] = content
 
-        val url = Value.api[Value.Route.Blog] + "/create"
+        val url = Const.api[Const.Route.Blog] + "/create"
 
         AsyncTaskUtil.AsyncNetUtils.postMultipleForm(url, map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {

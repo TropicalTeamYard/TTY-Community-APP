@@ -8,7 +8,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.closeQuietly
-import tty.community.values.Value
+import tty.community.values.Const
 import java.io.*
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
@@ -30,13 +30,13 @@ object NetUtils {
                 response.closeQuietly()
                 return string
             } else {
-                return Value.errorJson
+                return Const.errorJson
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        return Value.errorJson
+        return Const.errorJson
     }
 
     fun postBitmap(url: String, params: HashMap<String, String>): Bitmap {
@@ -74,13 +74,13 @@ object NetUtils {
                 response.closeQuietly()
                 return string
             } else {
-                return Value.errorJson
+                return Const.errorJson
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        return Value.errorJson
+        return Const.errorJson
     }
 
 
@@ -123,13 +123,13 @@ object NetUtils {
                     response.closeQuietly()
                     return string
                 } else {
-                    return Value.errorJson
+                    return Const.errorJson
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
-            return Value.errorJson
+            return Const.errorJson
         }
     }
 

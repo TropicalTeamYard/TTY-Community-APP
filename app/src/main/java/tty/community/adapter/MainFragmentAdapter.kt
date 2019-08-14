@@ -3,17 +3,16 @@ package tty.community.adapter;
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.PagerAdapter
 import tty.community.pages.fragment.HomeFragment
 import tty.community.pages.fragment.MeFragment
-import tty.community.pages.fragment.SquareFragment
+import tty.community.pages.fragment.ChatFragment
 
 class MainFragmentAdapter(fm: FragmentManager): FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private var pages: ArrayList<Fragment> = ArrayList()
 
     init {
         pages.add(HomeFragment())
-        pages.add(SquareFragment())
+        pages.add(ChatFragment())
         pages.add(MeFragment())
     }
     override fun getCount(): Int {

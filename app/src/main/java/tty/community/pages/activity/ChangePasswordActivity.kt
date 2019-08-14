@@ -14,7 +14,7 @@ import tty.community.R
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util
-import tty.community.values.Value
+import tty.community.values.Const
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -95,7 +95,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             map["id"] = id
             map["old"] = Util.getMD5(oldPassword)
             map["new"] = Util.getMD5(newPassword)
-            val url = Value.api[Value.Route.User] + "/change_password"
+            val url = Const.api[Const.Route.User] + "/change_password"
             AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
                     Log.d(TAG, response)

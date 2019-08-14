@@ -13,7 +13,7 @@ import tty.community.model.user.Login
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5
-import tty.community.values.Value
+import tty.community.values.Const
 
 class LoginActivity : AppCompatActivity() {
 
@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val url = Value.api[Value.Route.User] + "/" + "login"
+        val url = Const.api[Const.Route.User] + "/" + "login"
         AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
                 Log.d(TAG, response)

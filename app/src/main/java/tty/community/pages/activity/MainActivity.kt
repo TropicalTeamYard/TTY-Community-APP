@@ -15,7 +15,7 @@ import tty.community.adapter.MainFragmentAdapter
 import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Value
+import tty.community.values.Const
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
                 main_viewPager.currentItem = 0
                 true
             }
-            R.id.nav_square -> {
+            R.id.nav_chat -> {
                 main_viewPager.currentItem = 1
                 true
             }
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
     override fun onPageSelected(position: Int) {
         main_nav.selectedItemId = when (position) {
             0 -> R.id.nav_home
-            1 -> R.id.nav_square
+            1 -> R.id.nav_chat
             2 -> R.id.nav_me
             else -> return
         }
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
-            val url = Value.api[Value.Route.User] + "/auto_login"
+            val url = Const.api[Const.Route.User] + "/auto_login"
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token
@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         val adapter = MainFragmentAdapter(supportFragmentManager)
         main_viewPager.adapter = adapter
         main_viewPager.addOnPageChangeListener(this)
-//        main_viewPager.setScroll(true)
         main_nav.setOnNavigationItemSelectedListener(this)
     }
 

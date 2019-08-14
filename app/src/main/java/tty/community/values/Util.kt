@@ -16,11 +16,6 @@ import kotlin.experimental.and
 
 object Util {
 
-    val time: String
-        get() {
-            return getTime(Date())
-        }
-
     @Throws(SQLException::class, IOException::class)
     fun blobToString(blob: Blob): String {
         val reString: String
@@ -31,27 +26,6 @@ object Util {
         reString = String(byteData, StandardCharsets.UTF_8) //再转为String，并使用指定的编码方式
         `is`.close()
         return reString
-    }
-
-    fun getTime(date: Date): String {
-        val time: String
-        val sdf = SimpleDateFormat("yyyy/MM/dd-HH:mm:ss", Locale.CHINA)
-        time = sdf.format(date)
-        return time
-    }
-
-    fun getTime(s: String?): Date? {
-        if (s == null) {
-            return null
-        }
-
-        return try {
-            val sdf = SimpleDateFormat("yyyy/MM/dd-HH:mm:ss", Locale.CHINA)
-            sdf.parse(s)
-        } catch (e: ParseException){
-            null
-        }
-
     }
 
     fun getMD5(input: String): String {

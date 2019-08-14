@@ -19,8 +19,7 @@ import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
 import tty.community.model.user.User
 import tty.community.network.AsyncTaskUtil
-import tty.community.values.Resources
-import tty.community.values.Value
+import tty.community.values.Const
 
 class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshListener {
     override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -40,7 +39,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         }
     }
 
-    val url = Value.api[Value.Route.User]+ "/info"
+    val url = Const.api[Const.Route.User]+ "/info"
     private val map = HashMap<String, String>()
 
     private var user: User? = null
@@ -69,7 +68,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                     when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.OK -> {
                             val data = result.optJSONObject("data")
-                            val url = Value.api[Value.Route.PublicUser] + "/portrait?target=${it.id}"
+                            val url = Const.api[Const.Route.PublicUser] + "/portrait?target=${it.id}"
                             user_detail_id.text = data?.optString("id") ?: ""
                             user_detail_nickname.text = data?.optString("nickname") ?: ""
                             user_detail_email.text = data?.optString("email") ?: ""
