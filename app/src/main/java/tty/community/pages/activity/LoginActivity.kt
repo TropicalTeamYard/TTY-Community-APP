@@ -24,8 +24,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         login_btn.setOnClickListener {
-            val account = login_account.text.trim().toString()
-            val password = login_password.text.trim().toString()
+            val account = login_account.text.toString()
+            val password = login_password.text.toString()
             if (account.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "账号/密码不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val url = "${Value.api["user"]}/login"
+        val url = Value.api[Value.Route.User] + "/" + "login"
         AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback{
             override fun onResponse(response: String) {
                 Log.d(TAG, response)

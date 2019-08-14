@@ -40,7 +40,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         }
     }
 
-    val url = "${Value.api["user"]}/info"
+    val url = Value.api[Value.Route.User]+ "/info"
     private val map = HashMap<String, String>()
 
     private var user: User? = null
@@ -69,7 +69,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                     when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.OK -> {
                             val data = result.optJSONObject("data")
-                            val url = "${Value.api["public_user"]}/portrait?target=${it.id}"
+                            val url = Value.api[Value.Route.PublicUser] + "/portrait?target=${it.id}"
                             user_detail_id.text = data?.optString("id") ?: ""
                             user_detail_nickname.text = data?.optString("nickname") ?: ""
                             user_detail_email.text = data?.optString("email") ?: ""

@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
-            val url = "${Value.api["user"]}/auto_login"
+            val url = Value.api[Value.Route.User] + "/auto_login"
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener, Bottom
                     Log.d(TAG, response)
                     val result = JSONObject(response)
                     val msg = result.optString("msg", "unknown error")
-                    when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                    when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.OK -> {
                             val data = result.getJSONObject("data")
                             val values = ContentValues()

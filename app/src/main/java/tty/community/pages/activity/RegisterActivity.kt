@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_register.*
 import org.json.JSONObject
 import tty.community.R
-import tty.community.model.user.Register
 import tty.community.model.Shortcut
+import tty.community.model.user.Register
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Util.getMD5
 import tty.community.values.Value
@@ -25,18 +25,24 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         register_submit.setOnClickListener {
-            val nickname = register_nickname.text.trim().toString()
+            val nickname = register_nickname.text.toString()
             val email = register_email.text.trim().toString()
-            val password = register_password.text.trim().toString()
-            val confirmPassword = register_confirm_password.text.trim().toString()
+            val password = register_password.text.toString()
+            val confirmPassword = register_confirm_password.text.toString()
+
             if (!(2..15).contains(nickname.length)) {
                 Toast.makeText(this, "昵称长度应在2~15位", Toast.LENGTH_SHORT).show()
                 register_nickname.requestFocus()
                 return@setOnClickListener
             }
 
-            val match = Pattern.matches("^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$", email)
-            if (!match) {
+            if (!nickname.checkNickname()) {
+                Toast.makeText(this, "昵称只允许包含中文, 数字, 字母", Toast.LENGTH_SHORT).show()
+                register_nickname.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (!email.checkEmail()) {
                 Toast.makeText(this, "邮箱不合法", Toast.LENGTH_SHORT).show()
                 register_email.requestFocus()
                 return@setOnClickListener
@@ -54,7 +60,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = Value.api["user"] + "/register"
+            val url = Value.api[Value.Route.User] + "/register"
             val map = Register(nickname, email, getMD5(password)).getMap()
             AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                 override fun onResponse(response: String) {
@@ -64,6 +70,10 @@ class RegisterActivity : AppCompatActivity() {
                     when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                         Shortcut.UR -> {
                             Toast.makeText(this@RegisterActivity, "昵称 `$nickname` 已经被注册了", Toast.LENGTH_SHORT).show()
+                        }
+
+                        Shortcut.AIF ->{
+                            Toast.makeText(this@RegisterActivity, "昵称或邮箱格式不符合要求", Toast.LENGTH_SHORT).show()
                         }
 
                         Shortcut.OK -> {
@@ -77,18 +87,24 @@ class RegisterActivity : AppCompatActivity() {
                 }
             })
 
-
         }
 
         register_nickname.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                val nickname = p0?.trim().toString()
+                val nickname = p0.toString()
                 if(!(2..15).contains(nickname.length)) {
                     register_nickname_info.text = "昵称 `$nickname` 长度不符合要求"
                     register_nickname_info.setTextColor(Color.RED)
                     return
                 }
-                val url = "${Value.api["user"]}/check_name"
+
+                if (!nickname.checkNickname()) {
+                    register_nickname_info.text = "昵称只允许包含中文, 数字, 字母"
+                    register_nickname_info.setTextColor(Color.RED)
+                    return
+                }
+
+                val url = Value.api[Value.Route.User] + "/check_name"
                 val map = hashMapOf(Pair("nickname", nickname))
                 AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
                     override fun onResponse(response: String) {
@@ -114,21 +130,16 @@ class RegisterActivity : AppCompatActivity() {
                 })
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
         })
 
         register_email.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                val email = register_email.text.trim().toString()
-                val match = Pattern.matches("^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$", email)
-                if (!match) {
+                val email = register_email.text.toString()
+                if (!email.checkEmail()) {
                     register_email_info.text = "邮箱格式不合法"
                     register_email_info.setTextColor(Color.RED)
                 } else {
@@ -137,13 +148,9 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
         })
 
@@ -164,19 +171,15 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
         })
 
         register_confirm_password.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                val password = register_password.text.trim().toString()
+                val password = register_password.text.toString()
                 val confirmPassword = register_confirm_password.text.toString()
 
                 if (password != confirmPassword) {
@@ -191,14 +194,20 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
 
         })
+    }
+
+    companion object {
+        private fun String.checkNickname(): Boolean{
+            return Pattern.matches("^[a-zA-Z0-9\\u4e00-\\u9fa5]+$", this)
+        }
+
+        private fun String.checkEmail(): Boolean {
+           return Pattern.matches("^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$", this)
+        }
     }
 }

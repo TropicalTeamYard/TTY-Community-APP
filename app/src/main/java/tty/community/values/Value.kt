@@ -1,18 +1,23 @@
 package tty.community.values
 
-import org.json.JSONObject
-
 object Value{
-//    private const val URL = "http://10.0.2.2:8080/community/api/"
-//    private const val URL = "http://192.168.123.182:8080/community/api/"
-//    private const val URL = "http://192.168.123.2:8080/community/api/"
-    private const val URL = "http://47.102.200.155:8080/community/api/"
+    
+//    private const val SERVER = "http://10.0.2.2:8080"
+//    private const val SERVER = "http://192.168.123.182:8080"
+    private const val SERVER = "http://47.102.200.155:8080"
+    private const val URL = "$SERVER/community/api/"
 
-    val api = HashMap<String, String>()
-    const val errorJson = "{\"shortcut\":\"IE\", \"\":\"Network Error\"}"
+    val api = HashMap<Route, String>()
+
     init {
-        api["user"] = URL + "user"
-        api["blog"] = URL + "blog"
-        api["public_user"] = URL + "public/user"
+        api[Value.Route.User] = URL + "user"
+        api[Value.Route.Blog] = URL + "blog"
+        api[Value.Route.PublicUser] = URL + "public/user"
     }
+
+    enum class Route {
+        User, Blog, PublicUser
+    }
+
+    const val errorJson = "{\"shortcut\":\"IE\", \"\":\"Network Error\"}"
 }

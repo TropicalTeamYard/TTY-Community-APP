@@ -5,6 +5,7 @@ enum class Shortcut {
     UNE, UPE,
     TE,
     BNE,
+    AIF,
     OTHER;
 
     companion object {
@@ -18,6 +19,7 @@ enum class Shortcut {
                 "BNE" -> BNE
                 "UPE" -> UPE
                 "UNE" -> UNE
+                "AIF" -> AIF
                 "OTHER" -> OTHER
                 else -> OTHER
             }

@@ -153,7 +153,9 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         map["content"] = content
 
-        AsyncTaskUtil.AsyncNetUtils.postMultipleForm("${Value.api["blog"]}/create", map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
+        val url = Value.api[Value.Route.Blog] + "/create"
+
+        AsyncTaskUtil.AsyncNetUtils.postMultipleForm(url, map, files, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
                 val result = JSONObject(response)

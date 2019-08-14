@@ -56,7 +56,7 @@ class MeFragment : Fragment(), OnRefreshListener {
         user.let {
             me_id.text = "ID: ${it.id}"
             me_nickname.text = it.nickname
-            val url = "${Value.api["public_user"]}/portrait?target=${it.id}"
+            val url = Value.api[Value.Route.PublicUser] + "/portrait?target=${it.id}"
             Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).into(me_portrait)
             me_fragment_refresh.finishRefresh(500)
         }

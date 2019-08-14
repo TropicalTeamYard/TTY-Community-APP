@@ -68,7 +68,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                 Log.d(TAG, response)
                 val result = JSONObject(response)
                 val msg = result.optString("msg", "unknown error")
-                when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
                         Toast.makeText(this@SquareFragment.context, "刷新成功", Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishRefresh(true)
@@ -85,7 +85,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime"))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }
@@ -95,7 +95,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                     }
 
                     else -> {
-                        Toast.makeText(this@SquareFragment.context, "shortcut: ${shortcut.name}, error: $msg", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishLoadMore(false)
                     }
                 }
@@ -110,7 +110,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                 Log.d(TAG, response)
                 val result = JSONObject(response)
                 val msg = result.optString("msg", "unknown error")
-                when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
                         Toast.makeText(this@SquareFragment.context, "加载成功", Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishLoadMore(true)
@@ -127,7 +127,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime", 0L))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }
@@ -137,7 +137,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                     }
 
                     else -> {
-                        Toast.makeText(this@SquareFragment.context, "shortcut: ${shortcut.name}, error: $msg", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishLoadMore(false)
                     }
                 }
@@ -146,16 +146,14 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
         })
     }
 
-
     private fun prepareBlog(tag: String = "") {
         Outline.initBlogList(Date(), 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
             override fun onResponse(response: String) {
                 Log.d(TAG, response)
                 val result = JSONObject(response)
                 val msg = result.optString("msg", "unknown error")
-                when(val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
+                when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
-//                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
                         val list = result.optJSONArray("data")
                         if (list != null) {
                             val blogs = ArrayList<Outline>()
@@ -169,7 +167,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                                 val allTag = item.optString("tag", "null")
                                 val lastActiveTime = Date(item.optLong("lastActiveTime"))
                                 // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                val portrait = Value.api["public_user"] + "/portrait?target=$author"
+                                val portrait = Value.api[Value.Route.PublicUser] + "/portrait?target=$author"
                                 val blog = Outline(blogId, title, author, nickname, portrait, introduction, lastActiveTime, allTag)
                                 blogs.add(blog)
                             }
@@ -179,7 +177,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                     }
 
                     else -> {
-                        Toast.makeText(this@SquareFragment.context, "shortcut: ${shortcut.name}, error: $msg", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SquareFragment.context, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
