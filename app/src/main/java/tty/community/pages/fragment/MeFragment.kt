@@ -29,6 +29,7 @@ class MeFragment : Fragment(), OnRefreshListener {
             Toast.makeText(this@MeFragment.context, "请先登录", Toast.LENGTH_SHORT).show()
             me_fragment_refresh.finishRefresh(100)
         }
+
     }
 
     private var user: User? = null
@@ -51,8 +52,7 @@ class MeFragment : Fragment(), OnRefreshListener {
 
     }
 
-    @SuppressLint("SetTextI18n")
-    fun refresh(user: User) {
+    private fun refresh(user: User) {
         user.let {
             me_id.text = "ID: ${it.id}"
             me_nickname.text = it.nickname
@@ -62,7 +62,6 @@ class MeFragment : Fragment(), OnRefreshListener {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         user = MainDBHelper(this.context!!).findUser()

@@ -15,8 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pages.activity.ChangePasswordActivity" android:label="修改密码" />
-        <activity android:name=".pages.activity.ChangeInfoActivity" android:label="修改个人信息" />
+        <activity android:name=".pages.activity.TopicListActivity"></activity>
+        <activity android:name=".pages.activity.PublicUserActivity" />
+        <activity
+            android:name=".pages.activity.ChangePasswordActivity"
+            android:label="修改密码" />
+        <activity
+            android:name=".pages.activity.ChangeInfoActivity"
+            android:label="修改个人信息" />
         <activity
             android:name=".pages.activity.CreateBlogActivity"
             android:launchMode="standard"

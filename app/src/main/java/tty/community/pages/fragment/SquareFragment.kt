@@ -70,7 +70,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                 val msg = result.optString("msg", "unknown error")
                 when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
-                        Toast.makeText(this@SquareFragment.context, "刷新成功", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@SquareFragment.context, "刷新成功", Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishRefresh(true)
                         val list = result.optJSONArray("data")
                         if (list != null) {
@@ -112,7 +112,7 @@ class SquareFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefres
                 val msg = result.optString("msg", "unknown error")
                 when(Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
                     Shortcut.OK -> {
-                        Toast.makeText(this@SquareFragment.context, "加载成功", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this@SquareFragment.context, "加载成功", Toast.LENGTH_SHORT).show()
                         square_refreshLayout.finishLoadMore(true)
                         val list = result.optJSONArray("data")
                         if (list != null) {
