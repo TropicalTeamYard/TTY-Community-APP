@@ -23,6 +23,8 @@ import tty.community.database.MainDBHelper
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
+import tty.community.model.blog.Type
+import tty.community.model.blog.Type.Companion.value
 import tty.community.network.AsyncTaskUtil
 import tty.community.values.Const
 import java.io.File
@@ -71,6 +73,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         create_blog_short_submit.setOnClickListener {
             submitEnabled = false
+            create_blog_short_submit.isClickable = false
             submit()
         }
 
@@ -139,7 +142,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["id"] = id
         map["token"] = token
         map["title"] = TITLE
-        map["type"] = TYPE
+        map["type"] = "${TYPE.value}"
         var content = create_blog_short_content.text.toString() + "\n"
         val tag = create_blog_short_tag.text.trim().toString()
         map["tag"] = if (tag.isNotEmpty()) {
@@ -196,6 +199,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
                                 Toast.LENGTH_SHORT
                             ).show()
                             submitEnabled = true
+                            create_blog_short_submit.isClickable = true
                         }
 
                         else -> {
@@ -206,6 +210,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
                                 Toast.LENGTH_SHORT
                             ).show()
                             submitEnabled = true
+                            create_blog_short_submit.isClickable = true
                         }
                     }
                 }
@@ -215,8 +220,8 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
     companion object {
         const val TAG = "CreateBlogShortFragment"
-        const val TYPE = "SHORT"
-        const val TITLE = "####nickname#### 的日志"
+        private val TYPE = Type.Short
+        const val TITLE = "####nickname####的动态"
         const val RESULT_LOAD_IMAGE = 10
         const val RESULT_CROP_IMAGE = 20
     }

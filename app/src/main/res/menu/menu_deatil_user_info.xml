@@ -4,7 +4,7 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/change_info"
-        android:icon="@drawable/ic_edit"
+        android:icon="@drawable/ic_pencil_grey_24dp"
         android:orderInCategory="100"
         android:title="更改信息"
         app:showAsAction="always" />

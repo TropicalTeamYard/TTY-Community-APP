@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import tty.community.R
+import tty.community.model.blog.Type
 
 class CreateBlogComplexFragment : Fragment() {
 
@@ -16,6 +17,11 @@ class CreateBlogComplexFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_create_blog_complex, container, false)
+    }
+
+    companion object {
+        const val TAG = "CreateBlogComplexFragment"
+        private val TYPE = Type.Pro
     }
 
 }

@@ -24,8 +24,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/square_tag_tab"
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:elevation="1dp" />
+                android:layout_height="36dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/square_blog_list"
