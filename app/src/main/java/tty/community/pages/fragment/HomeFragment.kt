@@ -13,11 +13,12 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import kotlinx.android.synthetic.main.fragment_home.*
+import org.json.JSONArray
 import org.json.JSONObject
 import tty.community.R
 import tty.community.adapter.BlogListAdapter
 import tty.community.model.Shortcut
-import tty.community.model.blog.Outline
+import tty.community.model.blog.Blog.Outline
 import tty.community.network.AsyncTaskUtil
 import tty.community.pages.activity.CreateBlogActivity
 import tty.community.values.Const
@@ -26,6 +27,7 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener,
     OnLoadMoreListener {
+
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         loadMore(blogTag)
     }
@@ -100,32 +102,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                             square_refreshLayout.finishRefresh()
                             val list = result.optJSONArray("data")
                             if (list != null) {
-                                val blogs = ArrayList<Outline>()
-                                for (i in 0 until list.length()) {
-                                    val item = list.getJSONObject(i)
-                                    val author = item.optString("author", "null")
-                                    val nickname = item.optString("nickname", "null")
-                                    val blogId = item.optString("blogId", "null")
-                                    val title = item.optString("title", "null")
-                                    val introduction = item.optString("introduction", "null")
-                                    val allTag = item.optString("tag", "null")
-                                    val lastActiveTime = Date(item.optLong("lastActiveTime"))
-                                    val portrait =
-                                        Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
-                                    val blog = Outline(
-                                        blogId,
-                                        title,
-                                        author,
-                                        nickname,
-                                        portrait,
-                                        introduction,
-                                        lastActiveTime,
-                                        allTag
-                                    )
-                                    blogs.add(blog)
-                                }
+                                val blogs = getBlogs(list)
                                 blogListAdapter.initData(blogs)
-
                             }
                         }
 
@@ -148,6 +126,28 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
         })
     }
 
+    private fun getBlogs(list: JSONArray): ArrayList<Outline> {
+        val blogs = ArrayList<Outline>()
+        for (i in 0 until list.length()) {
+            val item = list.getJSONObject(i)
+            val author = item.optString("author", "null")
+            val nickname = item.optString("nickname", "null")
+            val blogId = item.optString("blogId", "null")
+            val type = item.optString("type", "Other")
+            val title = item.optString("title", "null")
+            val introduction = item.optString("introduction", "null")
+            val tag = item.optString("tag", "null")
+            val lastActiveTime = Date(item.optLong("lastActiveTime"))
+            val portrait = Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
+
+            val blog = Outline(blogId, type, author, title, introduction, tag, portrait, lastActiveTime, nickname)
+
+            blogs.add(blog)
+        }
+
+        return blogs
+    }
+
     private fun loadMore(tag: String = "") {
         blogListAdapter.getLastBlogId()?.let {
             Outline.loadMore(it, 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
@@ -161,34 +161,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                                 square_refreshLayout.finishLoadMore()
                                 val list = result.optJSONArray("data")
                                 if (list != null) {
-                                    val blogs = ArrayList<Outline>()
-                                    for (i in 0 until list.length()) {
-                                        val item = list.getJSONObject(i)
-                                        val author = item.optString("author", "null")
-                                        val nickname = item.optString("nickname", "null")
-                                        val blogId = item.optString("blogId", "null")
-                                        val title = item.optString("title", "null")
-                                        val introduction = item.optString("introduction", "null")
-                                        val allTag = item.optString("tag", "null")
-                                        val lastActiveTime =
-                                            Date(item.optLong("lastActiveTime", 0L))
-                                        // http://localhost:8080/community/api/public/user/portrait?target=2008153477
-                                        val portrait =
-                                            Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
-                                        val blog = Outline(
-                                            blogId,
-                                            title,
-                                            author,
-                                            nickname,
-                                            portrait,
-                                            introduction,
-                                            lastActiveTime,
-                                            allTag
-                                        )
-                                        blogs.add(blog)
-                                    }
+                                    val blogs = getBlogs(list)
                                     blogListAdapter.add(blogs)
-
                                 }
                             }
 

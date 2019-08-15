@@ -12,7 +12,8 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_blog_outline.view.*
 import tty.community.R
 import tty.community.image.BitmapUtil
-import tty.community.model.blog.Outline
+import tty.community.model.blog.Blog.Outline
+import tty.community.values.Const
 import tty.community.values.Time
 import tty.community.values.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
@@ -67,13 +68,28 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val author = blogs[position].author
+        val introduction = blogs[position].introduction
+        val blogId = blogs[position].blogId
+
+        val summary = introduction.substringAfter("****summary****").substringBefore("****metadata****").trim()
+
         holder.time.text = Time.getTime(blogs[position].lastActiveTime).getFormattedTime()
         holder.title.text = blogs[position].title
         holder.nickname.text = blogs[position].nickname
-        holder.introduction.text = blogs[position].introduction
+        holder.introduction.text = summary
         holder.tag.text = blogs[position].tag
-        val url = blogs[position].portrait
-        Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
+        val portrait = blogs[position].portrait
+
+        val picture = Const.api[Const.Route.Blog] + "/picture?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
+
+        if (picture.isNotEmpty() && picture.contains("key")) {
+            holder.picture.visibility = View.VISIBLE
+            Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).into(holder.picture)
+        } else {
+            holder.picture.visibility = View.GONE
+        }
+
+        Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
     }
 
     inner class ViewHolder(v: View, private var listener: OnItemClickListener?) :
@@ -86,6 +102,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         val introduction: TextView = v.blog_introduction
         val portrait: RoundAngleImageView = v.blog_author_portrait
         val tag: TextView = v.blog_tag
+        val picture: RoundAngleImageView = v.blog_picture
         private val more: Button = v.blog_outline_more
 
         override fun onClick(p0: View?) {

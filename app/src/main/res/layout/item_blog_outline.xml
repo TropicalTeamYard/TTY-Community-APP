@@ -104,18 +104,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:orientation="vertical">
+            android:background="@drawable/border_light"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/blog_introduction"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:background="@drawable/border_light"
                 android:maxLines="5"
                 android:padding="4dp"
                 android:text="introduction: \n\n\n\nha ha ha"
                 android:textColor="@color/grey"
                 android:textSize="16sp" />
+            <tty.community.widget.RoundAngleImageView
+                android:id="@+id/blog_picture"
+                app:srcCompat="@drawable/ic_broken_image_grey"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:padding="4dp"
+                android:layout_width="108dp"
+                android:layout_height="108dp"/>
         </LinearLayout>
 
 
