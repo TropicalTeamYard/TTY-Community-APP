@@ -84,12 +84,12 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
 
         if (picture.isNotEmpty() && picture.contains("key")) {
             holder.picture.visibility = View.VISIBLE
-            Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).into(holder.picture)
+            Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
         } else {
             holder.picture.visibility = View.GONE
         }
 
-        Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).into(holder.portrait)
+        Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.portrait)
     }
 
     inner class ViewHolder(v: View, private var listener: OnItemClickListener?) :
@@ -114,6 +114,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
             more.setOnClickListener(this)
             tag.setOnClickListener(this)
             portrait.setOnClickListener(this)
+            picture.setOnClickListener(this)
             mListener = this.listener!!
         }
     }

@@ -55,6 +55,10 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                 Log.d(TAG, "item: tag")
             }
 
+            R.id.blog_picture -> {
+                Log.d(TAG, "item: picture")
+            }
+
             else -> {
                 Log.d(TAG, "item: unknown")
             }
