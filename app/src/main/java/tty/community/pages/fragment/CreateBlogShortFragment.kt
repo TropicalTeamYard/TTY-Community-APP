@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.fragment_create_blog_short.*
-import org.json.JSONObject
 import pub.devrel.easypermissions.EasyPermissions
 import tty.community.R
 import tty.community.adapter.ImageListAdapter
@@ -27,7 +27,7 @@ import tty.community.model.blog.Tag
 import tty.community.model.blog.Type
 import tty.community.model.blog.Type.Companion.value
 import tty.community.model.user.User
-import tty.community.network.AsyncTaskUtil
+import tty.community.network.AsyncNetUtils
 import tty.community.values.Const
 import java.io.File
 
@@ -59,11 +59,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     private lateinit var imagesAdapter: ImageListAdapter
     private var _bitmap: Bitmap? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create_blog_short, container, false)
     }
 
@@ -114,15 +110,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
     }
 
-    private fun submit(
-        user: User,
-        type: Type,
-        tag: Tag,
-        title: String,
-        introduction: String,
-        content: String,
-        files: ArrayList<File>
-    ) {
+    private fun submit(user: User, type: Type, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
 
         Toast.makeText(this.context, "上传中...", Toast.LENGTH_SHORT).show()
 
@@ -138,48 +126,51 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["file_count"] = "${files.size}"
 
         // TODO 后台service上传
-        AsyncTaskUtil.AsyncNetUtils.postMultipleForm(
-            url,
-            map,
-            files,
-            object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                override fun onResponse(response: String) {
-                    Log.d(TAG, response)
-                    val result = JSONObject(response)
-                    val msg = result.optString("msg", "unknown error")
-                    when (val shortcut = Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                        Shortcut.OK -> {
-                            Toast.makeText(
-                                this@CreateBlogShortFragment.context,
-                                msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            this@CreateBlogShortFragment.activity?.finish()
-                        }
+        AsyncNetUtils.postMultipleForm(url, map, files, object : AsyncNetUtils.Callback {
 
-                        Shortcut.TE -> {
-                            //TODO 备份编辑项目
-                            Toast.makeText(
-                                this@CreateBlogShortFragment.context,
-                                "账号信息已过期，请重新登陆",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            create_blog_short_submit.isClickable = true
-                        }
+            fun onFail(msg: String) {
+                Log.e(TAG, msg)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                create_blog_short_submit.isClickable = true
+            }
 
-                        else -> {
+            fun onSuccess() {
+                Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show()
+                this@CreateBlogShortFragment.activity?.finish()
+            }
+
+            override fun onFailure(msg: String) {
+                onFail(msg)
+            }
+
+            override fun onResponse(result: String?) {
+                result?.let { it ->
+                    Log.d(TAG, it)
+                    val element = JsonParser().parse(it)
+                    if (element.isJsonObject) {
+                        val obj = element.asJsonObject
+                        when (Shortcut.parse(obj["shortcut"].asString)) {
+                            Shortcut.OK -> {
+                                onSuccess()
+                            }
+
                             //TODO 备份编辑项目
-                            Toast.makeText(
-                                this@CreateBlogShortFragment.context,
-                                "shortcut: ${shortcut.name}, error: $msg",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            create_blog_short_submit.isClickable = true
+                            Shortcut.TE -> {
+                                onFail("账号信息已过期，请重新登陆")
+                            }
+
+                            else -> {
+                                onFail("未知错误")
+                            }
                         }
                     }
+                    return
                 }
 
-            })
+                onFail("网络异常")
+            }
+
+        })
     }
 
     private fun choosePic() {

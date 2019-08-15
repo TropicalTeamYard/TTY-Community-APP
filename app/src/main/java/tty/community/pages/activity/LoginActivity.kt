@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_login.*
-import org.json.JSONObject
 import tty.community.R
 import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.model.user.Login
-import tty.community.network.AsyncTaskUtil
+import tty.community.network.AsyncNetUtils
+import tty.community.network.AsyncNetUtils.Callback
 import tty.community.values.Const
 import tty.community.values.Util.getMD5
 
@@ -55,37 +56,54 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         val url = Const.api[Const.Route.User] + "/" + "login"
-        AsyncTaskUtil.AsyncNetUtils.post(url, map, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-            override fun onResponse(response: String) {
-                Log.d(TAG, response)
-                val result = JSONObject(response)
-                val msg = result.optString("msg", "unknown error")
-                when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                    Shortcut.OK -> {
-                        val data = result.getJSONObject("data")
-                        val id = data.optString("id")
-                        val nickname = data.optString("nickname")
-                        val email = data.optString("email")
-                        val token = data.optString("token")
-                        val values = Login(id, nickname, token, email).getValues()
-                        if (values != null) {
-                            MainDBHelper(this@LoginActivity).login(values)
-                            Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                            finish()
-                        } else {
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "invalid response",
-                                Toast.LENGTH_SHORT
-                            ).show()
+        AsyncNetUtils.post(url, map, object : Callback {
+            override fun onFailure(msg: String) {
+                onFail(msg)
+            }
+
+            fun onFail(msg: String) {
+                Log.e(ChangePasswordActivity.TAG, msg)
+                Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(result: String?) {
+                result?.let { it ->
+                    Log.d(TAG, it)
+                    val element = JsonParser().parse(it)
+                    if (element.isJsonObject) {
+                        val obj = element.asJsonObject
+                        when (Shortcut.parse(obj["shortcut"].asString)) {
+                            Shortcut.OK -> {
+                                val data = obj["data"].asJsonObject
+                                val id = data["id"].asString
+                                val nickname = data["nickname"].asString
+                                val email = data["email"].asString
+                                val token = data["token"].asString
+                                val values = Login(id, nickname, token, email).values
+                                if (values != null) {
+                                    MainDBHelper(this@LoginActivity).login(values)
+                                    finish()
+                                } else {
+                                    onFail("返回参数出错")
+                                }
+                            }
+                            Shortcut.UNE -> {
+                                onFail("用户不存在")
+                            }
+                            Shortcut.UPE -> {
+                                onFail("密码错误")
+                            }
+                            else -> {
+                                onFail("未知错误")
+                            }
                         }
                     }
-
-                    else -> {
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                    }
+                    return
                 }
+
+                onFail("网络异常")
             }
+
         })
     }
 

@@ -1,8 +1,7 @@
 package tty.community.model.blog
 
-import android.os.Handler
-import tty.community.network.AsyncTaskUtil
-import tty.community.network.NetUtils
+import tty.community.network.AsyncNetUtils
+import tty.community.network.AsyncNetUtils.Callback
 import tty.community.values.Const
 import tty.community.values.Time
 import java.util.*
@@ -34,7 +33,7 @@ interface Blog {
                 time: Date,
                 count: Int,
                 tag: String,
-                callback: AsyncTaskUtil.AsyncNetUtils.Callback
+                callback: Callback
             ) {
                 // http://localhost:8080/community/api/blog/list?type=time&date=2019/8/25-03:24:52&count=2&tag=ALL # date 及之前日期的 count 条记录
                 val url = Const.api[Const.Route.Blog] + "/list"
@@ -49,19 +48,11 @@ interface Blog {
                     "10"
                 }
 
-                val handler = Handler()
-                Thread(Runnable {
-                    val response = NetUtils.post(url, params)
-                    handler.post { callback.onResponse(response) }
-                }).start()
+                AsyncNetUtils.post(url, params, callback)
+
             }
 
-            fun loadMore(
-                blogId: String,
-                count: Int,
-                tag: String,
-                callback: AsyncTaskUtil.AsyncNetUtils.Callback
-            ) {
+            fun loadMore(blogId: String, count: Int, tag: String, callback: Callback) {
                 // http://localhost:8080/community/api/blog/list?type=id&to=1293637237&count=8&tag=ALL # `to` 之前日期的 count 条记录
                 val url = Const.api[Const.Route.Blog] + "/list"
 
@@ -75,11 +66,7 @@ interface Blog {
                     "10"
                 }
 
-                val handler = Handler()
-                Thread(Runnable {
-                    val response = NetUtils.post(url, params)
-                    handler.post { callback.onResponse(response) }
-                }).start()
+                AsyncNetUtils.post(url, params, callback)
             }
         }
     }

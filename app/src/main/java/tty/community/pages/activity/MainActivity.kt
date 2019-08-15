@@ -8,13 +8,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
 import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
-import tty.community.network.AsyncTaskUtil
+import tty.community.network.AsyncNetUtils
 import tty.community.values.Const
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
@@ -73,29 +73,48 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
             map["id"] = user.id
             map["token"] = user.token
             map["platform"] = "mobile"
-            AsyncTaskUtil.AsyncNetUtils.post(
-                url,
-                map,
-                object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                    override fun onResponse(response: String) {
-                        Log.d(TAG, response)
-                        val result = JSONObject(response)
-                        val msg = result.optString("msg", "unknown error")
-                        when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                            Shortcut.OK -> {
-                                val data = result.getJSONObject("data")
-                                val values = ContentValues()
-                                values.put("email", data.getString("email"))
-                                values.put("nickname", data.getString("nickname"))
-                                MainDBHelper(this@MainActivity).updateUser(user.id, values)
-                            }
+            AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
+                fun onFail(msg: String) {
+                    Log.e(ChangePasswordActivity.TAG, msg)
+                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+                }
 
-                            else -> {
-                                Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+                override fun onFailure(msg: String) {
+                    onFail(msg)
+                }
+
+                override fun onResponse(result: String?) {
+                    result?.let { it ->
+                        Log.d(TAG, it)
+                        val element = JsonParser().parse(it)
+                        if (element.isJsonObject) {
+                            val obj = element.asJsonObject
+                            when (Shortcut.parse(obj["shortcut"].asString)) {
+                                Shortcut.OK -> {
+                                    val data = obj["data"].asJsonObject
+                                    val values = ContentValues()
+                                    values.put("email", data["email"].asString)
+                                    values.put("nickname", data["nickname"].asString)
+                                    MainDBHelper(this@MainActivity).updateUser(user.id, values)
+                                }
+                                Shortcut.UNE -> {
+                                    onFail("用户不存在")
+                                }
+                                Shortcut.TE -> {
+                                    onFail("登录已过期，请重新登录")
+                                }
+                                else -> {
+                                    onFail("未知错误")
+                                }
                             }
                         }
+                        return
                     }
-                })
+
+                    onFail("网络异常")
+                }
+
+            })
         }
     }
 

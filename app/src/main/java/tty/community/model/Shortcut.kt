@@ -9,7 +9,7 @@ enum class Shortcut {
     OTHER;
 
     companion object {
-        fun phrase(name: String): Shortcut {
+        fun parse(name: String): Shortcut {
             return when (name) {
                 "AE" -> AE
                 "FE" -> FE

@@ -8,11 +8,12 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_change_password.*
-import org.json.JSONObject
+import tty.community.network.AsyncNetUtils.Callback
 import tty.community.R
 import tty.community.model.Shortcut
-import tty.community.network.AsyncTaskUtil
+import tty.community.network.AsyncNetUtils
 import tty.community.values.Const
 import tty.community.values.Util
 
@@ -96,59 +97,53 @@ class ChangePasswordActivity : AppCompatActivity() {
             map["old"] = Util.getMD5(oldPassword)
             map["new"] = Util.getMD5(newPassword)
             val url = Const.api[Const.Route.User] + "/change_password"
-            AsyncTaskUtil.AsyncNetUtils.post(
-                url,
-                map,
-                object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                    override fun onResponse(response: String) {
-                        Log.d(TAG, response)
-                        val result = JSONObject(response)
-                        when (Shortcut.phrase(result.optString("shortcut"))) {
-                            Shortcut.OK -> {
-                                Toast.makeText(
-                                    this@ChangePasswordActivity,
-                                    "更改密码成功，请重新登录",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                startActivity(
-                                    Intent(
-                                        this@ChangePasswordActivity,
-                                        LoginActivity::class.java
+            AsyncNetUtils.post(url, map, object : Callback {
+                fun onResult(msg: String) {
+                    Toast.makeText(this@ChangePasswordActivity, msg, Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, msg)
+                }
+
+                override fun onFailure(msg: String) {
+                    onResult(msg)
+                }
+
+                override fun onResponse(result: String?) {
+                    result?.let {
+                        Log.d(TAG, it)
+                        val element = JsonParser().parse(it)
+                        if (element.isJsonObject) {
+                            val obj = element.asJsonObject
+                            when (Shortcut.parse(obj["shortcut"].asString)) {
+                                Shortcut.OK -> {
+                                    onResult("修改密码成功")
+                                    startActivity(
+                                        Intent(
+                                            this@ChangePasswordActivity,
+                                            LoginActivity::class.java
+                                        )
                                     )
-                                )
-                                finish()
-                            }
-
-                            Shortcut.UPE -> {
-                                Toast.makeText(
-                                    this@ChangePasswordActivity,
-                                    "原密码错误",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                change_password_old_password.requestFocus()
-                            }
-
-                            Shortcut.UNE -> {
-                                Toast.makeText(
-                                    this@ChangePasswordActivity,
-                                    "当前账户未被注册",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                change_password_id.requestFocus()
-                            }
-
-                            else -> {
-                                Toast.makeText(
-                                    this@ChangePasswordActivity,
-                                    "未知错误",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                    finish()
+                                }
+                                Shortcut.UNE -> {
+                                    onResult("用户不存在")
+                                    change_password_id.requestFocus()
+                                }
+                                Shortcut.UPE -> {
+                                    onResult("密码错误")
+                                    change_password_old_password.requestFocus()
+                                }
+                                else -> {
+                                    onResult("未知错误")
+                                }
                             }
                         }
-
+                        return
                     }
 
-                })
+                    onResult("网络异常")
+                }
+
+            })
         }
     }
 

@@ -49,12 +49,12 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         this.mItemClickListener = listener
     }
 
-    fun add(blog: ArrayList<Outline>) {
-        blogs.addAll(blog)
+    fun add(blogs: ArrayList<Outline>) {
+        this.blogs.addAll(blogs)
         notifyDataSetChanged()
     }
 
-    fun initData(blogs: ArrayList<Outline>) {
+    fun init(blogs: ArrayList<Outline>) {
         this.blogs = blogs
         notifyDataSetChanged()
     }

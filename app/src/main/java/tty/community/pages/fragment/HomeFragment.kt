@@ -9,24 +9,25 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.json.JSONArray
-import org.json.JSONObject
 import tty.community.R
 import tty.community.adapter.BlogListAdapter
 import tty.community.model.Shortcut
 import tty.community.model.blog.Blog.Outline
-import tty.community.network.AsyncTaskUtil
+import tty.community.model.blog.Blog.Outline.Companion.initBlogList
+import tty.community.network.AsyncNetUtils
 import tty.community.pages.activity.CreateBlogActivity
 import tty.community.values.Const
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener,
-    OnLoadMoreListener {
+
+class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener, OnLoadMoreListener {
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
         loadMore(blogTag)
@@ -72,11 +73,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     private var blogTag = ""
     private lateinit var blogListAdapter: BlogListAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -88,60 +85,128 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
         setAdapter()
 
-        square_refreshLayout.autoRefresh()
+        home_refreshLayout.autoRefresh()
 
-        square_refreshLayout.setOnRefreshListener(this)
-        square_refreshLayout.setOnLoadMoreListener(this)
+        home_refreshLayout.setOnRefreshListener(this)
+        home_refreshLayout.setOnLoadMoreListener(this)
     }
 
     private fun refresh(tag: String = "") {
-        Outline.initBlogList(Date(), 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-            override fun onResponse(response: String) {
-                try {
-                    Log.d(TAG, response)
-                    val result = JSONObject(response)
-                    when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                        Shortcut.OK -> {
-                            Log.d(TAG, "刷新成功")
-                            square_refreshLayout.finishRefresh()
-                            val list = result.optJSONArray("data")
-                            if (list != null) {
-                                val blogs = getBlogs(list)
-                                blogListAdapter.initData(blogs)
+        initBlogList(Date(), 10, tag, object : AsyncNetUtils.Callback {
+
+            override fun onFailure(msg: String) {
+                onFail(msg, UpdateMode.INIT)
+            }
+
+            override fun onResponse(result: String?) {
+                result?.let {
+                    Log.d(TAG, it)
+                    val element = JsonParser().parse(it)
+                    if (element.isJsonObject) {
+                        val obj = element.asJsonObject
+                        when (Shortcut.parse(obj["shortcut"].asString)) {
+                            Shortcut.OK -> {
+                                val list = obj["data"].asJsonArray
+                                if (list != null) {
+                                    val blogs = getBlogs(list)
+                                    onSuccess(blogs, UpdateMode.INIT)
+                                }
+                            }
+
+                            else -> {
+                                onFail("刷新失败，未知错误1", UpdateMode.INIT)
                             }
                         }
-
-                        else -> {
-                            Log.d(TAG, "刷新失败")
-                            Toast.makeText(this@HomeFragment.context, "刷新失败", Toast.LENGTH_SHORT)
-                                .show()
-                            square_refreshLayout.finishRefresh(false)
-                        }
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.d(TAG, "刷新失败")
-                    Toast.makeText(this@HomeFragment.context, "未知错误", Toast.LENGTH_SHORT).show()
-                    square_refreshLayout.finishRefresh(false)
+
+                    return
                 }
 
+                onFail("刷新失败，网络异常2", UpdateMode.INIT)
             }
 
         })
     }
 
-    private fun getBlogs(list: JSONArray): ArrayList<Outline> {
+    private fun loadMore(tag: String = "") {
+        blogListAdapter.getLastBlogId()?.let { id ->
+            Outline.loadMore(id, 10, tag, object : AsyncNetUtils.Callback {
+                override fun onResponse(result: String?) {
+                    result?.let { it ->
+                        Log.d(TAG, it)
+                        val element = JsonParser().parse(it)
+                        if (element.isJsonObject) {
+                            val obj = element.asJsonObject
+                            when (Shortcut.parse(obj["shortcut"].asString)) {
+                                Shortcut.OK -> {
+                                    val list = obj["data"].asJsonArray
+                                    if (list != null) {
+                                        val blogs = getBlogs(list)
+                                        onSuccess(blogs, UpdateMode.ADD)
+                                    }
+                                }
+
+                                else -> {
+                                    onFail("加载失败，未知错误1", UpdateMode.ADD)
+                                }
+                            }
+                        }
+
+                        return
+                    }
+
+                    onFail("加载失败，网络异常2", UpdateMode.ADD)
+                }
+
+
+                override fun onFailure(msg: String) {
+                    onFail(msg, UpdateMode.ADD)
+                }
+            })
+
+            return
+        }
+
+        onFail("网络异常3", UpdateMode.ADD)
+    }
+
+    fun onFail(msg: String, mode: UpdateMode) {
+        Log.e(TAG, msg)
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        when(mode) {
+            UpdateMode.ADD -> home_refreshLayout.finishLoadMore(false)
+            UpdateMode.INIT -> home_refreshLayout.finishRefresh(false)
+        }
+
+    }
+
+    fun onSuccess(blogs: ArrayList<Outline>, mode: UpdateMode) {
+        when(mode) {
+            UpdateMode.ADD -> {
+                blogListAdapter.add(blogs)
+                home_refreshLayout.finishLoadMore(true)
+            }
+            UpdateMode.INIT -> {
+                blogListAdapter.init(blogs)
+                home_refreshLayout.finishRefresh(true)
+            }
+        }
+
+
+    }
+
+    private fun getBlogs(list: JsonArray): ArrayList<Outline> {
         val blogs = ArrayList<Outline>()
-        for (i in 0 until list.length()) {
-            val item = list.getJSONObject(i)
-            val author = item.optString("author", "null")
-            val nickname = item.optString("nickname", "null")
-            val blogId = item.optString("blogId", "null")
-            val type = item.optString("type", "Other")
-            val title = item.optString("title", "null")
-            val introduction = item.optString("introduction", "null")
-            val tag = item.optString("tag", "null")
-            val lastActiveTime = Date(item.optLong("lastActiveTime"))
+        for (i in 0 until list.size()) {
+            val item = list[i].asJsonObject
+            val author = item["author"].asString
+            val nickname = item["nickname"].asString
+            val blogId = item["blogId"].asString
+            val type = item["type"].asString
+            val title = item["title"].asString
+            val introduction = item["introduction"].asString
+            val tag = item["tag"].asString
+            val lastActiveTime = Date(item["lastActiveTime"].asLong)
             val portrait = Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
 
             val blog = Outline(blogId, type, author, title, introduction, tag, portrait, lastActiveTime, nickname)
@@ -152,57 +217,18 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
         return blogs
     }
 
-    private fun loadMore(tag: String = "") {
-        blogListAdapter.getLastBlogId()?.let {
-            Outline.loadMore(it, 10, tag, object : AsyncTaskUtil.AsyncNetUtils.Callback {
-                override fun onResponse(response: String) {
-                    try {
-                        Log.d(TAG, response)
-                        val result = JSONObject(response)
-                        when (Shortcut.phrase(result.optString("shortcut", "UNKNOWN"))) {
-                            Shortcut.OK -> {
-                                Log.d(TAG, "加载成功")
-                                square_refreshLayout.finishLoadMore()
-                                val list = result.optJSONArray("data")
-                                if (list != null) {
-                                    val blogs = getBlogs(list)
-                                    blogListAdapter.add(blogs)
-                                }
-                            }
-
-                            else -> {
-                                Log.d(TAG, "加载失败1")
-                                Toast.makeText(
-                                    this@HomeFragment.context,
-                                    "加载失败",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                square_refreshLayout.finishLoadMore(false)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        square_refreshLayout.finishLoadMore()
-                        Log.d(TAG, "加载失败2")
-                        Toast.makeText(this@HomeFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
-                    }
-                }
-            })
-
-            return
-        }
-        Log.d(TAG, "加载失败3")
-        Toast.makeText(this@HomeFragment.context, "加载失败", Toast.LENGTH_SHORT).show()
-        square_refreshLayout.finishLoadMore(500)
-    }
 
     private fun setAdapter() {
         blogListAdapter = BlogListAdapter()
         val layoutManager = LinearLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-        square_blog_list.adapter = blogListAdapter
-        square_blog_list.layoutManager = layoutManager
+        home_blog_list.adapter = blogListAdapter
+        home_blog_list.layoutManager = layoutManager
         blogListAdapter.setOnItemClickListener(this)
+    }
+
+    enum class UpdateMode {
+        ADD, INIT
     }
 
     companion object {
