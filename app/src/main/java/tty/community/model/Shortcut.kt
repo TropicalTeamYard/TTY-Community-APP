@@ -1,26 +1,32 @@
 package tty.community.model
 
 enum class Shortcut {
-    AE, FE, UR, OK,
-    UNE, UPE,
-    TE,
-    BNE,
-    AIF,
+    AE, // argument mismatch
+    UR, // nickname have been registered
+    OK, // success
+    UNE, // user not found
+    UPE, // password error
+    TE, // invalid token
+    BNE, // blog not found
+    AIF, // argument format mismatch
+    TNE, // topic/tag not found
+    PME, // permission not allowed
     OTHER;
 
     companion object {
-        fun parse(name: String): Shortcut {
+        fun parse(name: String?): Shortcut {
             return when (name) {
                 "AE" -> AE
-                "FE" -> FE
                 "UR" -> UR
                 "OK" -> OK
+                "UNE" -> UNE
+                "UPE" -> UPE
                 "TE" -> TE
                 "BNE" -> BNE
-                "UPE" -> UPE
-                "UNE" -> UNE
                 "AIF" -> AIF
-                "OTHER" -> OTHER
+                "TNE" -> TNE
+                "PME" -> PME
+
                 else -> OTHER
             }
         }
