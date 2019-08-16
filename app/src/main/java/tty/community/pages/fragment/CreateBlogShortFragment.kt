@@ -116,7 +116,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         val url = Const.api[Const.Route.Blog] + "/create"
         val map = HashMap<String, String>()
-        map["id"] = user.id
+        map["author"] = user.id
         map["token"] = user.token
         map["title"] = title
         map["type"] = "${type.value}"

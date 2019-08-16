@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
             map["platform"] = "mobile"
             AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
                 fun onFail(msg: String) {
-                    Log.e(ChangePasswordActivity.TAG, msg)
+                    Log.e(TAG, msg)
                     Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                 }
 

@@ -65,7 +65,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
             AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
 
                 fun onFail(msg: String) {
-                    Log.e(ChangePasswordActivity.TAG, msg)
+                    Log.e(TAG, msg)
                     user_detail_refresh.finishRefresh(false)
                     Toast.makeText(this@UserDetailActivity, msg, Toast.LENGTH_SHORT).show()
                 }
@@ -100,8 +100,8 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                                 Shortcut.UNE -> {
                                     onFail("用户不存在")
                                 }
-                                Shortcut.UPE -> {
-                                    onFail("密码错误")
+                                Shortcut.TE -> {
+                                    onFail("登录已过期，请重新登录")
                                 }
                                 else -> {
                                     onFail("未知错误")

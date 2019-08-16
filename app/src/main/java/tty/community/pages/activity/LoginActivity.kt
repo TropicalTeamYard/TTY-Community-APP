@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "账号/密码不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            map["login_type"] = loginType
+            map["type"] = loginType
             map[loginType] = account
             map["password"] = getMD5(password)
             map["platform"] = "mobile"
@@ -62,8 +62,13 @@ class LoginActivity : AppCompatActivity() {
             }
 
             fun onFail(msg: String) {
-                Log.e(ChangePasswordActivity.TAG, msg)
+                Log.e(TAG, msg)
                 Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+            }
+
+            fun onSuccess() {
+                Toast.makeText(this@LoginActivity, "登录成功，即将跳转主界面", Toast.LENGTH_SHORT).show()
+                finish()
             }
 
             override fun onResponse(result: String?) {
@@ -82,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
                                 val values = Login(id, nickname, token, email).values
                                 if (values != null) {
                                     MainDBHelper(this@LoginActivity).login(values)
-                                    finish()
+                                    onSuccess()
                                 } else {
                                     onFail("返回参数出错")
                                 }
