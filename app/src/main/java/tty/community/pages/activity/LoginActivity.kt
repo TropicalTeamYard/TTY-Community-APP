@@ -13,8 +13,9 @@ import tty.community.model.Shortcut
 import tty.community.model.user.Login
 import tty.community.network.AsyncNetUtils
 import tty.community.network.AsyncNetUtils.Callback
-import tty.community.values.Const
+import tty.community.values.CONF
 import tty.community.values.Util.getMD5
+import java.lang.Exception
 
 class LoginActivity : AppCompatActivity() {
 
@@ -55,8 +56,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val url = Const.api[Const.Route.User] + "/" + "login"
-        AsyncNetUtils.post(url, map, object : Callback {
+        AsyncNetUtils.post(CONF.API.user.login, map, object : Callback {
             override fun onFailure(msg: String) {
                 onFail(msg)
             }
@@ -72,11 +72,10 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onResponse(result: String?) {
-                result?.let { it ->
-                    Log.d(TAG, it)
-                    val element = JsonParser().parse(it)
-                    if (element.isJsonObject) {
-                        val obj = element.asJsonObject
+                try {
+                    result?.let { it ->
+                        Log.d(TAG, it)
+                        val obj = JsonParser().parse(it).asJsonObject
                         when (Shortcut.parse(obj["shortcut"].asString)) {
                             Shortcut.OK -> {
                                 val data = obj["data"].asJsonObject
@@ -103,10 +102,13 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    return
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    onFail("返回数据异常")
                 }
 
-                onFail("网络异常")
+
+
             }
 
         })

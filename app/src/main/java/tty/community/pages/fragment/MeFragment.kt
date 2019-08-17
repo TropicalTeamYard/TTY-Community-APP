@@ -18,7 +18,7 @@ import tty.community.image.BitmapUtil
 import tty.community.model.user.User
 import tty.community.pages.activity.LoginActivity
 import tty.community.pages.activity.UserDetailActivity
-import tty.community.values.Const
+import tty.community.values.CONF
 
 class MeFragment : Fragment(), OnRefreshListener {
 
@@ -59,7 +59,7 @@ class MeFragment : Fragment(), OnRefreshListener {
         user.let {
             me_id.text = "ID: ${it.id}"
             me_nickname.text = it.nickname
-            val url = Const.api[Const.Route.PublicUser] + "/portrait?target=${it.id}"
+            val url = CONF.API.public.portrait + "?" + "id=${it.id}"
             Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).into(me_portrait)
             me_fragment_refresh.finishRefresh(500)
         }

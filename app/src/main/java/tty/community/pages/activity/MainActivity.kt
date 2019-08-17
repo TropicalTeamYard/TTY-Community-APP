@@ -15,7 +15,7 @@ import tty.community.adapter.MainFragmentAdapter
 import tty.community.database.MainDBHelper
 import tty.community.model.Shortcut
 import tty.community.network.AsyncNetUtils
-import tty.community.values.Const
+import tty.community.values.CONF
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
         if (user == null) {
             Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
         } else {
-            val url = Const.api[Const.Route.User] + "/auto_login"
+            val url = CONF.API.user.autoLogin
             val map = HashMap<String, String>()
             map["id"] = user.id
             map["token"] = user.token

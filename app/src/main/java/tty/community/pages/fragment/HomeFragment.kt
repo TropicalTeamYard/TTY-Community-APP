@@ -9,8 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.JsonArray
+import com.google.gson.Gson
 import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener
@@ -18,11 +19,11 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import tty.community.R
 import tty.community.adapter.BlogListAdapter
 import tty.community.model.Shortcut
+import tty.community.model.blog.Blog
 import tty.community.model.blog.Blog.Outline
-import tty.community.model.blog.Blog.Outline.Companion.initBlogList
 import tty.community.network.AsyncNetUtils
 import tty.community.pages.activity.CreateBlogActivity
-import tty.community.values.Const
+import tty.community.values.CONF
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -92,72 +93,63 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     }
 
     private fun refresh(tag: String = "") {
-        initBlogList(Date(), 10, tag, object : AsyncNetUtils.Callback {
+        Blog.initBlogList(Date(), 10, tag, object : AsyncNetUtils.Callback {
 
             override fun onFailure(msg: String) {
                 onFail(msg, UpdateMode.INIT)
             }
 
             override fun onResponse(result: String?) {
-                result?.let {
-                    Log.d(TAG, it)
-                    val element = JsonParser().parse(it)
-                    if (element.isJsonObject) {
-                        val obj = element.asJsonObject
+                try {
+                    result?.let {
+                        Log.d(TAG, it)
+                        val obj = JsonParser().parse(it).asJsonObject
                         when (Shortcut.parse(obj["shortcut"].asString)) {
                             Shortcut.OK -> {
-                                val list = obj["data"].asJsonArray
-                                if (list != null) {
-                                    val blogs = getBlogs(list)
-                                    onSuccess(blogs, UpdateMode.INIT)
-                                }
+                                val blogs: ArrayList<Outline> = gson.fromJson(obj["data"].asJsonArray, object : TypeToken<ArrayList<Outline>>() {}.type)
+                                onSuccess(blogs, UpdateMode.INIT)
                             }
 
                             else -> {
                                 onFail("刷新失败，未知错误1", UpdateMode.INIT)
                             }
                         }
+                        return
                     }
-
-                    return
+                }  catch (e: Exception) {
+                    e.printStackTrace()
+                    onFail("加载失败，数据异常2", UpdateMode.INIT)
                 }
-
-                onFail("刷新失败，网络异常2", UpdateMode.INIT)
             }
-
         })
     }
 
     private fun loadMore(tag: String = "") {
         blogListAdapter.getLastBlogId()?.let { id ->
-            Outline.loadMore(id, 10, tag, object : AsyncNetUtils.Callback {
+            Blog.loadMore(id, 10, tag, object : AsyncNetUtils.Callback {
                 override fun onResponse(result: String?) {
-                    result?.let { it ->
-                        Log.d(TAG, it)
-                        val element = JsonParser().parse(it)
-                        if (element.isJsonObject) {
-                            val obj = element.asJsonObject
+                    try {
+                        result?.let { it ->
+                            Log.d(TAG, it)
+                            val obj = JsonParser().parse(it).asJsonObject
                             when (Shortcut.parse(obj["shortcut"].asString)) {
                                 Shortcut.OK -> {
-                                    val list = obj["data"].asJsonArray
-                                    if (list != null) {
-                                        val blogs = getBlogs(list)
-                                        onSuccess(blogs, UpdateMode.ADD)
-                                    }
+                                    val blogs: ArrayList<Outline> = gson.fromJson(obj["data"].asJsonArray, object : TypeToken<ArrayList<Outline>>() {}.type)
+                                    onSuccess(blogs, UpdateMode.ADD)
                                 }
 
                                 else -> {
                                     onFail("加载失败，未知错误1", UpdateMode.ADD)
                                 }
                             }
+                            return
                         }
-
-                        return
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        onFail("加载失败，数据异常2", UpdateMode.ADD)
                     }
 
-                    onFail("加载失败，网络异常2", UpdateMode.ADD)
                 }
-
 
                 override fun onFailure(msg: String) {
                     onFail(msg, UpdateMode.ADD)
@@ -167,7 +159,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
             return
         }
 
-        onFail("网络异常3", UpdateMode.ADD)
+        onFail("加载失败，未知异常3", UpdateMode.ADD)
     }
 
     fun onFail(msg: String, mode: UpdateMode) {
@@ -195,29 +187,6 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
     }
 
-    private fun getBlogs(list: JsonArray): ArrayList<Outline> {
-        val blogs = ArrayList<Outline>()
-        for (i in 0 until list.size()) {
-            val item = list[i].asJsonObject
-            val author = item["author"].asString
-            val nickname = item["nickname"].asString
-            val blogId = item["blogId"].asString
-            val type = item["type"].asString
-            val title = item["title"].asString
-            val introduction = item["introduction"].asString
-            val tag = item["tag"].asString
-            val lastActiveTime = Date(item["lastActiveTime"].asLong)
-            val portrait = Const.api[Const.Route.PublicUser] + "/portrait?target=$author"
-
-            val blog = Outline(blogId, type, author, title, introduction, tag, portrait, lastActiveTime, nickname)
-
-            blogs.add(blog)
-        }
-
-        return blogs
-    }
-
-
     private fun setAdapter() {
         blogListAdapter = BlogListAdapter()
         val layoutManager = LinearLayoutManager(this.context)
@@ -232,6 +201,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     }
 
     companion object {
+        private val gson = CONF.gson
         const val TAG = "HomeFragment"
     }
 

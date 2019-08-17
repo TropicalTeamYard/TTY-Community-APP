@@ -19,7 +19,7 @@ import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
 import tty.community.model.user.User
 import tty.community.network.AsyncNetUtils
-import tty.community.values.Const
+import tty.community.values.CONF
 
 class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshListener {
     override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -41,7 +41,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         }
     }
 
-    val url = Const.api[Const.Route.User] + "/info"
+    val url = CONF.API.user.info
     private val map = HashMap<String, String>()
 
     private var user: User? = null
@@ -87,7 +87,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                             when (Shortcut.parse(obj["shortcut"].asString)) {
                                 Shortcut.OK -> {
                                     val data = obj["data"].asJsonObject
-                                    val url = Const.api[Const.Route.PublicUser] + "/portrait?target=${it.id}"
+                                    val url = CONF.API.public.portrait + "?" + "id=${it.id}"
                                     user_detail_id.text = data["id"].asString
                                     user_detail_nickname.text = data["nickname"].asString
                                     user_detail_email.text = data["email"].asString

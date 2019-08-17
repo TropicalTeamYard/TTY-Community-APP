@@ -14,8 +14,9 @@ import tty.community.network.AsyncNetUtils.Callback
 import tty.community.R
 import tty.community.model.Shortcut
 import tty.community.network.AsyncNetUtils
-import tty.community.values.Const
+import tty.community.values.CONF
 import tty.community.values.Util
+import java.lang.Exception
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -96,8 +97,8 @@ class ChangePasswordActivity : AppCompatActivity() {
             map["id"] = id
             map["old"] = Util.getMD5(oldPassword)
             map["new"] = Util.getMD5(newPassword)
-            val url = Const.api[Const.Route.User] + "/change_password"
-            AsyncNetUtils.post(url, map, object : Callback {
+
+            AsyncNetUtils.post(CONF.API.user.changePassword, map, object : Callback {
                 fun onResult(msg: String) {
                     Toast.makeText(this@ChangePasswordActivity, msg, Toast.LENGTH_SHORT).show()
                     Log.e(TAG, msg)
@@ -108,20 +109,14 @@ class ChangePasswordActivity : AppCompatActivity() {
                 }
 
                 override fun onResponse(result: String?) {
-                    result?.let {
-                        Log.d(TAG, it)
-                        val element = JsonParser().parse(it)
-                        if (element.isJsonObject) {
-                            val obj = element.asJsonObject
+                    try {
+                        result?.let {
+                            Log.d(TAG, it)
+                            val obj = JsonParser().parse(it).asJsonObject
                             when (Shortcut.parse(obj["shortcut"].asString)) {
                                 Shortcut.OK -> {
                                     onResult("修改密码成功")
-                                    startActivity(
-                                        Intent(
-                                            this@ChangePasswordActivity,
-                                            LoginActivity::class.java
-                                        )
-                                    )
+                                    startActivity(Intent(this@ChangePasswordActivity, LoginActivity::class.java))
                                     finish()
                                 }
                                 Shortcut.UNE -> {
@@ -137,12 +132,11 @@ class ChangePasswordActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        return
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        onResult("返回数据异常")
                     }
-
-                    onResult("网络异常")
                 }
-
             })
         }
     }

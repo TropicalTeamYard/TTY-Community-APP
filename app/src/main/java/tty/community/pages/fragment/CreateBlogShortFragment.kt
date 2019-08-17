@@ -23,12 +23,12 @@ import tty.community.database.MainDBHelper
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.Shortcut
-import tty.community.model.blog.Tag
-import tty.community.model.blog.Type
-import tty.community.model.blog.Type.Companion.value
+import tty.community.model.blog.Blog
+import tty.community.model.blog.Blog.Companion.Tag
+import tty.community.model.blog.Blog.Companion.BlogType
 import tty.community.model.user.User
 import tty.community.network.AsyncNetUtils
-import tty.community.values.Const
+import tty.community.values.CONF
 import java.io.File
 
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener,
@@ -104,29 +104,27 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
                 introduction = introduction.plus("\n****end****")
 
-                submit(it1, Type.Short, tag, "####nickname####的动态", introduction, content, files)
+                submit(it1, Blog.Companion.BlogType.Short, tag, "####nickname####的动态", introduction, content, files)
             }
         }
 
     }
 
-    private fun submit(user: User, type: Type, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
+    private fun submit(user: User, type: BlogType, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
 
         Toast.makeText(this.context, "上传中...", Toast.LENGTH_SHORT).show()
 
-        val url = Const.api[Const.Route.Blog] + "/create"
         val map = HashMap<String, String>()
         map["author"] = user.id
         map["token"] = user.token
         map["title"] = title
-        map["type"] = "${type.value}"
-        map["tag"] = tag.id
+        map["type"] = type.string()
         map["introduction"] = introduction
         map["content"] = content
         map["file_count"] = "${files.size}"
 
         // TODO 后台service上传
-        AsyncNetUtils.postMultipleForm(url, map, files, object : AsyncNetUtils.Callback {
+        AsyncNetUtils.postMultipleForm(CONF.API.blog.create, map, files, object : AsyncNetUtils.Callback {
 
             fun onFail(msg: String) {
                 Log.e(TAG, msg)

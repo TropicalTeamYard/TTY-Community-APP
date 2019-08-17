@@ -13,7 +13,7 @@ import tty.community.R
 import tty.community.model.Shortcut
 import tty.community.model.user.Register
 import tty.community.network.AsyncNetUtils
-import tty.community.values.Const
+import tty.community.values.CONF
 import tty.community.values.Util.getMD5
 import tty.community.widget.AlertDialogUtil
 import java.util.regex.Pattern
@@ -60,7 +60,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = Const.api[Const.Route.User] + "/register"
+            val url = CONF.API.user.register
             val map = Register(nickname, email, getMD5(password)).getMap()
             AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
                 fun onFail(msg: String) {
@@ -118,7 +118,7 @@ class RegisterActivity : AppCompatActivity() {
                     return
                 }
 
-                val url = Const.api[Const.Route.User] + "/check_name"
+                val url = CONF.API.user.checkName
                 val map = hashMapOf(Pair("nickname", nickname))
                 AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
                     fun onFail(msg: String) {

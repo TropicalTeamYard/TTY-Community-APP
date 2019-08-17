@@ -15,8 +15,11 @@ import java.util.concurrent.TimeUnit
 object NetUtils {
     fun post(url: String, params: HashMap<String, String>): Result {
         try {
-            val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS).build()
+            val client = OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build()
             val builder = FormBody.Builder()
             for (item in params) {
                 builder.add(item.key, item.value)

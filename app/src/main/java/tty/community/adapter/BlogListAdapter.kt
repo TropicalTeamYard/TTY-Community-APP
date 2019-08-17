@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_blog_outline.view.*
 import tty.community.R
 import tty.community.image.BitmapUtil
 import tty.community.model.blog.Blog.Outline
-import tty.community.values.Const
+import tty.community.values.CONF
 import tty.community.values.Time
 import tty.community.values.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
@@ -78,9 +78,9 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.nickname.text = blogs[position].nickname
         holder.introduction.text = summary
         holder.tag.text = blogs[position].tag
-        val portrait = blogs[position].portrait
+        val portrait = blogs[position].portrait()
 
-        val picture = Const.api[Const.Route.Blog] + "/picture?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
+        val picture = CONF.API.public.portrait + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
 
         if (picture.isNotEmpty() && picture.contains("key")) {
             holder.picture.visibility = View.VISIBLE
