@@ -80,7 +80,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.tag.text = blogs[position].tag
         val portrait = blogs[position].portrait()
 
-        val picture = CONF.API.public.portrait + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
+        val picture = CONF.API.blog.picture + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
 
         if (picture.isNotEmpty() && picture.contains("key")) {
             holder.picture.visibility = View.VISIBLE

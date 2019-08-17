@@ -92,9 +92,9 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                                     user_detail_nickname.text = data["nickname"].asString
                                     user_detail_email.text = data["email"].asString
                                     user_detail_signature.text = data["signature"].asString
-                                    user_detail_exp.text = data["exp"].asString
+                                    user_detail_exp.text = data["exp"].asInt.toString()
                                     user_detail_user_group.text = data["userGroup"].asString
-                                    Glide.with(this@UserDetailActivity).load(url).apply(BitmapUtil.optionsNoCache()).into(user_detail_portrait)
+                                    Glide.with(this@UserDetailActivity).load(url).apply(BitmapUtil.optionsNoCache()).centerCrop().into(user_detail_portrait)
                                     onSuccess()
                                 }
                                 Shortcut.UNE -> {

@@ -10,8 +10,8 @@ import java.text.DateFormat
 object CONF {
 
 //    private const val SERVER = "http://10.0.2.2:8080"
-    private const val SERVER = "http://192.168.123.182:8080"
-//    private const val SERVER = "http://47.102.200.155:8080"
+//    private const val SERVER = "http://192.168.123.182:8080"
+    private const val SERVER = "http://47.102.200.155:8080"
 
     open class API{
 
@@ -72,8 +72,9 @@ object CONF {
         }
     }
 
+    const val dateFormat = "yyyy/MM/dd-HH:mm:ss"
+
     var gson: Gson = GsonBuilder()
-        .enableComplexMapKeySerialization()
-        .setDateFormat(DateFormat.LONG)
+        .setDateFormat(dateFormat)
         .create()
 }

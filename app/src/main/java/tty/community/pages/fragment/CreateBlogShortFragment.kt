@@ -121,7 +121,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         map["type"] = type.string()
         map["introduction"] = introduction
         map["content"] = content
-        map["file_count"] = "${files.size}"
+        map["tag"] = tag.id
 
         // TODO 后台service上传
         AsyncNetUtils.postMultipleForm(CONF.API.blog.create, map, files, object : AsyncNetUtils.Callback {

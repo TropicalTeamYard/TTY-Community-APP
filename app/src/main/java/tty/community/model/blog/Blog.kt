@@ -16,7 +16,7 @@ interface Blog {
     val tag: String
     val lastActiveTime: Date
     val status: Int
-    fun portrait(): String = CONF.API.public.portrait + "?id=$blogId"
+    fun portrait(): String = CONF.API.public.portrait + "?" + "id=$author"
 
 
     open class Outline(
@@ -45,7 +45,7 @@ interface Blog {
         var comments: ArrayList<Comment>,
         var likes: ArrayList<Like>,
         var lastEditTime: Date
-    ) : Outline(blogId, type, author, title, introduction, tag, lastActiveTime, nickname, status)
+    ) : Blog
 
     data class Comment(val id: String, val nickname: String, val time: String)
     data class Like(val id: String, val nickname: String)

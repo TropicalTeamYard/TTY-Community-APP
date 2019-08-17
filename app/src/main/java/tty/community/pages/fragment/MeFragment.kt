@@ -60,7 +60,7 @@ class MeFragment : Fragment(), OnRefreshListener {
             me_id.text = "ID: ${it.id}"
             me_nickname.text = it.nickname
             val url = CONF.API.public.portrait + "?" + "id=${it.id}"
-            Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).into(me_portrait)
+            Glide.with(this).load(url).apply(BitmapUtil.optionsNoCache()).centerCrop().into(me_portrait)
             me_fragment_refresh.finishRefresh(500)
         }
     }
