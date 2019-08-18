@@ -10,18 +10,19 @@ import java.util.*
 
 object IO {
     @Throws(IOException::class)
-    fun saveBitmapFile(context: Context, bitmap: Bitmap): File {
-        val file = Storage.getCacheDirectory(context, "image")
-        val pic = File(file, randomString(Date()))
+    fun bitmap2FileCache(context: Context, bitmap: Bitmap, quality: Int): File {
+        val file = Storage.getStorageDirectory(context, "cache")
+        val pic = File(file, random(Date()))
         pic.createNewFile()
         val bos = BufferedOutputStream(FileOutputStream(pic))
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, bos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos)
         bos.flush()
         bos.close()
 
         return pic
     }
 
-    private fun randomString(time: Date) =
-        ("${time.time}${(100000..999999).random()}".hashCode() and Integer.MAX_VALUE).toString()
+    private fun random(time: Date) = ("${time.time}${(100000..999999).random()}".hashCode() and Integer.MAX_VALUE).toString()
+
+    const val TAG = "tty.community.file.IO"
 }

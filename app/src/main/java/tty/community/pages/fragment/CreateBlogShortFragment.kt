@@ -14,35 +14,34 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_create_blog_short.*
 import pub.devrel.easypermissions.EasyPermissions
 import tty.community.R
 import tty.community.adapter.ImageListAdapter
-import tty.community.database.MainDBHelper
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
+import tty.community.model.Params
 import tty.community.model.Shortcut
-import tty.community.model.blog.Blog
-import tty.community.model.blog.Blog.Companion.Tag
-import tty.community.model.blog.Blog.Companion.BlogType
-import tty.community.model.user.User
+import tty.community.model.Blog
+import tty.community.model.Blog.Companion.Tag
+import tty.community.model.Blog.Companion.BlogType
+import tty.community.model.User
 import tty.community.network.AsyncNetUtils
-import tty.community.values.CONF
+import tty.community.util.CONF
+import tty.community.util.Message
 import java.io.File
 
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener,
     EasyPermissions.PermissionCallbacks {
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
-        Toast.makeText(this.context, "获取权限失败，将无法选择图片", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "获取权限失败，将无法选择图片", Toast.LENGTH_SHORT).show()
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {}
 
 
-    override fun onClick(p0: View?) {
-
-    }
+    override fun onClick(p0: View?) { }
 
     override fun onItemClick(v: View?, position: Int) {
         Log.d(TAG, "pos: $position")
@@ -53,7 +52,6 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         }
     }
 
-    private var user: User? = null
     private val tag = Tag("000000", "")
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private lateinit var imagesAdapter: ImageListAdapter
@@ -67,23 +65,14 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
         super.onViewCreated(view, savedInstanceState)
         setAdapter()
-        user = this.context?.let { MainDBHelper(it).findUser() }
         create_blog_short_submit.setOnClickListener {
-            create_blog_short_submit.isClickable = false
-            user?.let { it1 ->
+            val user = this.context?.let { User.find(it) }
+            if (user != null) {
+                val title = "####nickname####的动态"
                 var content = create_blog_short_content.text.toString()
 
                 var introduction = "****summary****\n"
-                    .plus(
-                        try {
-                            content.substring(0, 120) + "..."
-                        } catch (e: StringIndexOutOfBoundsException) {
-                            if (content.isNotEmpty()) {
-                                content
-                            } else {
-                                "no content"
-                            }
-                        })
+                    .plus(try { content.substring(0, 120) + "..." } catch (e: StringIndexOutOfBoundsException) { if (content.isNotEmpty()) { content } else { "no content" } })
                     .plus("\n****metadata****\n")
 
                 content = "<pre>\n$content\n</pre>\n\n"
@@ -92,19 +81,22 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
                 val pics = ArrayList<String>()
 
                 for (bitmap in imagesAdapter.images) {
-                    val file = IO.saveBitmapFile(this.context!!, bitmap)
+                    val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
                     files.add(file)
-                    content = content.plus("![picture](./picture?id=####blog_id####&key=${file.name})<br>")
+                    content =
+                        content.plus("![picture](./picture?id=####blog_id####&key=${file.name})<br>")
                     pics.add("id=####blog_id####&key=${file.name}")
                 }
-                
+
                 if (pics.isNotEmpty()) {
                     introduction = introduction.plus(pics[0])
                 }
 
                 introduction = introduction.plus("\n****end****")
 
-                submit(it1, Blog.Companion.BlogType.Short, tag, "####nickname####的动态", introduction, content, files)
+                submit(user, Blog.Companion.BlogType.Short, tag, title, introduction, content, files)
+            } else {
+                Toast.makeText(context, "您还未登录，请先登录", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -112,64 +104,44 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
 
     private fun submit(user: User, type: BlogType, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
 
+        create_blog_short_submit.isClickable = false
         Toast.makeText(this.context, "上传中...", Toast.LENGTH_SHORT).show()
 
-        val map = HashMap<String, String>()
-        map["author"] = user.id
-        map["token"] = user.token
-        map["title"] = title
-        map["type"] = type.string()
-        map["introduction"] = introduction
-        map["content"] = content
-        map["tag"] = tag.id
-
         // TODO 后台service上传
-        AsyncNetUtils.postMultipleForm(CONF.API.blog.create, map, files, object : AsyncNetUtils.Callback {
-
-            fun onFail(msg: String) {
+        AsyncNetUtils.postMultipleForm(CONF.API.blog.create, Params.createBlog(user, title, type, introduction, content, tag), files, object : AsyncNetUtils.Callback {
+            fun onFail(msg: String): Int {
                 Log.e(TAG, msg)
+                //TODO 备份编辑项目
                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 create_blog_short_submit.isClickable = true
+                return 1
             }
 
-            fun onSuccess() {
+            fun onSuccess(): Int {
                 Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show()
                 this@CreateBlogShortFragment.activity?.finish()
+                return 0
             }
 
-            override fun onFailure(msg: String) {
-                onFail(msg)
+            override fun onFailure(msg: String): Int {
+                return onFail(msg)
             }
 
-            override fun onResponse(result: String?) {
-                result?.let { it ->
-                    Log.d(TAG, it)
-                    val element = JsonParser().parse(it)
-                    if (element.isJsonObject) {
-                        val obj = element.asJsonObject
-                        when (Shortcut.parse(obj["shortcut"].asString)) {
-                            Shortcut.OK -> {
-                                onSuccess()
-                            }
-
-                            //TODO 备份编辑项目
-                            Shortcut.TE -> {
-                                onFail("账号信息已过期，请重新登陆")
-                            }
-
-                            else -> {
-                                onFail("未知错误")
-                            }
-                        }
+            override fun onResponse(result: String?): Int {
+                val message: Message.MsgData<Blog.Outline>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<Blog.Outline>>(){})
+                return if (message != null) {
+                    when (message.shortcut) {
+                        Shortcut.OK -> onSuccess()
+                        Shortcut.TE -> onFail("账号信息已过期，请重新登陆")
+                        else -> onFail("shortcut异常")
                     }
-                    return
+                } else {
+                    onFail("解析异常")
                 }
-
-                onFail("网络异常")
             }
-
         })
     }
+
 
     private fun choosePic() {
         getPermission()
@@ -185,13 +157,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
                 RESULT_LOAD_IMAGE -> {
                     val selectedImage = data.data!!
                     val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-                    val cursor = this@CreateBlogShortFragment.activity?.contentResolver?.query(
-                        selectedImage,
-                        filePathColumn,
-                        null,
-                        null,
-                        null
-                    )
+                    val cursor = this@CreateBlogShortFragment.activity?.contentResolver?.query(selectedImage, filePathColumn, null, null, null)
                     if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
                         val path = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
                         _bitmap = BitmapUtil.load(path, true)

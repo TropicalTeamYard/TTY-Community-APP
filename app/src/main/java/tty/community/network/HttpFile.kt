@@ -7,7 +7,7 @@ import java.net.MalformedURLException
 import java.net.URL
 
 object HttpFile {
-    fun getBitMap(picPath: String): Bitmap? {
+    fun getBitmap(picPath: String): Bitmap? {
         var myFileUrl: URL? = null
         var bitmap: Bitmap? = null
         try {

@@ -4,9 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import tty.community.model.user.User
+import tty.community.model.User
 
-class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class Helper private constructor(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     override fun onCreate(p0: SQLiteDatabase?) {
         p0?.execSQL(CREATE_TABLE_USER)
@@ -14,16 +14,6 @@ class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
 
-    fun login(values: ContentValues) {
-        // status = 0 > need to re-login
-        // status = 1 > normal
-        // status = 2 > cannot do anything
-        val db = writableDatabase
-        val invalidAll = "update user set status = 0 where status > 0"
-        db.execSQL(invalidAll)
-        db.insertWithOnConflict("user", null, values, SQLiteDatabase.CONFLICT_REPLACE)
-        db.close()
-    }
 
     fun findUser(): User? {
         val db = writableDatabase
@@ -45,19 +35,28 @@ class MainDBHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
         return user
     }
 
-    fun updateUser(id: String, values: ContentValues) {
+    fun updateUser(id: String, email: String, nickname: String) {
         val db = writableDatabase
+        val values = ContentValues()
+        values.put("email", email)
+        values.put("nickname", nickname)
         db.update("user", values, "id = ?", arrayOf(id))
         db.close()
     }
 
 
     companion object {
-        const val TAG = "MainDBHelper"
+        const val TAG = "Helper"
         const val DB_NAME = "data.db"
         const val DB_VERSION = 1
-        const val CREATE_TABLE_USER =
-            "create table user(_id integer primary key autoincrement, id varchar(32) not null unique, nickname varchar(32) not null unique, token text not null, email text not null, status integer not null, personal_signature text, exp integer, user_group text);"
+        const val CREATE_TABLE_USER = "create table user(_id integer primary key autoincrement, id varchar(32) not null unique, nickname varchar(32) not null unique, token text not null, email text not null, status integer not null, personal_signature text, exp integer, user_group text);"
 
+        private var helper: Helper? = null
+        fun getHelper(context: Context): Helper {
+            if (helper == null) {
+                helper = Helper(context)
+            }
+            return helper!!
+        }
     }
 }

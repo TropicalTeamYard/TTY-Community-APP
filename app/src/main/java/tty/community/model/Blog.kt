@@ -1,9 +1,8 @@
-package tty.community.model.blog
+package tty.community.model
 
 import tty.community.network.AsyncNetUtils
 import tty.community.network.AsyncNetUtils.Callback
-import tty.community.values.CONF
-import tty.community.values.Time
+import tty.community.util.CONF
 import java.util.*
 
 interface Blog {
@@ -50,6 +49,23 @@ interface Blog {
     data class Comment(val id: String, val nickname: String, val time: String)
     data class Like(val id: String, val nickname: String)
 
+    enum class BlogListType {
+        TIME, ID;
+
+        val string: String
+            get() = when (this) {
+                TIME -> "time"
+                ID -> "id"
+            }
+        companion object {
+            fun parse(string: String?) = when(string) {
+                "time", "TIME" -> TIME
+                "id", "ID" -> ID
+                else -> null
+            }
+        }
+    }
+
     companion object {
         class Tag(val id: String, val text: String)
 
@@ -78,27 +94,13 @@ interface Blog {
 
         fun initBlogList(time: Date, count: Int, tag: String, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=time&date=2019/8/25-03:24:52&count=2 # date 及之前日期的 count 条记录
-
-            val params = HashMap<String, String>()
-            params["type"] = "time"
-            params["date"] = Time.getTime(time)
-            params["tag"] = tag
-            params["count"] = "$count"
-
-            AsyncNetUtils.post(CONF.API.blog.list, params, callback)
+            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListByTime(time, tag, count), callback)
 
         }
 
         fun loadMore(blogId: String, count: Int, tag: String, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=id&id=1293637237&count=8&tag=00000 # `to` 之前日期的 count 条记录
-
-            val params = HashMap<String, String>()
-            params["type"] = "id"
-            params["id"] = blogId
-            params["tag"] = tag
-            params["count"] = "$count"
-
-            AsyncNetUtils.post(CONF.API.blog.list, params, callback)
+            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListById(blogId, tag, count), callback)
         }
 
     }

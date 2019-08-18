@@ -7,14 +7,15 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_register.*
 import tty.community.R
+import tty.community.model.Params
 import tty.community.model.Shortcut
-import tty.community.model.user.Register
+import tty.community.model.User
 import tty.community.network.AsyncNetUtils
-import tty.community.values.CONF
-import tty.community.values.Util.getMD5
+import tty.community.util.CONF
+import tty.community.util.Message
+import tty.community.util.Util.getMD5
 import tty.community.widget.AlertDialogUtil
 import java.util.regex.Pattern
 
@@ -60,45 +61,35 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = CONF.API.user.register
-            val map = Register(nickname, email, getMD5(password)).getMap()
-            AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
-                fun onFail(msg: String) {
+            AsyncNetUtils.post(CONF.API.user.register, Params.register(User.Register(nickname, email, getMD5(password))), object : AsyncNetUtils.Callback {
+                fun onFail(msg: String): Int {
                     Log.e(TAG, msg)
                     Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_SHORT).show()
+                    return 1
                 }
 
-                override fun onFailure(msg: String) {
-                    onFail(msg)
+                fun onSuccess(): Int {
+                    AlertDialogUtil.registerSuccessDialog(this@RegisterActivity, nickname)
+                    return 0
                 }
 
-                override fun onResponse(result: String?) {
-                    result?.let { it ->
-                        Log.d(TAG, it)
-                        val element = JsonParser().parse(it)
-                        if (element.isJsonObject) {
-                            val obj = element.asJsonObject
-                            when (Shortcut.parse(obj["shortcut"].asString)) {
-                                Shortcut.OK -> {
-                                    AlertDialogUtil.registerResultDialog(this@RegisterActivity, nickname)
-                                }
-                                Shortcut.AIF -> {
-                                    onFail("昵称或邮箱格式不符合要求")
-                                }
-                                Shortcut.UR -> {
-                                    onFail("昵称 `$nickname` 已经被注册了")
-                                }
-                                else -> {
-                                    onFail("未知错误")
-                                }
-                            }
+                override fun onFailure(msg: String): Int {
+                    return onFail(msg)
+                }
+
+                override fun onResponse(result: String?): Int {
+                    val message: Message.Msg? = Message.Msg.parse(result)
+                    return if (message != null) {
+                        when (message.shortcut) {
+                            Shortcut.OK -> onSuccess()
+                            Shortcut.AIF -> onFail("昵称或邮箱格式不符合要求")
+                            Shortcut.UR -> onFail("昵称 $nickname 已经被注册了")
+                            else -> onFail("shortcut异常")
                         }
-                        return
+                    } else {
+                        onFail("解析异常")
                     }
-
-                    onFail("网络异常")
                 }
-
             })
 
         }
@@ -107,7 +98,7 @@ class RegisterActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {
                 val nickname = p0.toString()
                 if (!(2..15).contains(nickname.length)) {
-                    register_nickname_info.text = "昵称 `$nickname` 长度不符合要求"
+                    register_nickname_info.text = "昵称 $nickname 长度不符合要求"
                     register_nickname_info.setTextColor(Color.RED)
                     return
                 }
@@ -121,43 +112,33 @@ class RegisterActivity : AppCompatActivity() {
                 val url = CONF.API.user.checkName
                 val map = hashMapOf(Pair("nickname", nickname))
                 AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
-                    fun onFail(msg: String) {
-                        Log.e(TAG, msg)
+                    fun onFail(msg: String): Int {
                         register_nickname_info.text = msg
                         register_nickname_info.setTextColor(Color.RED)
+                        return 1
                     }
 
-                    fun onSuccess() {
-                        register_nickname_info.text = "昵称 `$nickname` 可以使用"
+                    fun onSuccess(msg: String): Int {
+                        register_nickname_info.text = msg
                         register_nickname_info.setTextColor(Color.GREEN)
+                        return 0
                     }
 
-                    override fun onFailure(msg: String) {
-                        onFail(msg)
+                    override fun onFailure(msg: String): Int {
+                        return onFail(msg)
                     }
 
-                    override fun onResponse(result: String?) {
-                        result?.let { it ->
-                            Log.d(TAG, it)
-                            val element = JsonParser().parse(it)
-                            if (element.isJsonObject) {
-                                val obj = element.asJsonObject
-                                when (Shortcut.parse(obj["shortcut"].asString)) {
-                                    Shortcut.OK -> {
-                                        onSuccess()
-                                    }
-                                    Shortcut.UR -> {
-                                        onFail("昵称 `$nickname` 已经被注册")
-                                    }
-                                    else -> {
-                                        onFail("未知错误")
-                                    }
-                                }
+                    override fun onResponse(result: String?): Int {
+                        val message: Message.Msg? = Message.Msg.parse(result)
+                        return if (message != null) {
+                            when(message.shortcut) {
+                                Shortcut.OK -> onSuccess("昵称 $nickname 可以使用")
+                                Shortcut.UR -> onFail("用户 $nickname 已经被注册了")
+                                else -> onFail("shortcut异常")
                             }
-                            return
+                        } else {
+                            onFail("解析异常")
                         }
-
-                        onFail("网络异常")
                     }
                 })
             }
@@ -185,7 +166,6 @@ class RegisterActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         })
-
 
         register_password.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {

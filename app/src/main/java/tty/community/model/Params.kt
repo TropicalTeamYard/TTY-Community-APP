@@ -1,0 +1,75 @@
+package tty.community.model
+
+import tty.community.pages.activity.LoginActivity.Companion.LoginType
+import tty.community.util.CONF
+import tty.community.util.Time
+import tty.community.util.Util
+import java.util.*
+import kotlin.collections.HashMap
+
+object Params {
+    fun login(account: String, password: String, loginType: LoginType): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["type"] = loginType.key
+        map[loginType.key] = account
+        map["password"] = Util.getMD5(password)
+        map["platform"] = CONF.platform
+        return map
+    }
+
+    fun autoLogin(user: User): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["id"] = user.id
+        map["token"] = user.token
+        map["platform"] = CONF.platform
+        return map
+    }
+
+    fun blogListByTime(time: Date, tag: String, count: Int): HashMap<String, String> {
+        val type = Blog.BlogListType.TIME
+        val map = HashMap<String, String>()
+        map["type"] = type.string
+        map[type.string] = Time.getTime(time)
+        map["tag"] = tag
+        map["count"] = count.toString()
+        return map
+    }
+
+    fun blogListById(blogId: String, tag: String, count: Int): HashMap<String, String> {
+        val type = Blog.BlogListType.ID
+        val map = HashMap<String, String>()
+        map["type"] = type.string
+        map[type.string] = blogId
+        map["tag"] = tag
+        map["count"] = count.toString()
+        return map
+    }
+
+    fun changePassword(id: String, oldPassword: String, newPassword: String): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["id"] = id
+        map["old"] = Util.getMD5(oldPassword)
+        map["new"] = Util.getMD5(newPassword)
+        return map
+    }
+
+    fun createBlog(user: User, title: String, type: Blog.Companion.BlogType, introduction: String, content: String, tag: Blog.Companion.Tag): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["author"] = user.id
+        map["token"] = user.token
+        map["title"] = title
+        map["type"] = type.string()
+        map["introduction"] = introduction
+        map["content"] = content
+        map["tag"] = tag.id
+        return map
+    }
+
+    fun register(register: User.Register): HashMap<String, String> {
+        return hashMapOf(
+            Pair("nickname", register.nickname),
+            Pair("email", register.email),
+            Pair("password", register.password)
+        )
+    }
+}

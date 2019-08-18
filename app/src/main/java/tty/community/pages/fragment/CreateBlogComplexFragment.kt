@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import tty.community.R
-import tty.community.model.blog.Blog.Companion.BlogType
+import tty.community.model.Blog.Companion.BlogType
 
 class CreateBlogComplexFragment : Fragment() {
 

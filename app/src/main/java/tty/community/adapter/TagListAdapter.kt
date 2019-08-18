@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_tag.view.*
 import tty.community.R
-import tty.community.model.blog.Blog.Companion.Tag
+import tty.community.model.Blog.Companion.Tag
 
 class TagListAdapter : RecyclerView.Adapter<TagListAdapter.ViewHolder>() {
 

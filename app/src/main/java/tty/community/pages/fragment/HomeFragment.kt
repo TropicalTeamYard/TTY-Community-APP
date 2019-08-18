@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
@@ -19,11 +17,12 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import tty.community.R
 import tty.community.adapter.BlogListAdapter
 import tty.community.model.Shortcut
-import tty.community.model.blog.Blog
-import tty.community.model.blog.Blog.Outline
+import tty.community.model.Blog
+import tty.community.model.Blog.Outline
 import tty.community.network.AsyncNetUtils
 import tty.community.pages.activity.CreateBlogActivity
-import tty.community.values.CONF
+import tty.community.util.CONF
+import tty.community.util.Message
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -94,31 +93,19 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
     private fun refresh(tag: String = "") {
         Blog.initBlogList(Date(), 10, tag, object : AsyncNetUtils.Callback {
-
-            override fun onFailure(msg: String) {
-                onFail(msg, UpdateMode.INIT)
+            override fun onFailure(msg: String): Int {
+                return onFail(msg, UpdateMode.INIT)
             }
 
-            override fun onResponse(result: String?) {
-                try {
-                    result?.let {
-                        Log.d(TAG, it)
-                        val obj = JsonParser().parse(it).asJsonObject
-                        when (Shortcut.parse(obj["shortcut"].asString)) {
-                            Shortcut.OK -> {
-                                val blogs: ArrayList<Outline> = gson.fromJson(obj["data"].asJsonArray, object : TypeToken<ArrayList<Outline>>() {}.type)
-                                onSuccess(blogs, UpdateMode.INIT)
-                            }
-
-                            else -> {
-                                onFail("刷新失败，未知错误1", UpdateMode.INIT)
-                            }
-                        }
-                        return
+            override fun onResponse(result: String?): Int {
+                val message: Message.MsgData<ArrayList<Outline>>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<ArrayList<Outline>>>() {})
+                return if (message != null) {
+                    when (message.shortcut) {
+                        Shortcut.OK -> onSuccess(message.data, UpdateMode.INIT)
+                        else -> onFail("刷新失败，未知错误1", UpdateMode.INIT)
                     }
-                }  catch (e: Exception) {
-                    e.printStackTrace()
-                    onFail("加载失败，数据异常2", UpdateMode.INIT)
+                } else {
+                    onFail("刷新失败，数据异常2", UpdateMode.INIT)
                 }
             }
         })
@@ -127,52 +114,37 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     private fun loadMore(tag: String = "") {
         blogListAdapter.getLastBlogId()?.let { id ->
             Blog.loadMore(id, 10, tag, object : AsyncNetUtils.Callback {
-                override fun onResponse(result: String?) {
-                    try {
-                        result?.let { it ->
-                            Log.d(TAG, it)
-                            val obj = JsonParser().parse(it).asJsonObject
-                            when (Shortcut.parse(obj["shortcut"].asString)) {
-                                Shortcut.OK -> {
-                                    val blogs: ArrayList<Outline> = gson.fromJson(obj["data"].asJsonArray, object : TypeToken<ArrayList<Outline>>() {}.type)
-                                    onSuccess(blogs, UpdateMode.ADD)
-                                }
-
-                                else -> {
-                                    onFail("加载失败，未知错误1", UpdateMode.ADD)
-                                }
-                            }
-                            return
+                override fun onResponse(result: String?): Int {
+                    val message: Message.MsgData<ArrayList<Outline>>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<ArrayList<Outline>>>() {})
+                    return if (message != null) {
+                        when(message.shortcut) {
+                            Shortcut.OK -> onSuccess(message.data, UpdateMode.ADD)
+                            else -> onFail("加载失败，未知错误1", UpdateMode.ADD)
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        onFail("加载失败，数据异常2", UpdateMode.ADD)
+                    } else {
+                        onFail("解析错误", UpdateMode.ADD)
                     }
-
                 }
 
-                override fun onFailure(msg: String) {
-                    onFail(msg, UpdateMode.ADD)
+                override fun onFailure(msg: String): Int {
+                    return onFail(msg, UpdateMode.ADD)
                 }
+
             })
-
-            return
         }
-
-        onFail("加载失败，未知异常3", UpdateMode.ADD)
     }
 
-    fun onFail(msg: String, mode: UpdateMode) {
+    fun onFail(msg: String, mode: UpdateMode): Int {
         Log.e(TAG, msg)
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         when(mode) {
             UpdateMode.ADD -> home_refreshLayout.finishLoadMore(false)
             UpdateMode.INIT -> home_refreshLayout.finishRefresh(false)
         }
-
+        return 1
     }
 
-    fun onSuccess(blogs: ArrayList<Outline>, mode: UpdateMode) {
+    fun onSuccess(blogs: ArrayList<Outline>, mode: UpdateMode): Int {
         when(mode) {
             UpdateMode.ADD -> {
                 blogListAdapter.add(blogs)
@@ -183,8 +155,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
                 home_refreshLayout.finishRefresh(true)
             }
         }
-
-
+        return 0
     }
 
     private fun setAdapter() {

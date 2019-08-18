@@ -1,4 +1,4 @@
-package tty.community.values
+package tty.community.util
 
 import java.text.ParseException
 import java.text.SimpleDateFormat

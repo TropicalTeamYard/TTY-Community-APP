@@ -38,7 +38,7 @@ object AsyncNetUtils {
     }
 
     interface Callback {
-        fun onResponse(result: String?)
-        fun onFailure(msg: String)
+        fun onResponse(result: String?): Int
+        fun onFailure(msg: String): Int
     }
 }

@@ -1,36 +1,53 @@
 package tty.community.pages.activity
 
-import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_me.*
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
-import tty.community.database.MainDBHelper
-import tty.community.model.Shortcut
-import tty.community.network.AsyncNetUtils
-import tty.community.values.CONF
+import tty.community.image.BitmapUtil
+import tty.community.model.User
+import tty.community.model.User.Companion.autoLogin
+import tty.community.util.CONF
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
-    BottomNavigationView.OnNavigationItemSelectedListener {
+    BottomNavigationView.OnNavigationItemSelectedListener, DrawerLayout.DrawerListener {
+    override fun onDrawerStateChanged(newState: Int) {}
+
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+    override fun onDrawerClosed(drawerView: View) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onDrawerOpened(drawerView: View) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    var user : User? = null
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.nav_home -> {
                 main_viewPager.currentItem = 0
+                main_title.text = "主页"
                 true
             }
             R.id.nav_chat -> {
+                main_title.text = "私信"
                 main_viewPager.currentItem = 1
                 true
             }
             R.id.nav_me -> {
                 main_viewPager.currentItem = 2
+                main_title.text = user?.nickname?:"请登录"
                 true
             }
             else -> false
@@ -59,70 +76,26 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
 
     override fun onResume() {
         super.onResume()
-        autoLogin()
-
+        autoLogin(this)
+        user = User.find(this)
+        refresh()
     }
 
-    private fun autoLogin() {
-        val user = MainDBHelper(this).findUser()
-        if (user == null) {
-            Toast.makeText(this, "您还未登录账号，请先登录", Toast.LENGTH_SHORT).show()
-        } else {
-            val url = CONF.API.user.autoLogin
-            val map = HashMap<String, String>()
-            map["id"] = user.id
-            map["token"] = user.token
-            map["platform"] = "mobile"
-            AsyncNetUtils.post(url, map, object : AsyncNetUtils.Callback {
-                fun onFail(msg: String) {
-                    Log.e(TAG, msg)
-                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
-                }
+    private fun refresh() {
 
-                override fun onFailure(msg: String) {
-                    onFail(msg)
-                }
-
-                override fun onResponse(result: String?) {
-                    result?.let { it ->
-                        Log.d(TAG, it)
-                        val element = JsonParser().parse(it)
-                        if (element.isJsonObject) {
-                            val obj = element.asJsonObject
-                            when (Shortcut.parse(obj["shortcut"].asString)) {
-                                Shortcut.OK -> {
-                                    val data = obj["data"].asJsonObject
-                                    val values = ContentValues()
-                                    values.put("email", data["email"].asString)
-                                    values.put("nickname", data["nickname"].asString)
-                                    MainDBHelper(this@MainActivity).updateUser(user.id, values)
-                                }
-                                Shortcut.UNE -> {
-                                    onFail("用户不存在")
-                                }
-                                Shortcut.TE -> {
-                                    onFail("登录已过期，请重新登录")
-                                }
-                                else -> {
-                                    onFail("未知错误")
-                                }
-                            }
-                        }
-                        return
-                    }
-
-                    onFail("网络异常")
-                }
-
-            })
+        if (user != null) {
+            Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user?.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(main_portrait)
         }
     }
+
 
     private fun setAdapter() {
         val adapter = MainFragmentAdapter(supportFragmentManager)
         main_viewPager.adapter = adapter
         main_viewPager.addOnPageChangeListener(this)
+        main_viewPager.offscreenPageLimit = 2
         main_nav.setOnNavigationItemSelectedListener(this)
+        main_drawer_layout.addDrawerListener(this)
     }
 
     companion object {

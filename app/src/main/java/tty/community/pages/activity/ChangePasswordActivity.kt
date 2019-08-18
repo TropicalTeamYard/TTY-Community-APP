@@ -8,15 +8,14 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_change_password.*
 import tty.community.network.AsyncNetUtils.Callback
 import tty.community.R
+import tty.community.model.Params
 import tty.community.model.Shortcut
 import tty.community.network.AsyncNetUtils
-import tty.community.values.CONF
-import tty.community.values.Util
-import java.lang.Exception
+import tty.community.util.CONF
+import tty.community.util.Message
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -93,53 +92,45 @@ class ChangePasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val map = HashMap<String, String>()
-            map["id"] = id
-            map["old"] = Util.getMD5(oldPassword)
-            map["new"] = Util.getMD5(newPassword)
-
-            AsyncNetUtils.post(CONF.API.user.changePassword, map, object : Callback {
-                fun onResult(msg: String) {
-                    Toast.makeText(this@ChangePasswordActivity, msg, Toast.LENGTH_SHORT).show()
+            AsyncNetUtils.post(CONF.API.user.changePassword, Params.changePassword(id, oldPassword, newPassword), object : Callback {
+                fun onResult(msg: String): Int {
                     Log.e(TAG, msg)
+                    Toast.makeText(this@ChangePasswordActivity, msg, Toast.LENGTH_SHORT).show()
+                    return 0
                 }
 
-                override fun onFailure(msg: String) {
-                    onResult(msg)
+                override fun onFailure(msg: String): Int {
+                    return onResult(msg)
                 }
 
-                override fun onResponse(result: String?) {
-                    try {
-                        result?.let {
-                            Log.d(TAG, it)
-                            val obj = JsonParser().parse(it).asJsonObject
-                            when (Shortcut.parse(obj["shortcut"].asString)) {
-                                Shortcut.OK -> {
-                                    onResult("修改密码成功")
-                                    startActivity(Intent(this@ChangePasswordActivity, LoginActivity::class.java))
-                                    finish()
-                                }
-                                Shortcut.UNE -> {
-                                    onResult("用户不存在")
-                                    change_password_id.requestFocus()
-                                }
-                                Shortcut.UPE -> {
-                                    onResult("密码错误")
-                                    change_password_old_password.requestFocus()
-                                }
-                                else -> {
-                                    onResult("未知错误")
-                                }
+                override fun onResponse(result: String?): Int {
+                    val message: Message.Msg? = Message.Msg.parse(result)
+                    return if (message != null) {
+                        when (message.shortcut) {
+                            Shortcut.OK -> {
+                                startActivity(Intent(this@ChangePasswordActivity, LoginActivity::class.java))
+                                finish()
+                                onResult("修改密码成功")
                             }
+                            Shortcut.UNE -> {
+                                change_password_id.requestFocus()
+                                onResult("用户不存在")
+                            }
+                            Shortcut.UPE -> {
+                                change_password_old_password.requestFocus()
+                                onResult("密码错误")
+                            }
+                            else -> onResult("shortcut异常")
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        onResult("返回数据异常")
+                    } else {
+                        onResult("解析异常")
                     }
                 }
             })
         }
     }
+
+
 
     companion object {
         const val TAG = "ChangePasswordActivity"

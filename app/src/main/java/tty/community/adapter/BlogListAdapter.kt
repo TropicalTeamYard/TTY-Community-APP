@@ -12,10 +12,10 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_blog_outline.view.*
 import tty.community.R
 import tty.community.image.BitmapUtil
-import tty.community.model.blog.Blog.Outline
-import tty.community.values.CONF
-import tty.community.values.Time
-import tty.community.values.Time.getFormattedTime
+import tty.community.model.Blog.Outline
+import tty.community.util.CONF
+import tty.community.util.Time
+import tty.community.util.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
 
 class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {

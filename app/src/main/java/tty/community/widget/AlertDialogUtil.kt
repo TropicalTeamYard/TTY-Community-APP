@@ -9,7 +9,7 @@ import tty.community.pages.activity.LoginActivity
 
 object AlertDialogUtil {
 
-    fun registerResultDialog(context: Context, nickname: String) {
+    fun registerSuccessDialog(context: Context, nickname: String) {
         val ac = TextView(context)
         ac.height = 120
         ac.setLines(2)

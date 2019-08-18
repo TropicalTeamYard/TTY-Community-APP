@@ -5,22 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_login.*
 import tty.community.R
-import tty.community.database.MainDBHelper
+import tty.community.model.Params
 import tty.community.model.Shortcut
-import tty.community.model.user.Login
+import tty.community.model.User
 import tty.community.network.AsyncNetUtils
 import tty.community.network.AsyncNetUtils.Callback
-import tty.community.values.CONF
-import tty.community.values.Util.getMD5
-import java.lang.Exception
+import tty.community.pages.activity.LoginActivity.Companion.LoginType.*
+import tty.community.util.CONF
+import tty.community.util.Message
 
 class LoginActivity : AppCompatActivity() {
 
-    private val map = HashMap<String, String>()
-    private var loginType = "nickname"
+    private var loginType = NICKNAME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,83 +31,60 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "账号/密码不能为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            map["type"] = loginType
-            map[loginType] = account
-            map["password"] = getMD5(password)
-            map["platform"] = "mobile"
-            login()
+            login(Params.login(account, password, loginType))
         }
 
         login_change_method.setOnClickListener {
-            if (loginType == "nickname") {
-                loginType = "id"
-                login_method.text = "账    号"
-            } else {
-                loginType = "nickname"
-                login_method.text = "用 户 名"
+            loginType = when (loginType) {
+                NICKNAME -> ID
+                ID -> NICKNAME
             }
+            login_method.text = loginType.text
         }
 
         login_register_btn.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
-
     }
 
-    private fun login() {
-        AsyncNetUtils.post(CONF.API.user.login, map, object : Callback {
-            override fun onFailure(msg: String) {
-                onFail(msg)
-            }
-
-            fun onFail(msg: String) {
+    private fun login(params: HashMap<String, String>) {
+        AsyncNetUtils.post(CONF.API.user.login, params, object : Callback {
+            fun onLoginFail(msg: String): Int {
                 Log.e(TAG, msg)
                 Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+                return 1
             }
 
-            fun onSuccess() {
-                Toast.makeText(this@LoginActivity, "登录成功，即将跳转主界面", Toast.LENGTH_SHORT).show()
+            fun onSuccess(user: User): Int {
+                user.login(this@LoginActivity)
+                Toast.makeText(this@LoginActivity, "欢迎${user.nickname}!", Toast.LENGTH_SHORT).show()
                 finish()
+                return 0
             }
 
-            override fun onResponse(result: String?) {
-                try {
-                    result?.let { it ->
-                        Log.d(TAG, it)
-                        val obj = JsonParser().parse(it).asJsonObject
-                        when (Shortcut.parse(obj["shortcut"].asString)) {
-                            Shortcut.OK -> {
-                                val data = obj["data"].asJsonObject
-                                val id = data["id"].asString
-                                val nickname = data["nickname"].asString
-                                val email = data["email"].asString
-                                val token = data["token"].asString
-                                val values = Login(id, nickname, token, email).values
-                                if (values != null) {
-                                    MainDBHelper(this@LoginActivity).login(values)
-                                    onSuccess()
-                                } else {
-                                    onFail("返回参数出错")
-                                }
-                            }
-                            Shortcut.UNE -> {
-                                onFail("用户不存在")
-                            }
-                            Shortcut.UPE -> {
-                                onFail("密码错误")
-                            }
-                            else -> {
-                                onFail("未知错误")
-                            }
-                        }
+            fun onRunFail(msg: String = "未知错误"): Int {
+                Log.e(TAG, msg)
+                Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
+                return 1
+            }
+
+            override fun onFailure(msg: String): Int {
+                return onRunFail(msg)
+            }
+
+            override fun onResponse(result: String?): Int {
+                val message: Message.MsgData<User>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<User>>(){})
+                return if (message != null) {
+                    when(message.shortcut) {
+                        Shortcut.OK -> onSuccess(message.data)
+                        Shortcut.UNE -> onLoginFail("用户不存在")
+                        Shortcut.UPE -> onLoginFail("密码错误")
+                        else -> onRunFail("shortcut异常")
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    onFail("返回数据异常")
+
+                } else {
+                    onRunFail("解析异常")
                 }
-
-
-
             }
 
         })
@@ -116,5 +92,24 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "LoginActivity"
+        enum class LoginType {
+            ID, NICKNAME;
+
+            val key: String
+                get() {
+                    return when (this) {
+                        ID -> "id"
+                        NICKNAME -> "nickname"
+                    }
+                }
+
+            val text: String
+                get() {
+                    return when (this) {
+                        ID -> "账    号"
+                        NICKNAME -> "用 户 名"
+                    }
+                }
+        }
     }
 }

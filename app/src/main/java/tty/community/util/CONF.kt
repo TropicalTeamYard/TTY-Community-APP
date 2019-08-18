@@ -1,10 +1,7 @@
-package tty.community.values
+package tty.community.util
 
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.Gson
-import tty.community.model.blog.Blog
-import java.text.DateFormat
 
 
 object CONF {
@@ -68,13 +65,12 @@ object CONF {
             val public = Public()
             val blog = Blog()
             val topic = Topic()
-
         }
     }
 
     const val dateFormat = "yyyy/MM/dd-HH:mm:ss"
 
-    var gson: Gson = GsonBuilder()
-        .setDateFormat(dateFormat)
-        .create()
+    const val platform = "mobile"
+
+    var gson: Gson = GsonBuilder().setDateFormat(dateFormat).create()
 }
