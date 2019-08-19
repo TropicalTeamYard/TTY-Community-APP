@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import tty.community.pages.fragment.ChatFragment
 import tty.community.pages.fragment.HomeFragment
-import tty.community.pages.fragment.MeFragment
+import tty.community.pages.fragment.SearchFragment
 
 class MainFragmentAdapter(fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -13,8 +13,8 @@ class MainFragmentAdapter(fm: FragmentManager) :
 
     init {
         pages.add(HomeFragment())
+        pages.add(SearchFragment())
         pages.add(ChatFragment())
-        pages.add(MeFragment())
     }
 
     override fun getCount(): Int {

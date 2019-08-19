@@ -76,6 +76,8 @@ open class User(
     companion object {
         const val TAG = "User"
 
+        val type = object : TypeToken<Message.MsgData<User>>(){}
+
         fun reset(context: Context) {
             Log.d(TAG, "reset user")
             val db = Helper.getHelper(context).writableDatabase

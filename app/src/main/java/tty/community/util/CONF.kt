@@ -2,6 +2,7 @@ package tty.community.util
 
 import com.google.gson.GsonBuilder
 import com.google.gson.Gson
+import tty.community.model.User
 
 
 object CONF {

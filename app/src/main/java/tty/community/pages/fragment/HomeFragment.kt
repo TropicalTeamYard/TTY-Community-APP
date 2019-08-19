@@ -1,6 +1,5 @@
 package tty.community.pages.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,15 +15,12 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import kotlinx.android.synthetic.main.fragment_home.*
 import tty.community.R
 import tty.community.adapter.BlogListAdapter
-import tty.community.model.Shortcut
 import tty.community.model.Blog
 import tty.community.model.Blog.Outline
+import tty.community.model.Shortcut
 import tty.community.network.AsyncNetUtils
-import tty.community.pages.activity.CreateBlogActivity
-import tty.community.util.CONF
 import tty.community.util.Message
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshListener, OnLoadMoreListener {
@@ -79,9 +75,6 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fab_add_blog.setOnClickListener {
-            startActivity(Intent(this.context, CreateBlogActivity::class.java))
-        }
 
         setAdapter()
 
@@ -172,7 +165,6 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     }
 
     companion object {
-        private val gson = CONF.gson
         const val TAG = "HomeFragment"
     }
 

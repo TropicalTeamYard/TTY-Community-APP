@@ -5,14 +5,16 @@
         android:icon="@drawable/ic_home_grey_64dp"
         android:title="主页"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search_grey_128dp"
+        android:title="发现"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/nav_chat"
         android:icon="@drawable/ic_chat_grey_64dp"
         android:title="私信"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/nav_me"
-        android:icon="@drawable/ic_user_grey_64dp"
-        android:title="我的"
         app:showAsAction="ifRoom" />
 </menu>

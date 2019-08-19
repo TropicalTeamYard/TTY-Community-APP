@@ -1,126 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pages.fragment.MeFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".pages.fragment.UserFragment">
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/me_fragment_refresh"
+        android:id="@+id/user_refresh"
+        app:srlEnablePreviewInEditMode="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srlEnablePreviewInEditMode="false">
-
+        android:layout_height="match_parent">
         <com.scwang.smartrefresh.header.PhoenixHeader
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"/>
         <LinearLayout
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/me_detail"
+                android:id="@+id/user_outline"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:orientation="vertical"
                 android:paddingTop="16dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
                     <tty.community.widget.RoundAngleImageView
-                        android:id="@+id/me_portrait"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
+                        android:id="@+id/user_portrait"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:roundHeight="24dp"
+                        app:roundWidth="24dp"
+                        android:layout_gravity="top|start"
+                        android:layout_marginStart="16dp"
                         android:contentDescription="@null"
                         android:scaleType="fitCenter"
-                        app:roundHeight="30dp"
+                        android:layout_marginEnd="16dp"
                         android:background="@color/white"
-                        app:roundWidth="30dp"
                         app:srcCompat="@drawable/ic_user_grey_64dp" />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/me_nickname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:ellipsize="end"
-                            android:gravity="center_vertical"
-                            android:singleLine="true"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingTop="8dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:gravity="center_vertical"
-                                android:text="ID"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
-
-                            <TextView
-                                android:id="@+id/me_id"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:ellipsize="end"
-                                android:gravity="center_vertical"
-                                android:singleLine="true"
-                                android:text="NULL"
-                                android:textColor="@color/white"
-                                android:textSize="18sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/user_nickname"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="12dp">
+                        android:maxWidth="144dp"
+                        android:layout_height="24dp"
+                        android:layout_toEndOf="@id/user_portrait"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
-                        <Button
-                            android:id="@+id/me_qr_code"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="12dp"
-                            android:background="@drawable/ic_qr_code_white" />
 
-                        <Button
-                            android:id="@+id/me_more"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center_vertical"
-                            android:background="@drawable/ic_chevron_right_white" />
-                    </LinearLayout>
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/user_id"
+                        android:layout_toEndOf="@id/user_portrait"
+                        android:layout_below="@id/user_nickname"
+                        android:maxWidth="144dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+
+                    <Button
+                        android:id="@+id/user_qr_code"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_toStartOf="@id/user_more"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="24dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_qr_code_white" />
+
+                    <Button
+                        android:id="@+id/user_more"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/ic_chevron_right_white" />
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
@@ -131,14 +110,13 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_height="22dp"
                             android:gravity="center"
                             android:text="帖子"
                             android:textColor="@color/white"
@@ -146,7 +124,7 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="18dp"
+                            android:layout_height="16dp"
                             android:gravity="center"
                             android:text="0"
                             android:textColor="@color/white"
@@ -213,8 +191,34 @@
                     </LinearLayout>
                 </LinearLayout>
 
-
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/user_outline_nothing"
+                android:background="@color/colorAccent"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="64dp">
+                <tty.community.widget.RoundAngleImageView
+                    android:background="@color/white"
+                    app:srcCompat="@drawable/ic_user_grey_64dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    app:roundWidth="24dp"
+                    app:roundHeight="24dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="32dp"
+                    android:text="请登录"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"/>
+            </RelativeLayout>
 
 
             <ScrollView
@@ -229,37 +233,35 @@
 
 
                     <androidx.viewpager.widget.ViewPager
-                        android:id="@+id/me_pager_activity"
+                        android:id="@+id/user_pager_activity"
                         android:layout_width="match_parent"
-                        android:layout_height="256dp" />
+                        android:layout_height="128dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/me_recycler_view_activity"
+                        android:id="@+id/user_recycler_view_activity"
                         android:layout_width="match_parent"
-                        android:layout_height="512dp"
+                        android:layout_height="128dp"
                         android:layout_marginTop="16dp" />
-
-
                 </LinearLayout>
             </ScrollView>
 
 
             <Button
-                android:id="@+id/me_login"
+                android:id="@+id/user_login"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:layout_margin="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="32dp"
                 android:background="@drawable/border"
                 android:text="登录/切换账号"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
-
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-</RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

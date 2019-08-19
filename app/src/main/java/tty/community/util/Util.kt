@@ -63,7 +63,7 @@ object Util {
         return String(resultCharArray)
     }
 
-    fun validateJson(json: String?): JsonType {
+    private fun validateJson(json: String?): JsonType {
         if (json == null) {
             Log.d(TAG, "json is null")
             return Util.JsonType.JsonNull
