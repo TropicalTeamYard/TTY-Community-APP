@@ -18,7 +18,7 @@
         <activity
             android:name=".pages.activity.UserInfoActivity"
             android:label="@string/title_activity_user_info"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".pages.activity.TopicListActivity" />
         <activity android:name=".pages.activity.PublicUserActivity" />
         <activity
