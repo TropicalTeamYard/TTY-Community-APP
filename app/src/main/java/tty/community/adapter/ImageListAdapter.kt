@@ -70,7 +70,7 @@ class ImageListAdapter : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
         } else {
             holder.picture.setImageDrawable(
                 context.resources.getDrawable(
-                    R.drawable.ic_add_grey,
+                    R.drawable.ic_add_gray,
                     null
                 )
             )

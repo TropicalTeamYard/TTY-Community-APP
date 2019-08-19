@@ -26,6 +26,7 @@
             android:label="修改密码" />
         <activity
             android:name=".pages.activity.ChangeInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="修改个人信息" />
         <activity
             android:name=".pages.activity.CreateBlogActivity"

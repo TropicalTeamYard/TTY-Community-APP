@@ -45,7 +45,7 @@
                         android:scaleType="fitCenter"
                         android:layout_marginEnd="16dp"
                         android:background="@color/white"
-                        app:srcCompat="@drawable/ic_user_grey_64dp" />
+                        app:srcCompat="@drawable/ic_user_gray_64dp" />
 
 
                     <TextView
@@ -80,20 +80,20 @@
                         android:id="@+id/user_qr_code"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_toStartOf="@id/user_more"
+                        android:layout_toStartOf="@id/user_change_info"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="24dp"
                         android:layout_centerVertical="true"
                         android:background="@drawable/ic_qr_code_white" />
 
                     <Button
-                        android:id="@+id/user_more"
+                        android:id="@+id/user_change_info"
                         android:layout_alignParentEnd="true"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/ic_chevron_right_white" />
+                        android:background="@drawable/ic_pencil_white_24dp" />
 
                 </RelativeLayout>
 
@@ -134,7 +134,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/grey" />
+                        android:background="@color/gray" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -164,7 +164,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/grey" />
+                        android:background="@color/gray" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -201,7 +201,7 @@
                 android:layout_height="64dp">
                 <tty.community.widget.RoundAngleImageView
                     android:background="@color/white"
-                    app:srcCompat="@drawable/ic_user_grey_64dp"
+                    app:srcCompat="@drawable/ic_user_gray_64dp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="16dp"
                     app:roundWidth="24dp"

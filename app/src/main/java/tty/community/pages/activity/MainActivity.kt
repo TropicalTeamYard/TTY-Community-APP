@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     UserFragment.OnFragmentInteractionListener,
     DrawerLayout.DrawerListener, View.OnClickListener {
+    override fun onUserRefreshed(user: User) {
+        this.user = user
+    }
+
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.main_portrait-> main_drawer.openDrawer(GravityCompat.START)
@@ -36,26 +40,17 @@ class MainActivity : AppCompatActivity(),
     }
 
     var user: User? = null
+        set(value) {
+            user?.let { refresh(it) }
+            field = value
+        }
 
-    override fun onDrawerStateChanged(newState: Int) {
-//        Log.d(TAG, "state:$newState")
-    }
+    override fun onDrawerStateChanged(newState: Int) {}
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+    override fun onDrawerClosed(drawerView: View) {}
+    override fun onDrawerOpened(drawerView: View) {}
 
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-//        Log.d(TAG, "silde offset: $slideOffset")
-    }
-
-    override fun onDrawerClosed(drawerView: View) {
-//        Log.d(TAG, "draw close")
-    }
-
-    override fun onDrawerOpened(drawerView: View) {
-//        Log.d(TAG, "draw open")
-    }
-
-    override fun onFragmentInteraction(uri: Uri) {
-
-    }
+    override fun onFragmentInteraction(uri: Uri) {}
 
     private lateinit var intents: Array<Intent>
 
@@ -95,14 +90,12 @@ class MainActivity : AppCompatActivity(),
     override fun onResume() {
         super.onResume()
         autoLogin(this)
-        refresh()
+        user = User.find(this)
+        user?.let { refresh(it) }
     }
 
-    private fun refresh() {
-        user = User.find(this)
-        if (user != null) {
-            Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user?.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(main_portrait)
-        }
+    private fun refresh(user: User) {
+        Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(main_portrait)
     }
 
     private fun init() {

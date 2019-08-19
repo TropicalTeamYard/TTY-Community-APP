@@ -133,7 +133,7 @@ class RegisterActivity : AppCompatActivity() {
                         return if (message != null) {
                             when(message.shortcut) {
                                 Shortcut.OK -> onSuccess("昵称 $nickname 可以使用")
-                                Shortcut.UR -> onFail("用户 $nickname 已经被注册了")
+                                Shortcut.UR -> onFail("昵称 $nickname 已经被注册了")
                                 else -> onFail("shortcut异常")
                             }
                         } else {

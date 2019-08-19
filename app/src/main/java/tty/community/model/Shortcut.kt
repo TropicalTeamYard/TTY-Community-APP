@@ -11,6 +11,7 @@ enum class Shortcut {
     AIF, // argument format mismatch
     TNE, // topic/tag not found
     PME, // permission not allowed
+    ITE, // internet error
     OTHER;
 
     companion object {
@@ -26,6 +27,7 @@ enum class Shortcut {
                 "AIF" -> AIF
                 "TNE" -> TNE
                 "PME" -> PME
+                "ITE" -> ITE
 
                 else -> OTHER
             }

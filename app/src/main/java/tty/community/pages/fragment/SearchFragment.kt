@@ -26,10 +26,6 @@ class SearchFragment : Fragment(), OnRefreshListener {
 
     }
 
-    private fun refresh(user: User) {
-
-    }
-
     override fun onResume() {
         super.onResume()
     }

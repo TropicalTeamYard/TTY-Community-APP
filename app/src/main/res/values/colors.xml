@@ -7,7 +7,7 @@
     <color name="colorNormal">#66BB6A</color>
     <color name="transparent">#00ffffff</color>
     <color name="white">#ffffff</color>
-    <color name="grey">#bbbbbb</color>
-    <color name="light_grey">#eeeeee</color>
-    <color name="vary_light_grey">#fafafa</color>
+    <color name="gray">#bbbbbb</color>
+    <color name="light_gray">#eeeeee</color>
+    <color name="vary_light_gray">#f8f8f8</color>
 </resources>

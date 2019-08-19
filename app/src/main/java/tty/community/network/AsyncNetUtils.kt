@@ -4,7 +4,7 @@ import android.os.Handler
 import java.io.File
 
 object AsyncNetUtils {
-    operator fun get(url: String, callback: Callback) {
+    fun get(url: String, callback: Callback) {
         val handler = Handler()
         Thread(Runnable {
             val result = NetUtils.get(url)

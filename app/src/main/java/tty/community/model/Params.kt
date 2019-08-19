@@ -72,4 +72,12 @@ object Params {
             Pair("password", register.password)
         )
     }
+
+    fun privateInfo(user: User): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["id"] = user.id
+        map["token"] = user.token
+        return map
+    }
+
 }

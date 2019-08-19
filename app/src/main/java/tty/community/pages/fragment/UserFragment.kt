@@ -17,13 +17,13 @@ import kotlinx.android.synthetic.main.fragment_user.*
 
 import tty.community.R
 import tty.community.image.BitmapUtil
+import tty.community.model.Params
 import tty.community.model.User
+import tty.community.network.AsyncNetUtils
+import tty.community.pages.activity.ChangeInfoActivity
 import tty.community.pages.activity.LoginActivity
 import tty.community.pages.activity.UserDetailActivity
 import tty.community.util.CONF
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class UserFragment : Fragment(), OnRefreshListener {
     override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -39,6 +39,9 @@ class UserFragment : Fragment(), OnRefreshListener {
             user_id.text = user?.id
             user_nickname.text = user?.nickname
             Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user?.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(user_portrait)
+
+            // todo
+
             user_refresh.finishRefresh(true)
         } else {
             user_outline.visibility = View.GONE
@@ -48,19 +51,12 @@ class UserFragment : Fragment(), OnRefreshListener {
         }
     }
 
-    private var param1: String? = null
-    private var param2: String? = null
+
     private var listener: OnFragmentInteractionListener? = null
     private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-            Log.d(TAG, "param1: $param1")
-            Log.d(TAG, "param2: $param2")
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,11 +86,10 @@ class UserFragment : Fragment(), OnRefreshListener {
         user_login.setOnClickListener {
             startActivity(Intent(context, LoginActivity::class.java))
         }
-        user_more.setOnClickListener {
+        user_change_info.setOnClickListener {
             val user = User.find(context!!)
-
             if (user != null) {
-                startActivity(Intent(context, UserDetailActivity::class.java))
+                startActivity(Intent(context, ChangeInfoActivity::class.java))
             } else {
                 Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(context, LoginActivity::class.java))
@@ -114,17 +109,10 @@ class UserFragment : Fragment(), OnRefreshListener {
 
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri)
+        fun onUserRefreshed(user: User)
     }
 
     companion object {
         const val TAG = "UserFragment"
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

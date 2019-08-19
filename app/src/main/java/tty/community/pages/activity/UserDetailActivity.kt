@@ -15,6 +15,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import kotlinx.android.synthetic.main.activity_user_detail.*
 import tty.community.R
 import tty.community.image.BitmapUtil
+import tty.community.model.Params
 import tty.community.model.Shortcut
 import tty.community.model.User
 import tty.community.network.AsyncNetUtils
@@ -41,9 +42,6 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
         }
     }
 
-
-    private val map = HashMap<String, String>()
-
     private var user: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +56,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
     }
 
     private fun refresh(user: User) {
-        map["id"] = user.id
-        map["token"] = user.token
-        AsyncNetUtils.post(CONF.API.user.info, map, object : AsyncNetUtils.Callback {
+        AsyncNetUtils.post(CONF.API.user.info, Params.privateInfo(user), object : AsyncNetUtils.Callback {
             fun onFail(msg: String): Int {
                 Log.e(TAG, msg)
                 Toast.makeText(this@UserDetailActivity, msg, Toast.LENGTH_SHORT).show()

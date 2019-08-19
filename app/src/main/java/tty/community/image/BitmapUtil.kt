@@ -62,11 +62,11 @@ object BitmapUtil {
     }
 
     fun optionsNoCache() =
-        RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(
+        RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(
             true
         )
 
     fun optionsMemoryCache() =
-        RequestOptions().error(R.drawable.ic_broken_image_grey).diskCacheStrategy(DiskCacheStrategy.NONE)
+        RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE)
 
 }
