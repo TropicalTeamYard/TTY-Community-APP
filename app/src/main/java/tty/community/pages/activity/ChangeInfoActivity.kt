@@ -435,7 +435,7 @@ class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermis
 
     private fun updatePortrait(bitmap: Bitmap) {
         change_info_portrait.setImageBitmap(bitmap)
-        AsyncNetUtils.post(CONF.API.user.changePortrait, )
+        //AsyncNetUtils.post(CONF.API.user.changePortrait, )
     }
 
     companion object {
