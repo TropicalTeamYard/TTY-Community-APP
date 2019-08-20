@@ -99,4 +99,11 @@ object Params {
         return map
     }
 
+    fun changePortrait(user: User): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["id"] = user.id
+        map["token"] = user.token
+        return map
+    }
+
 }

@@ -71,6 +71,16 @@ object BitmapUtil {
         }
     }
 
+    fun Bitmap.zoom(newWidth: Int, newHeight: Int): Bitmap{
+        val width = width
+        val height = height
+        val scaleWidth = newWidth / width.toFloat()
+        val scaleHeight: Float = newHeight / height.toFloat()
+        val matrix = Matrix()
+        matrix.postScale(scaleWidth, scaleHeight)
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
+
     fun optionsNoCache() =
         RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
 

@@ -29,10 +29,10 @@ object NetMessage {
         }).start()
     }
 
-    fun <T> postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, typeToken: TypeToken<T>, callback: Callback) {
+    fun <T> postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, typeToken: TypeToken<T>, callback: Callback, name: String = "files") {
         val handler = Handler()
         Thread(Runnable {
-            val result = NetUtils.postMultipleForm(url, map, files)
+            val result = NetUtils.postMultipleForm(url, map, files, name)
             when(result.status) {
                 NetUtils.Status.Success -> handler.post { callback.result(Message.MsgData.parse(result.result, typeToken)) }
                 NetUtils.Status.Fail -> handler.post { callback.result(null) }

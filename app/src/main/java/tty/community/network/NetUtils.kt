@@ -79,7 +79,7 @@ object NetUtils {
         return Result(Status.Fail, "Connect Failure")
     }
 
-    fun postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>): Result {
+    fun postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, name: String): Result {
         try {
             val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS).build()
@@ -87,7 +87,7 @@ object NetUtils {
 
             for (file in files) {
                 val body = file.asRequestBody("image/*".toMediaTypeOrNull())
-                requestBody.addFormDataPart("files", file.name, body)
+                requestBody.addFormDataPart(name, file.name, body)
             }
 
             for (item in map) {

@@ -26,10 +26,10 @@ object AsyncNetUtils {
         }).start()
     }
 
-    fun postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, callback: Callback) {
+    fun postMultipleForm(url: String, map: Map<String, String>, files: ArrayList<File>, callback: Callback, name: String = "files") {
         val handler = Handler()
         Thread(Runnable {
-            val result = NetUtils.postMultipleForm(url, map, files)
+            val result = NetUtils.postMultipleForm(url, map, files, name)
             when(result.status) {
                 NetUtils.Status.Success -> handler.post { callback.onResponse(result.result) }
                 NetUtils.Status.Fail -> handler.post { callback.onFailure("网络异常") }

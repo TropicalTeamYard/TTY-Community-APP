@@ -18,7 +18,9 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_change_info.*
 import pub.devrel.easypermissions.EasyPermissions
 import tty.community.R
+import tty.community.file.IO
 import tty.community.image.BitmapUtil
+import tty.community.image.BitmapUtil.zoom
 import tty.community.model.Params
 import tty.community.model.Params.changeInfo
 import tty.community.model.Shortcut
@@ -421,21 +423,61 @@ class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermis
                     val cursor = this.contentResolver?.query(selectedImage, filePathColumn, null, null, null)
                     if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
                         val path = cursor.getString(cursor.getColumnIndex(filePathColumn[0]))
-                        val bitmap = BitmapUtil.load(path, true).cropCenter()
+                        val bitmap = BitmapUtil.load(path, true).cropCenter().zoom(512, 512)
                         cursor.close()
                         updatePortrait(bitmap)
                     }
-                }
-                RESULT_CROP_IMAGE -> {
-
                 }
             }
         }
     }
 
     private fun updatePortrait(bitmap: Bitmap) {
-        change_info_portrait.setImageBitmap(bitmap)
-        AsyncNetUtils.post(CONF.API.user.changePortrait, )
+
+        User.find(this)?.let {
+
+            val file = arrayListOf(IO.bitmap2FileCache(this, bitmap, 95))
+            AsyncNetUtils.postMultipleForm(CONF.API.user.changePortrait, Params.changePortrait(it), file, object : AsyncNetUtils.Callback {
+                fun onFail(msg: String = "网络异常"): Int {
+                    Toast.makeText(this@ChangeInfoActivity, msg, Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, msg)
+                    return 1
+                }
+
+                fun onSuccess(): Int {
+                    Log.d(TAG, "portrait changed")
+                    change_info_portrait.setImageBitmap(bitmap)
+                    Toast.makeText(this@ChangeInfoActivity, "修改头像成功", Toast.LENGTH_SHORT).show()
+                    return 0
+                }
+                override fun onResponse(result: String?): Int {
+                    val message = Message.Msg.parse(result)
+                    return if (message != null) {
+                        when(message.shortcut) {
+                            Shortcut.OK -> onSuccess()
+                            Shortcut.UNE -> {
+                                User.reset(this@ChangeInfoActivity)
+                                onFail("用户出现异常")
+                            }
+                            Shortcut.TE -> {
+                                User.reset(this@ChangeInfoActivity)
+                                onFail("登录已过期, 请重新登录")
+                            }
+                            else -> onFail("shortcut异常")
+                        }
+                    } else {
+                        onFail("解析异常")
+                    }
+                }
+
+                override fun onFailure(msg: String): Int {
+                    return onFail()
+                }
+
+            }, "portrait")
+
+        }
+
     }
 
     companion object {
