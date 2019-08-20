@@ -17,16 +17,18 @@ import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
 import tty.community.image.BitmapUtil
 import tty.community.model.User
-import tty.community.model.User.Companion.autoLogin
 import tty.community.pages.fragment.UserFragment
 import tty.community.util.CONF
 
 class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
-    UserFragment.OnFragmentInteractionListener,
-    DrawerLayout.DrawerListener, View.OnClickListener {
+    UserFragment.OnUserInteraction, View.OnClickListener {
+    private lateinit var intents: Array<Intent>
+
+
+
     override fun onUserRefreshed(user: User) {
-        this.user = user
+        refresh(user)
     }
 
     override fun onClick(v: View?) {
@@ -38,21 +40,6 @@ class MainActivity : AppCompatActivity(),
             else -> Log.d(TAG, "unknown view clicked")
         }
     }
-
-    var user: User? = null
-        set(value) {
-            user?.let { refresh(it) }
-            field = value
-        }
-
-    override fun onDrawerStateChanged(newState: Int) {}
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-    override fun onDrawerClosed(drawerView: View) {}
-    override fun onDrawerOpened(drawerView: View) {}
-
-    override fun onFragmentInteraction(uri: Uri) {}
-
-    private lateinit var intents: Array<Intent>
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -87,13 +74,6 @@ class MainActivity : AppCompatActivity(),
         init()
     }
 
-    override fun onResume() {
-        super.onResume()
-        autoLogin(this)
-        user = User.find(this)
-        user?.let { refresh(it) }
-    }
-
     private fun refresh(user: User) {
         Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(main_portrait)
     }
@@ -108,7 +88,12 @@ class MainActivity : AppCompatActivity(),
         main_viewPager.adapter = adapter
         main_viewPager.offscreenPageLimit = 2
         main_nav.setOnNavigationItemSelectedListener(this)
-        main_drawer.addDrawerListener(this)
+        main_drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) {}
+        })
         main_drawer.setScrimColor(Color.TRANSPARENT)
         main_portrait.setOnClickListener(this)
         main_fab.setOnClickListener(this)

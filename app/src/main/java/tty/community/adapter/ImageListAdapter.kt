@@ -64,8 +64,6 @@ class ImageListAdapter : RecyclerView.Adapter<ImageListAdapter.ViewHolder>() {
                 Bitmap.createBitmap(bitmap, 0, (height - width) / 2, width, width)
             }
 
-
-
             holder.picture.setImageBitmap(bm)
         } else {
             holder.picture.setImageDrawable(

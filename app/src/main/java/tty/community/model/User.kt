@@ -70,7 +70,9 @@ open class User(
         override val userGroup: Int,
         override val exp: Int,
         override val school: String
-    ) : SimpleUser, SimpleDetail
+    ) : SimpleUser, SimpleDetail {
+        data class Item(val key: String, val value: String, val status: Shortcut)
+    }
 
 
     companion object {

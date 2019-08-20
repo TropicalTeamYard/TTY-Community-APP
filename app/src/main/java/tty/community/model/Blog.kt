@@ -67,7 +67,7 @@ interface Blog {
     }
 
     companion object {
-        class Tag(val id: String, val text: String)
+        class Tag(var id: String, val text: String)
 
         enum class BlogType {
             Short, Pro, Other;

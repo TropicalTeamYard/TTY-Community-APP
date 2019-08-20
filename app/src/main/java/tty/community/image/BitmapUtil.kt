@@ -61,10 +61,18 @@ object BitmapUtil {
         }
     }
 
+    fun Bitmap.cropCenter(): Bitmap {
+        val width = this.width
+        val height = this.height
+        return if (width > height) {
+            Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
+        } else {
+            Bitmap.createBitmap(this, 0, (height - width) / 2, width, width)
+        }
+    }
+
     fun optionsNoCache() =
-        RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(
-            true
-        )
+        RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
 
     fun optionsMemoryCache() =
         RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE)

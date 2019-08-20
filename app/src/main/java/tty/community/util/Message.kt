@@ -23,7 +23,6 @@ interface Message {
                     Log.e(TAG, "json is null")
                     return null
                 }
-
                 return try {
                     Log.d(TAG, json)
                     val msg: T = gson.fromJson(json, type.type)

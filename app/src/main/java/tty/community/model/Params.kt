@@ -80,4 +80,23 @@ object Params {
         return map
     }
 
+    fun changeInfo(user: User, info: User.PrivateInfo, nickname: String, email: String, school: String, signature: String): HashMap<String, String> {
+        val map = HashMap<String, String>()
+        map["id"] = user.id
+        map["token"] = user.token
+        if (nickname != info.nickname) {
+            map["nickname"] = nickname
+        }
+        if (email != info.email) {
+            map["email"] = email
+        }
+        if (school != info.school) {
+            map["school"] = school
+        }
+        if (signature != info.signature) {
+            map["signature"] = signature
+        }
+        return map
+    }
+
 }

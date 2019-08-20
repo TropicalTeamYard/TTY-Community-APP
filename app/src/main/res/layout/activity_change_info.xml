@@ -31,7 +31,8 @@
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/change_info_submit"
                 android:background="@drawable/ic_check_white_128dp" />
         
         </RelativeLayout>

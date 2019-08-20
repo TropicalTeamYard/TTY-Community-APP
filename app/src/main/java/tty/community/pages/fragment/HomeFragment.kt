@@ -30,7 +30,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
     }
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-        refresh(blogTag)
+        refreshList(blogTag)
     }
 
     override fun onItemClick(v: View?, position: Int, blog: Outline) {
@@ -79,12 +79,11 @@ class HomeFragment : Fragment(), BlogListAdapter.OnItemClickListener, OnRefreshL
         setAdapter()
 
         home_refreshLayout.autoRefresh()
-
         home_refreshLayout.setOnRefreshListener(this)
         home_refreshLayout.setOnLoadMoreListener(this)
     }
 
-    private fun refresh(tag: String = "") {
+    private fun refreshList(tag: String = "") {
         Blog.initBlogList(Date(), 10, tag, object : AsyncNetUtils.Callback {
             override fun onFailure(msg: String): Int {
                 return onFail(msg, UpdateMode.INIT)
