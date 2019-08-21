@@ -10,8 +10,14 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_create_blog_complex.*
 import tty.community.R
 import tty.community.model.Blog.Companion.BlogType
+import tty.community.model.BlogData
+import tty.community.model.IGetBlogData
 
-class CreateBlogComplexFragment : Fragment(), View.OnClickListener {
+class CreateBlogComplexFragment : Fragment(), View.OnClickListener, IGetBlogData {
+    override fun getBlogData(): BlogData {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onClick(v: View?) {
         when(v) {
             btn_b -> {

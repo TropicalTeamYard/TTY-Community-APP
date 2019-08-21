@@ -15,8 +15,14 @@ import kotlinx.android.synthetic.main.fragment_create_blog_pro.*
 import tty.community.R
 import tty.community.adapter.BlogProFragmentAdapter
 import tty.community.model.Blog.Companion.BlogType.Pro
+import tty.community.model.BlogData
+import tty.community.model.IGetBlogData
 
-class CreateBlogProFragment : Fragment(), ValueCallback<String> {
+class CreateBlogProFragment : Fragment(), ValueCallback<String>, IGetBlogData {
+    override fun getBlogData(): BlogData {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onReceiveValue(value: String?) {
         if (value != null){
             (adapter.getItem(1) as BlogProViewFragment).injectString(value)
