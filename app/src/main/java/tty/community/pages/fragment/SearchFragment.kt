@@ -13,7 +13,7 @@ import tty.community.model.User
 class SearchFragment : Fragment(), OnRefreshListener {
 
     override fun onRefresh(refreshLayout: RefreshLayout) {
-
+        refreshLayout.finishRefresh()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -22,7 +22,6 @@ class SearchFragment : Fragment(), OnRefreshListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
     }
 

@@ -59,10 +59,12 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
     fun getLastBlogId(): String? {
-        if (blogs.isEmpty()) {
-            return null
+        return if (blogs.isEmpty()) {
+            null
+        } else {
+            blogs[blogs.size - 1].blogId
         }
-        return blogs[blogs.size - 1].blogId
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -98,7 +100,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.title.text = blogs[position].title
         holder.nickname.text = blogs[position].nickname
 
-        holder.tag.text = blogs[position].tag
+        holder.tag.text = blogs[position].topic.name
         val portrait = blogs[position].portrait()
 
 

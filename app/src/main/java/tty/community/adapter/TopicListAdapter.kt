@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_tag.view.*
 import tty.community.R
-import tty.community.model.Blog.Companion.Topic
+import tty.community.model.Topic
 
 class TopicListAdapter : RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
 
     var selected = 0
 
-    var topics = ArrayList<Topic>()
+    var topics = ArrayList<Topic.Outline>()
     private var mClickListener: OnTopicClickListener? = null
     private lateinit var context: Context
 
@@ -29,7 +29,7 @@ class TopicListAdapter : RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
     }
 
     interface OnTopicClickListener : View.OnClickListener {
-        fun onTopicClick(v: View?, topic: Topic)
+        fun onTopicClick(v: View?, topic: Topic.Outline)
     }
 
     fun setOnItemClickListener(listener: OnTopicClickListener) {
@@ -47,11 +47,11 @@ class TopicListAdapter : RecyclerView.Adapter<TopicListAdapter.ViewHolder>() {
         }
     }
 
-    fun updateTopics(tags: ArrayList<Topic>) {
+    fun updateTopics(tags: ArrayList<Topic.Outline>) {
         this.topics = tags
-//        this.topics.add(0, Topic("000", "推荐"))
-        this.topics.add(0, Topic("", "ALL"))
-        this.topics.add(Topic("-1", " + "))
+//        this.topics.add(0, Topic("000", "推荐", "000", ""))
+        this.topics.add(0, Topic.Outline("", "ALL", "", ""))
+        this.topics.add(Topic.Outline("-1", " + ", "-1", "add"))
 
         notifyDataSetChanged()
     }

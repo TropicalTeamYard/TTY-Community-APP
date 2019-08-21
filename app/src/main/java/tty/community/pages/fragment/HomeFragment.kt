@@ -17,9 +17,9 @@ import tty.community.R
 import tty.community.adapter.BlogListAdapter
 import tty.community.adapter.TopicListAdapter
 import tty.community.model.Blog
-import tty.community.model.Blog.Companion.Topic
 import tty.community.model.Blog.Outline
 import tty.community.model.Shortcut
+import tty.community.model.Topic
 import tty.community.model.User
 import tty.community.network.AsyncNetUtils
 import tty.community.util.CONF
@@ -30,7 +30,7 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefreshListener, OnLoadMoreListener,
     TopicListAdapter.OnTopicClickListener {
-    override fun onTopicClick(v: View?, topic: Topic) {
+    override fun onTopicClick(v: View?, topic: Topic.Outline) {
         this.blogTopic = topic
         refreshList(topic)
     }
@@ -59,6 +59,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
             }
 
             R.id.blog_tag -> {
+                Toast.makeText(context, blog.topic.introduction, Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "item: tag")
             }
 
@@ -74,7 +75,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
 
     override fun onClick(p0: View?) {}
 
-    private var blogTopic = Topic("", "ALL")
+    private var blogTopic = Topic.Outline("", "ALL", "00000", "")
     private lateinit var blogListAdapter: BlogListAdapter
     private lateinit var topicListAdapter: TopicListAdapter
 
@@ -99,7 +100,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
         updateTopicList()
     }
 
-    private fun refreshList(topic: Topic) {
+    private fun refreshList(topic: Topic.Outline) {
         Blog.initBlogList(Date(), 10, topic, object : AsyncNetUtils.Callback {
             override fun onFailure(msg: String): Int {
                 return onBlogListFail(msg, UpdateMode.INIT)
@@ -118,7 +119,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
             }
         })
     }
-    private fun loadMore(topic: Topic) {
+    private fun loadMore(topic: Topic.Outline) {
         blogListAdapter.getLastBlogId()?.let { id ->
             Blog.loadMore(id, 10, topic, object : AsyncNetUtils.Callback {
                 override fun onResponse(result: String?): Int {
@@ -168,7 +169,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
         context?.let { User.find(it)?.let { user ->
                 AsyncNetUtils.post(CONF.API.topic.list, hashMapOf(Pair("id", user.id)), object : AsyncNetUtils.Callback {
                     override fun onResponse(result: String?): Int {
-                        val message: Message.MsgData<ArrayList<Topic>>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<ArrayList<Topic>>>(){})
+                        val message: Message.MsgData<ArrayList<Topic.Outline>>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<ArrayList<Topic.Outline>>>(){})
                         return if (message != null) {
                             when(message.shortcut) {
                                 Shortcut.OK -> onSuccess(message.data)
@@ -183,7 +184,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
                         return onFail()
                     }
 
-                    fun onSuccess(topics: ArrayList<Topic>): Int {
+                    fun onSuccess(topics: ArrayList<Topic.Outline>): Int {
                         Log.d(TAG, "update topics success")
                         topicListAdapter.updateTopics(topics)
                         return 0

@@ -12,7 +12,7 @@ interface Blog {
     val nickname: String
     var title: String
     var introduction: String
-    val tag: String
+    val topic: Topic.Outline
     val lastActiveTime: Date
     val status: Int
     fun portrait(): String = CONF.API.public.portrait + "?" + "id=$author"
@@ -24,7 +24,7 @@ interface Blog {
         override val author: String,
         override var title: String,
         override var introduction: String,
-        override val tag: String,
+        override val topic: Topic.Outline,
         override val lastActiveTime: Date,
         override val nickname: String,
         override val status: Int
@@ -36,7 +36,7 @@ interface Blog {
         override val author: String,
         override var title: String,
         override var introduction: String,
-        override val tag: String,
+        override val topic: Topic.Outline,
         override val lastActiveTime: Date,
         override val nickname: String,
         override var status: Int,
@@ -67,7 +67,6 @@ interface Blog {
     }
 
     companion object {
-        class Topic(var id: String, var name: String)
 
         enum class BlogType {
             Short, Pro, Other;
@@ -92,13 +91,13 @@ interface Blog {
             }
         }
 
-        fun initBlogList(time: Date, count: Int, topic: Topic, callback: Callback) {
+        fun initBlogList(time: Date, count: Int, topic: Topic.Outline, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=time&date=2019/8/25-03:24:52&count=2 # date 及之前日期的 count 条记录
             AsyncNetUtils.post(CONF.API.blog.list, Params.blogListByTime(time, topic.id, count), callback)
 
         }
 
-        fun loadMore(blogId: String, count: Int, topic: Topic, callback: Callback) {
+        fun loadMore(blogId: String, count: Int, topic: Topic.Outline, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=id&id=1293637237&count=8&tag=00000 # `to` 之前日期的 count 条记录
             AsyncNetUtils.post(CONF.API.blog.list, Params.blogListById(blogId, topic.id, count), callback)
         }

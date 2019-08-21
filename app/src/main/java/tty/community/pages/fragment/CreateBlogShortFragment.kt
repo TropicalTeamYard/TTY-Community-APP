@@ -14,26 +14,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_create_blog_short.*
 import pub.devrel.easypermissions.EasyPermissions
 import tty.community.R
 import tty.community.adapter.ImageListAdapter
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
-import tty.community.model.*
-import tty.community.model.Blog.Companion.Topic
-import tty.community.model.Blog.Companion.BlogType
-import tty.community.network.AsyncNetUtils
-import tty.community.util.CONF
-import tty.community.util.Message
+import tty.community.model.BlogData
+import tty.community.model.IGetBlogData
+import tty.community.model.Topic
 import java.io.File
 
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks,
     IGetBlogData {
 
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private val tag = Topic("000000", "ALL")
     private lateinit var imagesAdapter: ImageListAdapter
     private var _bitmap: Bitmap? = null
 
@@ -98,41 +93,6 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-//        create_blog_short_submit.setOnClickListener {
-//            val user = this.context?.let { User.find(it) }
-//            if (user != null) {
-//                val title = "####nickname####的动态"
-//                var content = create_blog_short_content.text.toString()
-//
-//                var introduction = "****summary****\n"
-//                    .plus(try { content.substring(0, 120) + "..." } catch (e: StringIndexOutOfBoundsException) { if (content.isNotEmpty()) { content } else { "no content" } })
-//                    .plus("\n****metadata****\n")
-//
-//                content = "<pre>\n$content\n</pre>\n\n"
-//
-//                val files = ArrayList<File>()
-//                val pics = ArrayList<String>()
-//
-//                for (bitmap in imagesAdapter.images) {
-//                    val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
-//                    files.add(file)
-//                    content =
-//                        content.plus("![picture](./picture?id=####blog_id####&key=${file.name})<br>")
-//                    pics.add("id=####blog_id####&key=${file.name}")
-//                }
-//
-//                if (pics.isNotEmpty()) {
-//                    introduction = introduction.plus(pics[0])
-//                }
-//
-//                introduction = introduction.plus("\n****end****")
-//
-//                submit(user, Blog.Companion.BlogType.Short, tag, title, introduction, content, files)
-//            } else {
-//                Toast.makeText(context, "您还未登录，请先登录", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
     }
 
     /**

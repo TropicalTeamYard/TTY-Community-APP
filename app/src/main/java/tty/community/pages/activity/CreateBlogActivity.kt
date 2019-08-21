@@ -63,7 +63,7 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
 
 
         if (create_blog_viewPager.currentItem == 0){
-            val tag = Blog.Companion.Topic("000000", "ALL")
+            val tag =Topic.Outline("000000", "ALL", "000000", "")
             val user = User.find(this)
 
             if (user != null){
@@ -120,47 +120,6 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
         }
 
     }
-
-    @Deprecated("已经取代掉的API")
-    private fun submit(user: User, type: Blog.Companion.BlogType, tag: Blog.Companion.Topic, title: String, introduction: String, content: String, files: ArrayList<File>) {
-
-        Toast.makeText(this, "上传中...", Toast.LENGTH_SHORT).show()
-
-        // TODO 后台service上传
-        AsyncNetUtils.postMultipleForm(CONF.API.blog.create, Params.createBlog(user, title, type, introduction, content, tag), files, object : AsyncNetUtils.Callback {
-            fun onFail(msg: String): Int {
-                Log.e(CreateBlogShortFragment.TAG, msg)
-                //TODO 备份编辑项目
-                Toast.makeText(this@CreateBlogActivity, msg, Toast.LENGTH_SHORT).show()
-                //create_blog_short_submit.isClickable = true
-                return 1
-            }
-
-            fun onSuccess(): Int {
-                Toast.makeText(this@CreateBlogActivity, "上传成功", Toast.LENGTH_SHORT).show()
-                finish()
-                return 0
-            }
-
-            override fun onFailure(msg: String): Int {
-                return onFail(msg)
-            }
-
-            override fun onResponse(result: String?): Int {
-                val message: Message.MsgData<Blog.Outline>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<Blog.Outline>>(){})
-                return if (message != null) {
-                    when (message.shortcut) {
-                        Shortcut.OK -> onSuccess()
-                        Shortcut.TE -> onFail("账号信息已过期，请重新登陆")
-                        else -> onFail("shortcut异常")
-                    }
-                } else {
-                    onFail("解析异常")
-                }
-            }
-        })
-    }
-
 
     companion object {
         private const val TAG = "CreateBlogActivity"

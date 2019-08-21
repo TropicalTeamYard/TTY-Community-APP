@@ -53,7 +53,7 @@ object Params {
         return map
     }
 
-    fun createBlog(user: User, title: String, type: Blog.Companion.BlogType, introduction: String, content: String, tag: Blog.Companion.Topic): HashMap<String, String> {
+    fun createBlog(user: User, title: String, type: Blog.Companion.BlogType, introduction: String, content: String, topic: Topic.Outline): HashMap<String, String> {
         val map = HashMap<String, String>()
         map["author"] = user.id
         map["token"] = user.token
@@ -61,7 +61,7 @@ object Params {
         map["type"] = type.string()
         map["introduction"] = introduction
         map["content"] = content
-        map["tag"] = tag.id
+        map["topic"] = topic.id
         return map
     }
 
