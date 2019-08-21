@@ -9,14 +9,17 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.item_blog_outline.view.*
 import tty.community.R
 import tty.community.image.BitmapUtil
 import tty.community.model.Blog.Outline
+import tty.community.model.BlogData
 import tty.community.util.CONF
 import tty.community.util.Time
 import tty.community.util.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
+import java.lang.Exception
 
 class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     private var blogs = ArrayList<Outline>()
@@ -70,24 +73,38 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         val author = blogs[position].author
         val introduction = blogs[position].introduction
         val blogId = blogs[position].blogId
+        try {
+            val data: BlogData.Introduction = CONF.gson.fromJson(introduction, object : TypeToken<BlogData.Introduction>(){}.type)
+            holder.introduction.text = data.summary
+            if (data.pics.size > 0){
+                val picture = BlogData.toUrl(blogId, data.pics[0])
+                holder.picture.visibility = View.VISIBLE
+                Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
+            } else {
+                holder.picture.visibility = View.GONE
+            }
+        } catch (e:Exception){
 
-        val summary = introduction.substringAfter("****summary****").substringBefore("****metadata****").trim()
+            val summary = introduction.substringAfter("****summary****").substringBefore("****metadata****").trim()
+            holder.introduction.text = "(v0)\n$summary"
+            val picture = CONF.API.blog.picture + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
+
+            if (picture.isNotEmpty() && picture.contains("key")) {
+                holder.picture.visibility = View.VISIBLE
+                Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
+            } else {
+                holder.picture.visibility = View.GONE
+            }
+        }
+
 
         holder.time.text = Time.getTime(blogs[position].lastActiveTime).getFormattedTime()
         holder.title.text = blogs[position].title
         holder.nickname.text = blogs[position].nickname
-        holder.introduction.text = summary
+
         holder.tag.text = blogs[position].tag
         val portrait = blogs[position].portrait()
 
-        val picture = CONF.API.blog.picture + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
-
-        if (picture.isNotEmpty() && picture.contains("key")) {
-            holder.picture.visibility = View.VISIBLE
-            Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
-        } else {
-            holder.picture.visibility = View.GONE
-        }
 
         Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.portrait)
     }

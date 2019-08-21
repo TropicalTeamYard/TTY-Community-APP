@@ -21,18 +21,15 @@ import tty.community.R
 import tty.community.adapter.ImageListAdapter
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
-import tty.community.model.Params
-import tty.community.model.Shortcut
-import tty.community.model.Blog
+import tty.community.model.*
 import tty.community.model.Blog.Companion.Tag
 import tty.community.model.Blog.Companion.BlogType
-import tty.community.model.User
 import tty.community.network.AsyncNetUtils
 import tty.community.util.CONF
 import tty.community.util.Message
 import java.io.File
 
-class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks {
+class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks, IGetBlogData{
 
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val tag = Tag("000000", "ALL")
@@ -93,45 +90,6 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         startActivityForResult(intent, RESULT_LOAD_IMAGE)
     }
-    private fun submit(user: User, type: BlogType, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
-
-        create_blog_short_submit.isClickable = false
-        Toast.makeText(this.context, "上传中...", Toast.LENGTH_SHORT).show()
-
-        // TODO 后台service上传
-        AsyncNetUtils.postMultipleForm(CONF.API.blog.create, Params.createBlog(user, title, type, introduction, content, tag), files, object : AsyncNetUtils.Callback {
-            fun onFail(msg: String): Int {
-                Log.e(TAG, msg)
-                //TODO 备份编辑项目
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                create_blog_short_submit.isClickable = true
-                return 1
-            }
-
-            fun onSuccess(): Int {
-                Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show()
-                this@CreateBlogShortFragment.activity?.finish()
-                return 0
-            }
-
-            override fun onFailure(msg: String): Int {
-                return onFail(msg)
-            }
-
-            override fun onResponse(result: String?): Int {
-                val message: Message.MsgData<Blog.Outline>? = Message.MsgData.parse(result, object : TypeToken<Message.MsgData<Blog.Outline>>(){})
-                return if (message != null) {
-                    when (message.shortcut) {
-                        Shortcut.OK -> onSuccess()
-                        Shortcut.TE -> onFail("账号信息已过期，请重新登陆")
-                        else -> onFail("shortcut异常")
-                    }
-                } else {
-                    onFail("解析异常")
-                }
-            }
-        })
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create_blog_short, container, false)
@@ -139,42 +97,64 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
-        create_blog_short_submit.setOnClickListener {
-            val user = this.context?.let { User.find(it) }
-            if (user != null) {
-                val title = "####nickname####的动态"
-                var content = create_blog_short_content.text.toString()
+//        create_blog_short_submit.setOnClickListener {
+//            val user = this.context?.let { User.find(it) }
+//            if (user != null) {
+//                val title = "####nickname####的动态"
+//                var content = create_blog_short_content.text.toString()
+//
+//                var introduction = "****summary****\n"
+//                    .plus(try { content.substring(0, 120) + "..." } catch (e: StringIndexOutOfBoundsException) { if (content.isNotEmpty()) { content } else { "no content" } })
+//                    .plus("\n****metadata****\n")
+//
+//                content = "<pre>\n$content\n</pre>\n\n"
+//
+//                val files = ArrayList<File>()
+//                val pics = ArrayList<String>()
+//
+//                for (bitmap in imagesAdapter.images) {
+//                    val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
+//                    files.add(file)
+//                    content =
+//                        content.plus("![picture](./picture?id=####blog_id####&key=${file.name})<br>")
+//                    pics.add("id=####blog_id####&key=${file.name}")
+//                }
+//
+//                if (pics.isNotEmpty()) {
+//                    introduction = introduction.plus(pics[0])
+//                }
+//
+//                introduction = introduction.plus("\n****end****")
+//
+//                submit(user, Blog.Companion.BlogType.Short, tag, title, introduction, content, files)
+//            } else {
+//                Toast.makeText(context, "您还未登录，请先登录", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
-                var introduction = "****summary****\n"
-                    .plus(try { content.substring(0, 120) + "..." } catch (e: StringIndexOutOfBoundsException) { if (content.isNotEmpty()) { content } else { "no content" } })
-                    .plus("\n****metadata****\n")
+    }
 
-                content = "<pre>\n$content\n</pre>\n\n"
-
-                val files = ArrayList<File>()
-                val pics = ArrayList<String>()
-
-                for (bitmap in imagesAdapter.images) {
-                    val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
-                    files.add(file)
-                    content =
-                        content.plus("![picture](./picture?id=####blog_id####&key=${file.name})<br>")
-                    pics.add("id=####blog_id####&key=${file.name}")
-                }
-
-                if (pics.isNotEmpty()) {
-                    introduction = introduction.plus(pics[0])
-                }
-
-                introduction = introduction.plus("\n****end****")
-
-                submit(user, Blog.Companion.BlogType.Short, tag, title, introduction, content, files)
-            } else {
-                Toast.makeText(context, "您还未登录，请先登录", Toast.LENGTH_SHORT).show()
+    /**
+     * 获取Blog的所有信息，包装成BlogData
+     */
+    override fun getBlogData(): BlogData {
+        val pics = ArrayList<File>()
+        //To LocalCache
+        for (bitmap in imagesAdapter.images) {
+            val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
+            pics.add(file)
+        }
+        //TODO 添加图片是否显示在主页的功能，目前默认使用前3张。
+        val picLinks = ArrayList<Int>()
+        for (i in 0 until imagesAdapter.images.size){
+            if (i < 3){
+                picLinks.add(i)
             }
         }
 
+        return BlogData("", create_blog_short_content.text.toString(), picLinks, pics)
     }
+
 
     companion object {
         const val TAG = "CreateBlogShortFragment"
