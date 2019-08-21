@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/home_tag_tab"
+                android:id="@+id/home_topic_bar"
                 android:layout_width="match_parent"
                 android:layout_height="36dp" />
 

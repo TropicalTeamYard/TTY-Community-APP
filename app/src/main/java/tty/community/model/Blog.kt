@@ -46,7 +46,7 @@ interface Blog {
         var lastEditTime: Date
     ) : Blog
 
-    data class Comment(val id: String, val nickname: String, val time: String)
+    data class Comment(val id: String, val nickname: String, val time: String, val content: String)
     data class Like(val id: String, val nickname: String)
 
     enum class BlogListType {
@@ -67,7 +67,7 @@ interface Blog {
     }
 
     companion object {
-        class Tag(var id: String, val text: String)
+        class Topic(var id: String, var name: String)
 
         enum class BlogType {
             Short, Pro, Other;
@@ -92,15 +92,15 @@ interface Blog {
             }
         }
 
-        fun initBlogList(time: Date, count: Int, tag: String, callback: Callback) {
+        fun initBlogList(time: Date, count: Int, topic: Topic, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=time&date=2019/8/25-03:24:52&count=2 # date 及之前日期的 count 条记录
-            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListByTime(time, tag, count), callback)
+            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListByTime(time, topic.id, count), callback)
 
         }
 
-        fun loadMore(blogId: String, count: Int, tag: String, callback: Callback) {
+        fun loadMore(blogId: String, count: Int, topic: Topic, callback: Callback) {
             // http://localhost:8080/community/api/blog/list?type=id&id=1293637237&count=8&tag=00000 # `to` 之前日期的 count 条记录
-            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListById(blogId, tag, count), callback)
+            AsyncNetUtils.post(CONF.API.blog.list, Params.blogListById(blogId, topic.id, count), callback)
         }
 
     }

@@ -21,18 +21,14 @@ import tty.community.widget.RoundAngleImageView
 class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     private var blogs = ArrayList<Outline>()
 
-    private var mItemClickListener: OnItemClickListener? = null
+    private var mBlogItemClickListener: OnBlogItemClickListener? = null
 
     private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_blog_outline,
-                parent,
-                false
-            ), mItemClickListener
+            LayoutInflater.from(parent.context).inflate(R.layout.item_blog_outline, parent, false), mBlogItemClickListener
         )
     }
 
@@ -41,12 +37,12 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
 
-    interface OnItemClickListener : View.OnClickListener {
-        fun onItemClick(v: View?, position: Int, blog: Outline)
+    interface OnBlogItemClickListener : View.OnClickListener {
+        fun onBlogItemClick(v: View?, position: Int, blog: Outline)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.mItemClickListener = listener
+    fun setOnBlogItemClickListener(listener: OnBlogItemClickListener) {
+        this.mBlogItemClickListener = listener
     }
 
     fun add(blogs: ArrayList<Outline>) {
@@ -92,9 +88,9 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.portrait)
     }
 
-    inner class ViewHolder(v: View, private var listener: OnItemClickListener?) :
+    inner class ViewHolder(v: View, private var listener: OnBlogItemClickListener?) :
         RecyclerView.ViewHolder(v), View.OnClickListener {
-        private var mListener: OnItemClickListener
+        private var mListener: OnBlogItemClickListener
         private val card: CardView = v.blog_outline_card
         val time: TextView = v.blog_time
         val title: TextView = v.blog_title
@@ -106,7 +102,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         private val more: Button = v.blog_outline_more
 
         override fun onClick(p0: View?) {
-            listener?.onItemClick(p0, layoutPosition, blogs[layoutPosition])
+            listener?.onBlogItemClick(p0, layoutPosition, blogs[layoutPosition])
         }
 
         init {

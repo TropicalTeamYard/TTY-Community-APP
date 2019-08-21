@@ -24,7 +24,7 @@ import tty.community.image.BitmapUtil
 import tty.community.model.Params
 import tty.community.model.Shortcut
 import tty.community.model.Blog
-import tty.community.model.Blog.Companion.Tag
+import tty.community.model.Blog.Companion.Topic
 import tty.community.model.Blog.Companion.BlogType
 import tty.community.model.User
 import tty.community.network.AsyncNetUtils
@@ -35,7 +35,7 @@ import java.io.File
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks {
 
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private val tag = Tag("000000", "ALL")
+    private val tag = Topic("000000", "ALL")
     private lateinit var imagesAdapter: ImageListAdapter
     private var _bitmap: Bitmap? = null
 
@@ -93,7 +93,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         startActivityForResult(intent, RESULT_LOAD_IMAGE)
     }
-    private fun submit(user: User, type: BlogType, tag: Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
+    private fun submit(user: User, type: BlogType, tag: Topic, title: String, introduction: String, content: String, files: ArrayList<File>) {
 
         create_blog_short_submit.isClickable = false
         Toast.makeText(this.context, "上传中...", Toast.LENGTH_SHORT).show()
