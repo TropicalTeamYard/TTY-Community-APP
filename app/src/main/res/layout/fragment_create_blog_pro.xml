@@ -6,21 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".pages.fragment.CreateBlogProFragment">
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/editText_markdown"
+    <tty.community.widget.ViewPager
+        android:id="@+id/viewPager_pro"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white"
-        android:gravity="top"
-        android:padding="16dp"/>
+        android:layout_height="match_parent">
+    </tty.community.widget.ViewPager>
 
-    <TextView
-        android:id="@+id/editText_preview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white"
-        android:gravity="top"
-        android:padding="16dp"/>
+
+
 </LinearLayout>

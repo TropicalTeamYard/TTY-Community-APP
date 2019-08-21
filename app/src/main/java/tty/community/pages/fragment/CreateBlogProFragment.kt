@@ -6,23 +6,25 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.ValueCallback
+import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.zzhoujay.richtext.RichText
 import kotlinx.android.synthetic.main.fragment_create_blog_pro.*
 import tty.community.R
+import tty.community.adapter.BlogProFragmentAdapter
 import tty.community.model.Blog.Companion.BlogType.Pro
 
-class CreateBlogProFragment : Fragment(), TextWatcher {
-    override fun afterTextChanged(s: Editable?) {
-        RichText.fromMarkdown(editText_markdown.text.toString()).into(editText_preview)
+class CreateBlogProFragment : Fragment(), ValueCallback<String> {
+    override fun onReceiveValue(value: String?) {
+        if (value != null){
+            (adapter.getItem(1) as BlogProViewFragment).injectString(value)
+        }
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
+    private lateinit var adapter: BlogProFragmentAdapter
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +36,10 @@ class CreateBlogProFragment : Fragment(), TextWatcher {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editText_markdown.addTextChangedListener(this)
+        adapter =BlogProFragmentAdapter(fragmentManager!!)
+        viewPager_pro.adapter =  adapter
+        viewPager_pro.setScroll(true)
+        (adapter.getItem(0) as BlogProEditFragment).setTextChangedListener(this)
     }
 
     companion object {
