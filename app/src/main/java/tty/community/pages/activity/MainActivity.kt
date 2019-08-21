@@ -34,6 +34,15 @@ class MainActivity : AppCompatActivity(),
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.main_portrait-> main_drawer.openDrawer(GravityCompat.START)
+            R.id.fab_add_text, R.id.fab_add_richText, R.id.fab_add_markdown ->{
+                val intent = intents[main_viewPager.currentItem]
+                intent.putExtra("mode", when(v.id){
+                    R.id.fab_add_richText -> "richText"
+                    R.id.fab_add_markdown -> "markdown"
+                    else -> "text"
+                })
+                startActivity(intent)
+            }
             R.id.main_fab -> startActivity(intents[main_viewPager.currentItem])
             R.id.main_search -> main_nav.selectedItemId = R.id.nav_search
 
@@ -96,8 +105,12 @@ class MainActivity : AppCompatActivity(),
         })
         main_drawer.setScrimColor(Color.TRANSPARENT)
         main_portrait.setOnClickListener(this)
-        main_fab.setOnClickListener(this)
+        fab_add_text.setOnClickListener(this)
+        fab_add_richText.setOnClickListener(this)
+        fab_add_markdown.setOnClickListener(this)
+        //main_fab.setOnClickListener(this)
         main_search.setOnClickListener(this)
+
     }
 
     companion object {

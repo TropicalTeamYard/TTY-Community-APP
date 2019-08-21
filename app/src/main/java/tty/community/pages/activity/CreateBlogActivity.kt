@@ -1,60 +1,49 @@
 package tty.community.pages.activity
 
 import android.os.Bundle
-import android.view.MenuItem
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_create_blog.*
 import tty.community.R
 import tty.community.adapter.CreateBlogFragmentAdapter
 
-class CreateBlogActivity : AppCompatActivity(), ViewPager.OnPageChangeListener,
-    BottomNavigationView.OnNavigationItemSelectedListener {
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.nav_short -> {
-                create_blog_viewPager.currentItem = 0
-                true
-            }
+class CreateBlogActivity : AppCompatActivity() {
 
-            R.id.nav_complex -> {
-                create_blog_viewPager.currentItem = 1
-                true
-            }
-
-            R.id.nav_pro -> {
-                create_blog_viewPager.currentItem = 2
-                true
-            }
-            else -> false
-        }
-    }
-
-    override fun onPageScrollStateChanged(state: Int) {}
-
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-    override fun onPageSelected(position: Int) {
-        create_blog_nav.selectedItemId = when (position) {
-            0 -> R.id.nav_short
-            1 -> R.id.nav_complex
-            2 -> R.id.nav_pro
-            else -> return
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_blog)
-        setAdapter()
 
+        var mode = "text"
+        if (intent != null && intent.hasExtra("mode")){
+            Log.d(TAG, "mode=${intent.getStringExtra("mode")}")
+            mode = intent.getStringExtra("mode")
+
+        }
+
+        setAdapter(mode)
     }
 
-    private fun setAdapter() {
+    private fun setAdapter(mode:String) {
         val adapter = CreateBlogFragmentAdapter(supportFragmentManager)
         create_blog_viewPager.adapter = adapter
-        create_blog_viewPager.addOnPageChangeListener(this)
-        create_blog_nav.setOnNavigationItemSelectedListener(this)
+        create_blog_viewPager.currentItem = when(mode){
+            "richText" -> {
+                label_edit_type.text = "高级"
+                1
+            }
+            "markdown" -> {
+                label_edit_type.text = "Markdown"
+                2
+            }
+            else -> {
+                label_edit_type.text = "普通"
+                0
+            }
+        }
+    }
+
+    companion object {
+        private const val TAG = "CreateBlogActivity"
     }
 }
