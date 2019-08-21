@@ -26,6 +26,8 @@ import tty.community.util.CONF
 import tty.community.util.Message
 import java.util.*
 import kotlin.collections.ArrayList
+import android.content.Intent
+import android.net.Uri
 
 
 class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefreshListener, OnLoadMoreListener,
@@ -55,6 +57,11 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
             }
 
             R.id.blog_outline_card -> {
+                val intent = Intent()
+                val uri = Uri.parse(CONF.API.blog.get + "?" + "id=${blog.blogId}")
+                intent.action = Intent.ACTION_VIEW
+                intent.data = uri
+                startActivity(intent)
                 Log.d(TAG, "item: item")
             }
 
