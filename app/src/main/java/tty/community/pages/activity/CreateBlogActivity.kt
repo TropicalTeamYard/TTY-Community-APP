@@ -63,10 +63,8 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
 
 
         if (create_blog_viewPager.currentItem == 0){
-            val tag = Blog.Companion.Tag("000000", "ALL")
+            val tag = Blog.Companion.Topic("000000", "ALL")
             val user = User.find(this)
-
-
 
             if (user != null){
                 val blogData = ((create_blog_viewPager.adapter as CreateBlogFragmentAdapter).getItem(create_blog_viewPager.currentItem) as IGetBlogData).getBlogData()
@@ -124,7 +122,7 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     @Deprecated("已经取代掉的API")
-    private fun submit(user: User, type: Blog.Companion.BlogType, tag: Blog.Companion.Tag, title: String, introduction: String, content: String, files: ArrayList<File>) {
+    private fun submit(user: User, type: Blog.Companion.BlogType, tag: Blog.Companion.Topic, title: String, introduction: String, content: String, files: ArrayList<File>) {
 
         Toast.makeText(this, "上传中...", Toast.LENGTH_SHORT).show()
 

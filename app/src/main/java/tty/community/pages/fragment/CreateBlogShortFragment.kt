@@ -21,9 +21,7 @@ import tty.community.R
 import tty.community.adapter.ImageListAdapter
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
-import tty.community.model.Params
-import tty.community.model.Shortcut
-import tty.community.model.Blog
+import tty.community.model.*
 import tty.community.model.Blog.Companion.Topic
 import tty.community.model.Blog.Companion.BlogType
 import tty.community.network.AsyncNetUtils
@@ -31,7 +29,8 @@ import tty.community.util.CONF
 import tty.community.util.Message
 import java.io.File
 
-class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks, IGetBlogData{
+class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks,
+    IGetBlogData {
 
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private val tag = Topic("000000", "ALL")
