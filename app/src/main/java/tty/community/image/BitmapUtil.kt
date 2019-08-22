@@ -36,16 +36,15 @@ object BitmapUtil {
 
             if (exif != null) {
                 // 读取图片中相机方向信息
-                val ori = exif.getAttributeInt(
+                // 计算旋转角度
+                digree = when (exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_UNDEFINED
-                )
-                // 计算旋转角度
-                when (ori) {
-                    ExifInterface.ORIENTATION_ROTATE_90 -> digree = 90
-                    ExifInterface.ORIENTATION_ROTATE_180 -> digree = 180
-                    ExifInterface.ORIENTATION_ROTATE_270 -> digree = 270
-                    else -> digree = 0
+                )) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                    else -> 0
                 }
             }
             if (digree != 0) {

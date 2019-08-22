@@ -62,7 +62,7 @@ class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermis
                         when (message.shortcut) {
                             Shortcut.OK -> {
                                 if (message.data is User.PrivateInfo) {
-                                    onSuccess(message.data as User.PrivateInfo)
+                                    onSuccess(message.data)
                                 } else {
                                     onFail("解析异常")
                                 }
