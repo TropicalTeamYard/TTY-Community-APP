@@ -22,11 +22,9 @@ import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.BlogData
 import tty.community.model.IGetBlogData
-import tty.community.model.Topic
 import java.io.File
 
-class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener, EasyPermissions.PermissionCallbacks,
-    IGetBlogData {
+class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnImageClickListener, EasyPermissions.PermissionCallbacks, IGetBlogData {
 
     private val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private lateinit var imagesAdapter: ImageListAdapter
@@ -57,7 +55,7 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
     }
 
     override fun onClick(p0: View?) {}
-    override fun onItemClick(v: View?, position: Int) {
+    override fun onImageClick(v: View?, position: Int) {
         Log.d(TAG, "pos: $position")
         if (position + 1 < imagesAdapter.itemCount) {
             imagesAdapter.delete(position)
@@ -66,13 +64,8 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
         }
     }
 
-
     private fun init() {
-        imagesAdapter = ImageListAdapter()
-        val layoutManager = LinearLayoutManager(this.context)
-        layoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        create_blog_short_images.adapter = imagesAdapter
-        create_blog_short_images.layoutManager = layoutManager
+        imagesAdapter = ImageListAdapter(activity!!, create_blog_short_images)
         imagesAdapter.setOnItemClickListener(this)
     }
     private fun getPermission() {
@@ -105,22 +98,25 @@ class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnItemClickListener
             val file = IO.bitmap2FileCache(this.context!!, bitmap, 80)
             pics.add(file)
         }
-        //TODO 添加图片是否显示在主页的功能，目前默认使用前3张。
+        //TODO 添加图片是否显示在主页的功能，目前默认使用前3张
         val picLinks = ArrayList<Int>()
         for (i in 0 until imagesAdapter.images.size){
             if (i < 3){
                 picLinks.add(i)
+            } else {
+                // TODO 测试环境
+                picLinks.add(i)
             }
         }
 
-        return BlogData("", create_blog_short_content.text.toString(), picLinks, pics)
-    }
+        val content = create_blog_short_content.text.toString()
 
+        return BlogData("", content, picLinks, pics)
+    }
 
     companion object {
         const val TAG = "CreateBlogShortFragment"
         const val RESULT_LOAD_IMAGE = 10
-        const val RESULT_CROP_IMAGE = 20
     }
 
 }

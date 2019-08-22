@@ -1,5 +1,7 @@
 package tty.community.pages.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
@@ -22,19 +23,27 @@ import tty.community.model.Shortcut
 import tty.community.model.Topic
 import tty.community.model.User
 import tty.community.network.AsyncNetUtils
+import tty.community.pages.activity.TopicChooseActivity
 import tty.community.util.CONF
 import tty.community.util.Message
 import java.util.*
 import kotlin.collections.ArrayList
-import android.content.Intent
-import android.net.Uri
 
 
-class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefreshListener, OnLoadMoreListener,
+class HomeFragment : Fragment(), BlogListAdapter.OnBlogClickListener, OnRefreshListener, OnLoadMoreListener,
     TopicListAdapter.OnTopicClickListener {
-    override fun onTopicClick(v: View?, topic: Topic.Outline) {
-        this.blogTopic = topic
-        refreshList(topic)
+    override fun onBlogPictureClick(v: View?, position: Int, picUrls: ArrayList<String>, index: Int) {
+        Log.d(TAG, "Outline Picture Clicked, item = $position, pos = $index, url = ${picUrls[index]}")
+    }
+
+    override fun onTopicClick(v: View?, topic: Topic.Outline, type: TopicListAdapter.TopicType) {
+        when(type) {
+            TopicListAdapter.TopicType.Topic -> {
+                this.blogTopic = topic
+                refreshList(topic)
+            }
+            TopicListAdapter.TopicType.Add -> startActivity(Intent(context, TopicChooseActivity::class.java))
+        }
     }
 
     override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -45,7 +54,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
         refreshList(blogTopic)
     }
 
-    override fun onBlogItemClick(v: View?, position: Int, blog: Outline) {
+    override fun onBlogClick(v: View?, position: Int, blog: Outline) {
         Log.d(TAG, "pos: $position")
         when (v?.id) {
             R.id.blog_author_portrait -> {
@@ -97,9 +106,6 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
         home_refreshLayout.autoRefresh()
         home_refreshLayout.setOnRefreshListener(this)
         home_refreshLayout.setOnLoadMoreListener(this)
-
-        updateTopicList()
-
     }
 
     override fun onResume() {
@@ -146,7 +152,11 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
                 }
 
             })
+
+            return
         }
+
+        home_refreshLayout.finishLoadMore(false)
     }
 
     fun onBlogListFail(msg: String, mode: UpdateMode): Int {
@@ -209,19 +219,12 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogItemClickListener, OnRefr
     }
 
     private fun setAdapter() {
-        blogListAdapter = BlogListAdapter()
-        val blogListLayoutManager = LinearLayoutManager(this.context)
-        blogListLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        home_blog_list.adapter = blogListAdapter
-        home_blog_list.layoutManager = blogListLayoutManager
+        blogListAdapter = BlogListAdapter(activity!!, home_blog_list)
         blogListAdapter.setOnBlogItemClickListener(this)
 
-        topicListAdapter = TopicListAdapter()
-        val topicListLayoutManager = LinearLayoutManager(this.context)
-        topicListLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        home_topic_bar.adapter = topicListAdapter
-        home_topic_bar.layoutManager = topicListLayoutManager
+        topicListAdapter = TopicListAdapter(activity!!, home_topic_bar)
         topicListAdapter.setOnItemClickListener(this)
+        topicListAdapter.updateTopics(ArrayList())
     }
 
     enum class UpdateMode {

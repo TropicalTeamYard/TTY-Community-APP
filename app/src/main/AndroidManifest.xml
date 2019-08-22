@@ -15,10 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".pages.activity.TopicChooseActivity" />
         <activity
             android:name=".pages.activity.UserInfoActivity"
             android:label="@string/title_activity_user_info"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pages.activity.TopicListActivity" />
         <activity android:name=".pages.activity.PublicUserActivity" />
         <activity
@@ -26,8 +27,8 @@
             android:label="修改密码" />
         <activity
             android:name=".pages.activity.ChangeInfoActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="修改个人信息" />
+            android:label="修改个人信息"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".pages.activity.CreateBlogActivity"
             android:launchMode="standard"

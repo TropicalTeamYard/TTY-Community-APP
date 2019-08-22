@@ -105,26 +105,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/border_light"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/blog_introduction"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="5"
                 android:padding="4dp"
                 android:text="introduction: \n\n\n\nha ha ha"
                 android:textColor="@color/gray"
                 android:textSize="16sp" />
-            <tty.community.widget.RoundAngleImageView
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/blog_picture"
-                app:srcCompat="@drawable/ic_broken_image_gray"
-                android:scaleType="fitCenter"
                 android:visibility="gone"
                 android:padding="4dp"
-                android:layout_width="108dp"
+                android:layout_width="wrap_content"
                 android:layout_height="108dp"/>
         </LinearLayout>
 

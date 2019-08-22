@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.reflect.TypeToken
@@ -21,18 +22,21 @@ import tty.community.util.Time.getFormattedTime
 import tty.community.widget.RoundAngleImageView
 import java.lang.Exception
 
-class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
+class BlogListAdapter(var context: Context, private val recyclerView: RecyclerView) : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     private var blogs = ArrayList<Outline>()
 
-    private var mBlogItemClickListener: OnBlogItemClickListener? = null
+    private var listener: OnBlogClickListener? = null
 
-    private lateinit var context: Context
+
+    init {
+        val blogListLayoutManager = LinearLayoutManager(this.context)
+        blogListLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.adapter = this
+        recyclerView.layoutManager = blogListLayoutManager
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        context = parent.context
-        return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_blog_outline, parent, false), mBlogItemClickListener
-        )
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_blog_outline, parent, false), listener)
     }
 
     override fun getItemCount(): Int {
@@ -40,12 +44,8 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
 
-    interface OnBlogItemClickListener : View.OnClickListener {
-        fun onBlogItemClick(v: View?, position: Int, blog: Outline)
-    }
-
-    fun setOnBlogItemClickListener(listener: OnBlogItemClickListener) {
-        this.mBlogItemClickListener = listener
+    fun setOnBlogItemClickListener(listener: OnBlogClickListener) {
+        this.listener = listener
     }
 
     fun add(blogs: ArrayList<Outline>) {
@@ -59,12 +59,7 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
     }
 
     fun getLastBlogId(): String? {
-        return if (blogs.isEmpty()) {
-            null
-        } else {
-            blogs[blogs.size - 1].blogId
-        }
-
+        return if (blogs.isNotEmpty()) { blogs[blogs.size - 1].blogId } else { null }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -75,26 +70,19 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
             val data: BlogData.Introduction = CONF.gson.fromJson(introduction, object : TypeToken<BlogData.Introduction>(){}.type)
             holder.introduction.text = data.summary
             if (data.pics.size > 0){
-                val picture = BlogData.toUrl(blogId, data.pics[0])
-                holder.picture.visibility = View.VISIBLE
-                Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
+                holder.picturesView.visibility = View.VISIBLE
+                val picUrls = ArrayList<String>()
+                for (key in data.picLinks) {
+                    val url = BlogData.toUrl(blogId, data.pics[key])
+                    picUrls.add(url)
+                }
+                holder.picturesAdapter.picUrls = picUrls
             } else {
-                holder.picture.visibility = View.GONE
+                holder.picturesView.visibility = View.GONE
             }
-        } catch (e:Exception){
-
-            val summary = introduction.substringAfter("****summary****").substringBefore("****metadata****").trim()
-            holder.introduction.text = "(v0)\n$summary"
-            val picture = CONF.API.blog.picture + "?" + introduction.substringAfter("****metadata****").substringBefore("****end****").trim()
-
-            if (picture.isNotEmpty() && picture.contains("key")) {
-                holder.picture.visibility = View.VISIBLE
-                Glide.with(context).load(picture).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
-            } else {
-                holder.picture.visibility = View.GONE
-            }
+        } catch (e:Exception) {
+            e.printStackTrace()
         }
-
 
         holder.time.text = Time.getTime(blogs[position].lastActiveTime).getFormattedTime()
         holder.title.text = blogs[position].title
@@ -103,13 +91,13 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         holder.tag.text = blogs[position].topic.name
         val portrait = blogs[position].portrait()
 
-
         Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.portrait)
     }
 
-    inner class ViewHolder(v: View, private var listener: OnBlogItemClickListener?) :
-        RecyclerView.ViewHolder(v), View.OnClickListener {
-        private var mListener: OnBlogItemClickListener
+    inner class ViewHolder(v: View, private var listener: OnBlogClickListener?) :
+        RecyclerView.ViewHolder(v), View.OnClickListener, PictureListAdapter.OnPictureClickListener {
+
+        private var mListener: OnBlogClickListener
         private val card: CardView = v.blog_outline_card
         val time: TextView = v.blog_time
         val title: TextView = v.blog_title
@@ -117,11 +105,16 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
         val introduction: TextView = v.blog_introduction
         val portrait: RoundAngleImageView = v.blog_author_portrait
         val tag: TextView = v.blog_tag
-        val picture: RoundAngleImageView = v.blog_picture
+        val picturesView: RecyclerView = v.blog_picture
+        val picturesAdapter = PictureListAdapter(v.context, picturesView)
         private val more: Button = v.blog_outline_more
 
         override fun onClick(p0: View?) {
-            listener?.onBlogItemClick(p0, layoutPosition, blogs[layoutPosition])
+            listener?.onBlogClick(p0, layoutPosition, blogs[layoutPosition])
+        }
+
+        override fun onPictureClick(v: View?, position: Int) {
+            listener?.onBlogPictureClick(v, layoutPosition, picturesAdapter.picUrls, position)
         }
 
         init {
@@ -129,8 +122,13 @@ class BlogListAdapter : RecyclerView.Adapter<BlogListAdapter.ViewHolder>() {
             more.setOnClickListener(this)
             tag.setOnClickListener(this)
             portrait.setOnClickListener(this)
-            picture.setOnClickListener(this)
+            picturesAdapter.setOnPictureClickListener(this)
             mListener = this.listener!!
         }
+    }
+
+    interface OnBlogClickListener : View.OnClickListener {
+        fun onBlogClick(v: View?, position: Int, blog: Outline)
+        fun onBlogPictureClick(v: View?, position: Int, picUrls: ArrayList<String>, index: Int)
     }
 }
