@@ -80,13 +80,16 @@ object BitmapUtil {
         return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
     }
 
-    fun optionsNoCache() =
-        RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+    fun optionsNoCachePortraitDefaultUser() =
+        RequestOptions().error(R.drawable.ic_user_gray_64dp).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+
+    fun optionsMemoryCacheDefaultPortrait() =
+        RequestOptions().error(R.drawable.ic_user_gray_64dp).diskCacheStrategy(DiskCacheStrategy.NONE)
 
     fun optionsMemoryCache() =
         RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE)
 
-    fun optionsNoCachePortrait() =
+    fun optionsNoCache() =
         RequestOptions().error(R.drawable.ic_broken_image_gray).diskCacheStrategy(DiskCacheStrategy.NONE)
 
 }

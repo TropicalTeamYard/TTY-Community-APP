@@ -2,7 +2,6 @@ package tty.community.pages.activity
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun refresh(user: User) {
-        Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(main_portrait)
+        Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(main_portrait)
     }
 
     private fun init() {
@@ -108,7 +107,6 @@ class MainActivity : AppCompatActivity(),
         fab_add_text.setOnClickListener(this)
         fab_add_richText.setOnClickListener(this)
         fab_add_markdown.setOnClickListener(this)
-        //main_fab.setOnClickListener(this)
         main_search.setOnClickListener(this)
 
     }

@@ -2,7 +2,6 @@ package tty.community.pages.fragment
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -48,7 +47,7 @@ class UserFragment : Fragment(), OnRefreshListener {
             user_outline_nothing.visibility = View.GONE
             user_id.text = user.id
             user_nickname.text = user.nickname
-            Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(user_portrait)
+            Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(user_portrait)
 
             // todo get other info and refresh
 

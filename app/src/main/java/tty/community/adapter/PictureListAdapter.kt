@@ -35,18 +35,11 @@ class PictureListAdapter(val context: Context, private val recyclerView: Recycle
                     recyclerView.layoutManager = layoutManager
                 }
             }
-//            field = value
-//            val layoutManager = GridLayoutManager(context, picUrls.size)
-//            layoutManager.orientation = GridLayoutManager.VERTICAL
-//            recyclerView.layoutManager = layoutManager
             notifyDataSetChanged()
         }
 
 
     init {
-//        val layoutManager = GridLayoutManager(context, 3)
-//        layoutManager.orientation = GridLayoutManager.HORIZONTAL
-//        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = this
     }
 

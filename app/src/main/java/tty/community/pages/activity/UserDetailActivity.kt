@@ -86,7 +86,7 @@ class UserDetailActivity : AppCompatActivity(), View.OnClickListener, OnRefreshL
                             user_detail_signature.text = info.signature
                             user_detail_exp.text = info.exp.toString()
                             user_detail_user_group.text = info.userGroup.toString()
-                            Glide.with(this@UserDetailActivity).load(url).apply(BitmapUtil.optionsNoCache()).centerCrop().into(user_detail_portrait)
+                            Glide.with(this@UserDetailActivity).load(url).apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(user_detail_portrait)
                             return onSuccess()
                         }
                         Shortcut.UNE -> return onFail("用户不存在")

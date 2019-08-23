@@ -34,6 +34,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogClickListener, OnRefreshL
     TopicListAdapter.OnTopicClickListener {
     override fun onBlogPictureClick(v: View?, position: Int, picUrls: ArrayList<String>, index: Int) {
         Log.d(TAG, "Outline Picture Clicked, item = $position, pos = $index, url = ${picUrls[index]}")
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(picUrls[index]))
+        startActivity(intent)
     }
 
     override fun onTopicClick(v: View?, topic: Topic.Outline, type: TopicListAdapter.TopicType) {

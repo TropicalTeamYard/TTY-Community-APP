@@ -46,8 +46,8 @@ class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermis
                     return 1
                 }
                 fun onSuccess(info: User.PrivateInfo): Int {
-                    Glide.with(this@ChangeInfoActivity)
-                        .load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCache()).centerCrop().into(change_info_portrait)
+                    val url = CONF.API.public.portrait + "?" + "id=${user.id}"
+                    Glide.with(this@ChangeInfoActivity).load(url).apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(change_info_portrait)
                     this@ChangeInfoActivity.info = info
                     if (setInfo) {
                         change_info_nickname.setText(info.nickname)

@@ -89,9 +89,9 @@ class BlogListAdapter(var context: Context, private val recyclerView: RecyclerVi
         holder.nickname.text = blogs[position].nickname
 
         holder.tag.text = blogs[position].topic.name
-        val portrait = blogs[position].portrait()
+        val portraitUrl = blogs[position].portrait()
 
-        Glide.with(context).load(portrait).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.portrait)
+        Glide.with(context).load(portraitUrl).apply(BitmapUtil.optionsMemoryCacheDefaultPortrait()).centerCrop().into(holder.portrait)
     }
 
     inner class ViewHolder(v: View, private var listener: OnBlogClickListener?) :
