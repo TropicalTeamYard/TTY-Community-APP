@@ -106,4 +106,8 @@ object Params {
         return map
     }
 
+    fun similarTopic(name: String): HashMap<String, String> {
+        return hashMapOf(Pair("name", name))
+    }
+
 }

@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.fragment_create_blog_complex.*
 import tty.community.R
 import tty.community.model.Blog.Companion.BlogType
 import tty.community.model.BlogData
-import tty.community.model.IGetBlogData
+import tty.community.model.BlogData.IGetBlogData
 
 class CreateBlogComplexFragment : Fragment(), View.OnClickListener, IGetBlogData {
     override fun getBlogData(): BlogData {

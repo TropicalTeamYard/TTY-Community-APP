@@ -16,7 +16,7 @@ import tty.community.R
 import tty.community.adapter.BlogProFragmentAdapter
 import tty.community.model.Blog.Companion.BlogType.Pro
 import tty.community.model.BlogData
-import tty.community.model.IGetBlogData
+import tty.community.model.BlogData.IGetBlogData
 
 class CreateBlogProFragment : Fragment(), ValueCallback<String>, IGetBlogData {
     override fun getBlogData(): BlogData {

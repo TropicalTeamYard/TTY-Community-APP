@@ -11,18 +11,24 @@ import tty.community.R
 import tty.community.adapter.CreateBlogFragmentAdapter
 import tty.community.model.*
 import tty.community.network.AsyncNetUtils
-import tty.community.pages.fragment.CreateBlogShortFragment
+import tty.community.pages.fragment.ChooseTopicFragment
 import tty.community.util.CONF
 import tty.community.util.Message
-import java.io.File
 
-class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
-    override fun onClick(v: View?) {
-        btn_submit.isEnabled = false
-        submit()
-        btn_submit.isEnabled = true
+class CreateBlogActivity : AppCompatActivity(), View.OnClickListener, ChooseTopicFragment.OnTopicChangeListener {
+    override fun onTopicChange(topic: Topic.Outline) {
+        this.topic = topic
+        create_blog_choose_topic.text = topic.name
     }
 
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            R.id.btn_submit -> submit()
+            R.id.create_blog_choose_topic -> ChooseTopicFragment().show(supportFragmentManager, "CTF")
+        }
+    }
+
+    override var topic = Topic.Outline("000000", "ALL", "000000", "TTY Community")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +38,11 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
         if (intent != null && intent.hasExtra("mode")){
             Log.d(TAG, "mode=${intent.getStringExtra("mode")}")
             mode = intent.getStringExtra("mode")
-
         }
 
         setAdapter(mode)
         btn_submit.setOnClickListener(this)
+        create_blog_choose_topic.setOnClickListener(this)
     }
 
     private fun setAdapter(mode:String) {
@@ -59,14 +65,13 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun submit(){
-
         when(create_blog_viewPager.currentItem) {
              0 -> {
-                val tag =Topic.Outline("000000", "ALL", "000000", "")
+
                 val user = User.find(this)
 
                 if (user != null){
-                    val blogData = ((create_blog_viewPager.adapter as CreateBlogFragmentAdapter).getItem(create_blog_viewPager.currentItem) as IGetBlogData).getBlogData()
+                    val blogData = ((create_blog_viewPager.adapter as CreateBlogFragmentAdapter).getItem(create_blog_viewPager.currentItem) as BlogData.IGetBlogData).getBlogData()
                     blogData.title = edit_title.text.toString()
                     if (blogData.title.isEmpty()){
                         blogData.title = "####nickname####的动态"
@@ -84,16 +89,19 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
                     val json = CONF.gson.toJson(blogData.introduction, object : TypeToken<BlogData.Introduction>(){}.type)
                     Log.d(TAG, json)
 
+                    btn_submit.isClickable = false
+
                     // TODO 后台service上传
                     AsyncNetUtils.postMultipleForm(CONF.API.blog.create, Params.createBlog(user, blogData.title,
                         when(create_blog_viewPager.currentItem){
                             0-> Blog.Companion.BlogType.Short
                             else-> Blog.Companion.BlogType.Pro
-                        }, CONF.gson.toJson(blogData.introduction, object : TypeToken<BlogData.Introduction>(){}.type), blogData.content, tag), blogData.pics, object : AsyncNetUtils.Callback {
+                        }, CONF.gson.toJson(blogData.introduction, object : TypeToken<BlogData.Introduction>(){}.type), blogData.content, topic), blogData.pics, object : AsyncNetUtils.Callback {
                         fun onFail(msg: String): Int {
                             Log.e(TAG, msg)
                             //TODO 备份编辑项目
                             Toast.makeText(this@CreateBlogActivity, msg, Toast.LENGTH_SHORT).show()
+                            btn_submit.isClickable = true
                             return 1
                         }
 
@@ -125,7 +133,6 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
-
     }
 
     companion object {

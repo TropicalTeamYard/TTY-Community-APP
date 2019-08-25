@@ -21,6 +21,10 @@ class BlogData(var title:String, var content:String, var picLinks:ArrayList<Int>
 
     class Introduction(var pics:ArrayList<String>, var picLinks: ArrayList<Int>, var summary:String)
 
+    interface IGetBlogData{
+        fun getBlogData(): BlogData
+    }
+
     companion object {
         fun toUrl(blogId:String, picName: String):String{
             return "${CONF.API.blog.picture}?id=$blogId&key=$picName"

@@ -10,13 +10,11 @@
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll"
             android:layout_width="match_parent"
-            android:minHeight="60dp"
-
             android:layout_height="@dimen/app_bar_height">
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -26,13 +24,26 @@
     <androidx.core.widget.NestedScrollView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        android:layout_height="wrap_content">
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/large_text" />
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/large_text"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/topic_parent"
+                android:layout_width="128dp"
+                android:layout_height="match_parent"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_toEndOf="@id/topic_parent"
+                android:id="@+id/topic_children"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

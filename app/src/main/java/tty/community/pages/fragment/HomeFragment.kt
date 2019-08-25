@@ -134,6 +134,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogClickListener, OnRefreshL
             }
         })
     }
+
     private fun loadMore(topic: Topic.Outline) {
         blogListAdapter.getLastBlogId()?.let { id ->
             Blog.loadMore(id, 10, topic, object : AsyncNetUtils.Callback {
@@ -170,6 +171,7 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogClickListener, OnRefreshL
         }
         return 1
     }
+
     fun onBlogListSuccess(blogs: ArrayList<Outline>, mode: UpdateMode): Int {
         when(mode) {
             UpdateMode.ADD -> {

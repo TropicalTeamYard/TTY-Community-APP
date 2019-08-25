@@ -35,6 +35,7 @@ object CONF {
             val get = "$url/get"
             val list = "$url/list"
             val picture = "$url/picture"
+            val rawPicture = "$url/picture/raw"
         }
 
         class Public: API() {

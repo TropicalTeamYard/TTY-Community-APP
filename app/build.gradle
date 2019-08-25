@@ -4,15 +4,15 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: "kotlin-kapt"
+//apply plugin: "kotlin-kapt"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '29.0.2'
     defaultConfig {
         applicationId "tty.community"
         minSdkVersion 24
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -24,15 +24,15 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
+//    dataBinding {
+//        enabled = true
+//    }
 
 }
 
-kapt {
-    generateStubs = true
-}
+//kapt {
+//    generateStubs = true
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -58,5 +58,5 @@ dependencies {
     implementation 'com.zzhoujay.richtext:richtext:2.5.4'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
 
-    kapt "com.android.databinding:compiler:$plugin_version"
+//    kapt "com.android.databinding:compiler:$plugin_version"
 }

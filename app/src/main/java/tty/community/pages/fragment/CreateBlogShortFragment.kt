@@ -21,7 +21,7 @@ import tty.community.adapter.ImageListAdapter
 import tty.community.file.IO
 import tty.community.image.BitmapUtil
 import tty.community.model.BlogData
-import tty.community.model.IGetBlogData
+import tty.community.model.BlogData.IGetBlogData
 import java.io.File
 
 class CreateBlogShortFragment : Fragment(), ImageListAdapter.OnImageClickListener, EasyPermissions.PermissionCallbacks, IGetBlogData {
