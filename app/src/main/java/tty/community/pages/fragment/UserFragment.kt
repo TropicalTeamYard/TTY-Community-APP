@@ -65,7 +65,6 @@ class UserFragment : Fragment(), OnRefreshListener {
                     e.printStackTrace()
                 }
 
-
                 if (!file.exists() && tmpFile != null) {
                     file.createNewFile()
                     val outputStream = file.outputStream()
