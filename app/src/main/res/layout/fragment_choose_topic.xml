@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/choose_topic_input"
         android:layout_width="wrap_content"
-        android:layout_toStartOf="@id/choose_topic_search"
+        android:layout_toStartOf="@id/choose_topic_check"
         android:layout_alignParentStart="true"
         android:background="@drawable/border_capsule_28dp"
         android:layout_margin="8dp"
@@ -23,8 +23,8 @@
         tools:ignore="LabelFor" />
 
     <ImageView
-        android:id="@+id/choose_topic_search"
-        android:background="@drawable/ic_search_grey_128dp"
+        android:id="@+id/choose_topic_check"
+        android:background="@drawable/ic_check_gray_128dp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -34,7 +34,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/choose_topic_list"
-        android:layout_below="@id/choose_topic_search"
+        android:layout_below="@id/choose_topic_check"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:layout_width="match_parent"

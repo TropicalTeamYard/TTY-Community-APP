@@ -150,12 +150,8 @@ class HomeFragment : Fragment(), BlogListAdapter.OnBlogClickListener, OnRefreshL
                     }
                 }
 
-                override fun onFailure(msg: String): Int {
-                    return onBlogListFail(msg, UpdateMode.ADD)
-                }
-
+                override fun onFailure(msg: String) = onBlogListFail(msg, UpdateMode.ADD)
             })
-
             return
         }
 

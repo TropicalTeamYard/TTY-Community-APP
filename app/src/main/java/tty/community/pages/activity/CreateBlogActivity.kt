@@ -1,5 +1,6 @@
 package tty.community.pages.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -37,7 +38,7 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener, ChooseTopi
         var mode = "text"
         if (intent != null && intent.hasExtra("mode")){
             Log.d(TAG, "mode=${intent.getStringExtra("mode")}")
-            mode = intent.getStringExtra("mode")
+            mode = intent.getStringExtra("mode") ?: "text"
         }
 
         setAdapter(mode)
@@ -45,6 +46,7 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener, ChooseTopi
         create_blog_choose_topic.setOnClickListener(this)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setAdapter(mode:String) {
         val adapter = CreateBlogFragmentAdapter(supportFragmentManager)
         create_blog_viewPager.adapter = adapter
@@ -67,7 +69,6 @@ class CreateBlogActivity : AppCompatActivity(), View.OnClickListener, ChooseTopi
     private fun submit(){
         when(create_blog_viewPager.currentItem) {
              0 -> {
-
                 val user = User.find(this)
 
                 if (user != null){
