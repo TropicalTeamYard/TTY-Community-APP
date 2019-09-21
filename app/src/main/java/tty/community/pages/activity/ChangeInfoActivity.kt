@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_change_info.*
 import pub.devrel.easypermissions.EasyPermissions
 import tty.community.R
 import tty.community.file.IO
+import tty.community.file.Storage
 import tty.community.image.BitmapUtil
 import tty.community.image.BitmapUtil.zoom
 import tty.community.model.Params
@@ -31,6 +32,7 @@ import tty.community.network.NetMessage.post
 import tty.community.image.BitmapUtil.cropCenter
 import tty.community.util.CONF
 import tty.community.util.Message
+import java.io.File
 import java.util.regex.Pattern
 
 class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermissions.PermissionCallbacks {
@@ -448,6 +450,7 @@ class ChangeInfoActivity : AppCompatActivity(), View.OnClickListener, EasyPermis
                     Log.d(TAG, "portrait changed")
                     change_info_portrait.setImageBitmap(bitmap)
                     Toast.makeText(this@ChangeInfoActivity, "修改头像成功", Toast.LENGTH_SHORT).show()
+                    File(Storage.getStorageDirectory(this@ChangeInfoActivity, "portrait"), it.id).delete()
                     return 0
                 }
                 override fun onResponse(result: String?): Int {

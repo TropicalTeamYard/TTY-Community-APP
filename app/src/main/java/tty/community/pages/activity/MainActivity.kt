@@ -12,19 +12,20 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_user.*
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
+import tty.community.file.Storage
 import tty.community.image.BitmapUtil
 import tty.community.model.User
 import tty.community.pages.fragment.UserFragment
 import tty.community.util.CONF
+import java.io.File
 
 class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     UserFragment.OnUserInteraction, View.OnClickListener {
     private lateinit var intents: Array<Intent>
-
-
 
     override fun onUserRefreshed(user: User) {
         refresh(user)
@@ -83,7 +84,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun refresh(user: User) {
-        Glide.with(this).load(CONF.API.public.portrait + "?" + "id=${user.id}").apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(main_portrait)
+        val portraitCache = File(Storage.getStorageDirectory(this, "portrait"), user.id)
+        if (portraitCache.exists()) {
+            Glide.with(this).load(portraitCache).apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(main_portrait)
+        } else {
+            Log.e(TAG, "portrait file for user ${user.id} not exist")
+        }
     }
 
     private fun init() {
