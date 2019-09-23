@@ -55,10 +55,11 @@ class TopicOutLineListAdapter(val context: Context, recyclerView: RecyclerView) 
         holder.name.text = topics[position].name
         holder.introduction.text = topics[position].introduction
         val url = CONF.API.topic.picture + "?" + "id=${topics[position].id}"
-        Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
+//        Glide.with(context).load(url).apply(BitmapUtil.optionsMemoryCache()).centerCrop().into(holder.picture)
     }
 
     fun updateTopics(topics: ArrayList<Topic.Outline>) {
+        selected = -1
         this.topics = topics
         this.topics.add(0, Topic.Outline("000000", "ALL", "000000", "TropicalTeamYard(TTY)"))
         notifyDataSetChanged()
