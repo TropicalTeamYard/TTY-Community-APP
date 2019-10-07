@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_user.*
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
+import tty.community.adapter.SimplePageFragmentAdapter
 import tty.community.file.Storage
 import tty.community.image.BitmapUtil
 import tty.community.model.User
@@ -22,60 +23,15 @@ import tty.community.pages.fragment.UserFragment
 import tty.community.util.CONF
 import java.io.File
 
-class MainActivity : AppCompatActivity(),
-    BottomNavigationView.OnNavigationItemSelectedListener,
-    UserFragment.OnUserInteraction, View.OnClickListener {
-    private lateinit var intents: Array<Intent>
-
+class MainActivity : AppCompatActivity(), UserFragment.OnUserInteraction{
     override fun onUserRefreshed(user: User) {
-        refresh(user)
+        val mainFragment = adapter.getItem(1) as MainFragment
+        mainFragment.refresh(user)
     }
 
-    override fun onClick(v: View?) {
-        when(v?.id) {
-            R.id.main_portrait-> main_drawer.openDrawer(GravityCompat.START)
-            R.id.fab_add_text, R.id.fab_add_richText, R.id.fab_add_markdown ->{
-                val intent = intents[main_viewPager.currentItem]
-                intent.putExtra("mode", when(v.id){
-                    R.id.fab_add_richText -> "richText"
-                    R.id.fab_add_markdown -> "markdown"
-                    else -> "text"
-                })
-                startActivity(intent)
-            }
-            R.id.main_fab -> startActivity(intents[main_viewPager.currentItem])
-            R.id.main_search -> main_nav.selectedItemId = R.id.nav_search
+    private lateinit var intents: Array<Intent>
+    private lateinit var adapter:SimplePageFragmentAdapter
 
-            else -> Log.d(TAG, "unknown view clicked")
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.nav_home -> {
-                main_search.visibility = View.VISIBLE
-                main_viewPager.currentItem = 0
-                main_title.text = "主页"
-                true
-            }
-
-            R.id.nav_search -> {
-                main_search.visibility = View.GONE
-                main_viewPager.currentItem = 1
-                main_title.text = "发现"
-                true
-            }
-
-            R.id.nav_chat -> {
-                main_search.visibility = View.VISIBLE
-                main_title.text = "私信"
-                main_viewPager.currentItem = 2
-                true
-            }
-
-            else -> false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,38 +39,11 @@ class MainActivity : AppCompatActivity(),
         init()
     }
 
-    private fun refresh(user: User) {
-        val portraitCache = File(Storage.getStorageDirectory(this, "portrait"), user.id)
-        if (portraitCache.exists()) {
-            Glide.with(this).load(portraitCache).apply(BitmapUtil.optionsNoCachePortraitDefaultUser()).centerCrop().into(main_portrait)
-        } else {
-            Log.e(TAG, "portrait file for user ${user.id} not exist")
-        }
-    }
 
     private fun init() {
-        intents = arrayOf(
-            Intent(this, CreateBlogActivity::class.java),
-            Intent(this, CreateBlogActivity::class.java),
-            Intent(this, CreateBlogActivity::class.java)
-        )
-        val adapter = MainFragmentAdapter(supportFragmentManager)
-        main_viewPager.adapter = adapter
-        main_viewPager.offscreenPageLimit = 2
-        main_nav.setOnNavigationItemSelectedListener(this)
-        main_drawer.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerStateChanged(newState: Int) {}
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-            override fun onDrawerClosed(drawerView: View) {}
-            override fun onDrawerOpened(drawerView: View) {}
-        })
-        main_drawer.setScrimColor(Color.TRANSPARENT)
-        main_portrait.setOnClickListener(this)
-        fab_add_text.setOnClickListener(this)
-        fab_add_richText.setOnClickListener(this)
-        fab_add_markdown.setOnClickListener(this)
-        main_search.setOnClickListener(this)
-
+        adapter = SimplePageFragmentAdapter(supportFragmentManager, arrayListOf(UserFragment(), MainFragment()))
+        viewPager.adapter = adapter
+        viewPager.currentItem = 1
     }
 
     companion object {
