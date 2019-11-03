@@ -1,21 +1,16 @@
 package tty.community.pages.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_main.*
-
 import tty.community.R
 import tty.community.adapter.MainFragmentAdapter
 import tty.community.file.Storage
@@ -94,7 +89,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
         init()
     }
 
-    public fun refresh(user: User) {
+    fun refresh(user: User) {
         val portraitCache = File(Storage.getStorageDirectory(context!!, "portrait"), user.id)
         if (portraitCache.exists()) {
             Glide.with(this).load(portraitCache)
